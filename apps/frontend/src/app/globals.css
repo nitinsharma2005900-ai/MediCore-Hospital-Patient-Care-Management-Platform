@@ -25,6 +25,33 @@ body {
   overflow-x: hidden;
 }
 
+:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+input, textarea, select { font-size: max(1rem, 16px); }
+button { transition: background-color .18s, transform .18s, box-shadow .18s; }
+button:active:not(:disabled) { transform: scale(.98); }
+main > div > .space-y-6 > * { animation: reveal .35s ease both; }
+main > div > .space-y-6 > :nth-child(2) { animation-delay: .06s; }
+main > div > .space-y-6 > :nth-child(3) { animation-delay: .12s; }
+@keyframes reveal { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+main table { min-width: 620px; }
+main .text-xs { font-size: .875rem; line-height: 1.45; }
+main .overflow-x-auto { overscroll-behavior-x: contain; }
+.dark .bg-white { background-color: #111827; color: #f8fafc; }
+.dark .bg-slate-50, .dark .bg-\[\#F8FAFC\] { background-color: #090d16; }
+.dark .text-slate-900, .dark .text-slate-800 { color: #f1f5f9; }
+.dark .text-slate-700, .dark .text-slate-600 { color: #cbd5e1; }
+.dark .border-slate-200, .dark .border-slate-100 { border-color: #334155; }
+@media (max-width: 639px) {
+  main h1 { font-size: 1.5rem !important; }
+  main .text-xs { font-size: .875rem; }
+  main .flex.space-x-1, main .flex.space-x-2 { max-width: 100%; overflow-x: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
 /* Custom scrollbar for sleek modern healthcare look */
 ::-webkit-scrollbar {
   width: 6px;

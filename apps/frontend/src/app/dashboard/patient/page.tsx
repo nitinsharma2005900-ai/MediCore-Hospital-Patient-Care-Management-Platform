@@ -17,6 +17,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
+import { AppointmentActions, ProfileEditor } from '@/components/CareActions';
 
 export default function PatientDashboard() {
   const { user, token, apiUrl } = useAuth();
@@ -27,6 +28,8 @@ export default function PatientDashboard() {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [consents, setConsents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     async function loadPatientData() {
@@ -49,6 +52,8 @@ export default function PatientDashboard() {
         if (invRes.success) setInvoices(invRes.data || []);
 
         if (user?.patientProfileId) {
+          const profileRes = await fetch(`${apiUrl}/patients/${user.patientProfileId}`, { headers }).then(r => r.json());
+          if (profileRes.success) setProfile(profileRes.data);
           const consentRes = await fetch(`${apiUrl}/consent/patient/${user.patientProfileId}`, { headers }).then(r => r.json());
           if (consentRes.success) setConsents(consentRes.data || []);
         }
@@ -114,6 +119,7 @@ export default function PatientDashboard() {
 
   return (
     <div className="space-y-6">
+      <ProfileEditor />
       {/* Header Profile Card */}
       <div className="bg-gradient-to-r from-teal-800 to-teal-950 rounded-3xl p-6 sm:p-8 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -122,11 +128,11 @@ export default function PatientDashboard() {
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold mt-2">Welcome back, {user?.firstName} {user?.lastName}</h1>
           <p className="text-xs text-teal-100 mt-1 flex items-center gap-3">
-            <span>MRN: <strong className="font-mono text-white">MRN-2026-0001</strong></span>
+            <span>MRN: <strong className="font-mono text-white">{profile?.mrn || 'Loading…'}</strong></span>
             <span>•</span>
-            <span>Blood Group: <strong className="text-white">O+</strong></span>
+            <span>Blood Group: <strong className="text-white">{profile?.bloodGroup || 'Not provided'}</strong></span>
             <span>•</span>
-            <span>Insurance: <strong className="text-white">Blue Cross Blue Shield</strong></span>
+            <span>Insurance: <strong className="text-white">{profile?.insuranceProvider || 'Not provided'}</strong></span>
           </p>
         </div>
 
@@ -181,7 +187,7 @@ export default function PatientDashboard() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 space-x-6 text-sm font-semibold">
+      <div className="flex overflow-x-auto border-b border-slate-200 gap-5 text-sm font-semibold [&>button]:shrink-0 [&>button]:whitespace-nowrap">
         <button
           onClick={() => setActiveTab('appointments')}
           className={`pb-3 transition-colors ${activeTab === 'appointments' ? 'text-[#0F766E] border-b-2 border-[#0F766E]' : 'text-slate-500 hover:text-slate-800'}`}
@@ -264,7 +270,7 @@ export default function PatientDashboard() {
                                 {apt.status}
                               </span>
                             </td>
-                            <td className="py-3.5 px-4 max-w-xs truncate">{apt.reason}</td>
+                            <td className="py-3.5 px-4 max-w-xs"><p className="truncate">{apt.reason}</p><AppointmentActions appointment={apt} onChanged={async()=>{const r=await fetch(`${apiUrl}/appointments`,{headers:{Authorization:`Bearer ${token}`}});const j=await r.json();if(j.success)setAppointments(j.data);}}/></td>
                           </tr>
                         ))}
                       </tbody>

@@ -26,7 +26,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api/v1';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 export const DEMO_CREDENTIALS: Record<UserRole, { email: string; pass: string; title: string }> = {
   [UserRole.PATIENT]: { email: 'patient@medicore.health', pass: 'Password123!', title: 'Patient (Eleanor Vance)' },
@@ -44,15 +44,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('medicore_token');
-    const savedUser = localStorage.getItem('medicore_user');
+    const savedToken = sessionStorage.getItem('medicore_token');
+    const savedUser = sessionStorage.getItem('medicore_user');
     if (savedToken && savedUser) {
       try {
         setToken(savedToken);
         setUser(JSON.parse(savedUser));
       } catch {
-        localStorage.removeItem('medicore_token');
-        localStorage.removeItem('medicore_user');
+        sessionStorage.removeItem('medicore_token');
+        sessionStorage.removeItem('medicore_user');
       }
     }
     setIsLoading(false);
@@ -71,8 +71,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const t = data.data.tokens.accessToken;
         setUser(u);
         setToken(t);
-        localStorage.setItem('medicore_token', t);
-        localStorage.setItem('medicore_user', JSON.stringify(u));
+        sessionStorage.setItem('medicore_refresh', data.data.tokens.refreshToken);
+        sessionStorage.setItem('medicore_token', t);
+        sessionStorage.setItem('medicore_user', JSON.stringify(u));
         return true;
       }
       return false;
@@ -81,12 +82,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
+  const logout = React.useCallback(() => {
+    if (token) void fetch(`${API_BASE}/auth/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    sessionStorage.removeItem('medicore_refresh');
     setUser(null);
     setToken(null);
-    localStorage.removeItem('medicore_token');
-    localStorage.removeItem('medicore_user');
-  };
+    sessionStorage.removeItem('medicore_token');
+    sessionStorage.removeItem('medicore_user');
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    let timer: ReturnType<typeof setTimeout>;
+    try {
+      const expires = JSON.parse(atob(token.split('.')[1])).exp * 1000;
+      timer = setTimeout(async () => {
+        try {
+          const response = await fetch(`${API_BASE}/auth/refresh`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: sessionStorage.getItem('medicore_refresh') }) });
+          const result = await response.json();
+          if (!response.ok) { logout(); return; }
+          setToken(result.data.accessToken);
+          sessionStorage.setItem('medicore_token', result.data.accessToken);
+          sessionStorage.setItem('medicore_refresh', result.data.refreshToken);
+        } catch { logout(); }
+      }, Math.max(1000, expires - Date.now() - 60000));
+    } catch { logout(); }
+    return () => clearTimeout(timer);
+  }, [token, logout]);
+
+
 
   const switchRole = async (role: UserRole) => {
     const cred = DEMO_CREDENTIALS[role];

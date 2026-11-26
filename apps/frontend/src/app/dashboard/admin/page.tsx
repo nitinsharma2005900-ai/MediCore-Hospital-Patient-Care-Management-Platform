@@ -16,6 +16,8 @@ import {
   Cpu
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
+import { StaffManagement } from '@/components/OperationsTools';
+import { AnimatedNumber } from '@/components/AnimatedNumber';
 import { 
   BarChart, 
   Bar, 
@@ -38,7 +40,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'analytics' | 'departments' | 'audits'>('analytics');
   const [loading, setLoading] = useState(true);
 
-  const ANALYTICS_URL = process.env.NEXT_PUBLIC_ANALYTICS_URL || 'http://localhost:8001';
+  const ANALYTICS_URL = process.env.NEXT_PUBLIC_ANALYTICS_URL || '';
 
   useEffect(() => {
     async function loadAdminData() {
@@ -58,11 +60,11 @@ export default function AdminDashboard() {
         // Fetch real calculated analytics from FastAPI microservice
         try {
           const [utilRes, waitRes, tatRes, popRes, deptStatRes] = await Promise.all([
-            fetch(`${ANALYTICS_URL}/analytics/appointment-utilization`).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/waiting-times`).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/lab-turnaround`).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/population-metrics`).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/department-statistics`).then(r => r.json())
+            fetch(`${ANALYTICS_URL}/analytics/appointment-utilization`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+            fetch(`${ANALYTICS_URL}/analytics/waiting-times`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+            fetch(`${ANALYTICS_URL}/analytics/lab-turnaround`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+            fetch(`${ANALYTICS_URL}/analytics/population-metrics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+            fetch(`${ANALYTICS_URL}/analytics/department-statistics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json())
           ]);
 
           setAnalytics({
@@ -73,7 +75,7 @@ export default function AdminDashboard() {
             deptStats: deptStatRes.data
           });
         } catch (fastApiErr) {
-          console.warn('FastAPI microservice not reachable, using fallback calculations', fastApiErr);
+          console.warn('FastAPI microservice not reachable, metrics unavailable', fastApiErr);
         }
       } catch (err) {
         console.error(err);
@@ -95,6 +97,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      <StaffManagement />
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -116,7 +119,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 space-x-6 text-sm font-semibold">
+      <div className="flex overflow-x-auto border-b border-slate-200 gap-5 text-sm font-semibold [&>button]:shrink-0 [&>button]:whitespace-nowrap">
         <button
           onClick={() => setActiveTab('analytics')}
           className={`pb-3 transition-colors ${activeTab === 'analytics' ? 'text-[#0F766E] border-b-2 border-[#0F766E]' : 'text-slate-500 hover:text-slate-800'}`}
@@ -145,7 +148,7 @@ export default function AdminDashboard() {
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
               <span className="text-[10px] font-bold uppercase text-slate-400">Appointment Utilization</span>
               <div className="text-2xl font-black text-[#0F766E] mt-1">
-                {analytics?.utilization?.utilization_rate_percent || 84.5}%
+                {analytics?.utilization ? <AnimatedNumber value={analytics.utilization.utilization_rate_percent} decimals={1}/> : '—'}%
               </div>
               <span className="text-[10px] text-teal-700 font-semibold">Slot Allocation Efficiency</span>
             </div>
@@ -153,25 +156,25 @@ export default function AdminDashboard() {
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
               <span className="text-[10px] font-bold uppercase text-slate-400">Avg Patient Wait Time</span>
               <div className="text-2xl font-black text-blue-600 mt-1">
-                {analytics?.waitingTimes?.average_wait_minutes || 13.8} <span className="text-sm font-normal text-slate-500">min</span>
+                {analytics?.waitingTimes?.average_wait_minutes ?? '—'} <span className="text-sm font-normal text-slate-500">min</span>
               </div>
-              <span className="text-[10px] text-blue-700 font-semibold">P90: {analytics?.waitingTimes?.p90_wait_minutes || 22.0} min</span>
+              <span className="text-[10px] text-blue-700 font-semibold">P90: {analytics?.waitingTimes?.p90_wait_minutes ?? '—'} min</span>
             </div>
 
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
               <span className="text-[10px] font-bold uppercase text-slate-400">Lab Turnaround Time</span>
               <div className="text-2xl font-black text-purple-600 mt-1">
-                {analytics?.labTurnaround?.average_tat_hours || 2.4} <span className="text-sm font-normal text-slate-500">hrs</span>
+                {analytics?.labTurnaround?.average_tat_hours ?? '—'} <span className="text-sm font-normal text-slate-500">hrs</span>
               </div>
-              <span className="text-[10px] text-purple-700 font-semibold">STAT: {analytics?.labTurnaround?.stat_urgent_average_minutes || 38.5} min</span>
+              <span className="text-[10px] text-purple-700 font-semibold">STAT: {analytics?.labTurnaround?.stat_urgent_average_minutes ?? '—'} min</span>
             </div>
 
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
               <span className="text-[10px] font-bold uppercase text-slate-400">Synthetic Cohort</span>
               <div className="text-2xl font-black text-slate-900 mt-1">
-                {analytics?.population?.total_synthetic_patients || 100}
+                {analytics?.population?.total_synthetic_patients ?? '—'}
               </div>
-              <span className="text-[10px] text-slate-500 font-semibold">Median Age: {analytics?.population?.median_patient_age || 44} yrs</span>
+              <span className="text-[10px] text-slate-500 font-semibold">Median Age: {analytics?.population?.median_patient_age ?? '—'} yrs</span>
             </div>
           </div>
 

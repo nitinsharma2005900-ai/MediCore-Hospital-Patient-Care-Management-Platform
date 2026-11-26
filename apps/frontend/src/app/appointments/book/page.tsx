@@ -18,16 +18,20 @@ import { useAuth } from '@/components/AuthContext';
 
 export default function BookAppointmentPage() {
   const router = useRouter();
-  const { user, token, apiUrl } = useAuth();
+  const { user, token, apiUrl, isLoading } = useAuth();
+  const [patients, setPatients] = useState<any[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState('');
+  useEffect(()=>{if(!isLoading&&!user)router.replace('/login');},[isLoading,user,router]);
+  useEffect(()=>{if(user?.role==='RECEPTIONIST'&&token)void fetch(`${apiUrl}/patients?limit=100`,{headers:{Authorization:`Bearer ${token}`}}).then(r=>r.json()).then(j=>setPatients(j.data||[]));},[user,token,apiUrl]);
 
   const [departments, setDepartments] = useState<any[]>([]);
   const [doctors, setDoctors] = useState<any[]>([]);
   const [selectedDept, setSelectedDept] = useState('');
   const [selectedDoc, setSelectedDoc] = useState('');
-  const [selectedDate, setSelectedDate] = useState('2026-11-28');
+  const [selectedDate, setSelectedDate] = useState(() => new Date(Date.now() + 86400000).toISOString().slice(0,10));
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<any | null>(null);
-  const [reason, setReason] = useState('Comprehensive clinical consultation & cardiovascular review');
+  const [reason, setReason] = useState('');
   const [priority, setPriority] = useState('NORMAL');
 
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -115,6 +119,7 @@ export default function BookAppointmentPage() {
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
+          patientId: user?.role === 'RECEPTIONIST' ? selectedPatient : undefined,
           doctorId: selectedDoc,
           departmentId: selectedDept,
           scheduledStartTime: selectedSlot.startTime,
@@ -173,10 +178,11 @@ export default function BookAppointmentPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {user?.role==='RECEPTIONIST'&&<label className="block text-sm font-semibold">Patient<select required value={selectedPatient} onChange={e=>setSelectedPatient(e.target.value)} className="block w-full p-3 mt-1 border rounded-xl"><option value="">Select patient</option>{patients.map(p=><option key={p.id} value={p.id}>{p.name} · {p.mrn}</option>)}</select></label>}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">1. Clinical Department</label>
-              <select
+              <select aria-label="1. Clinical Department"
                 value={selectedDept}
                 onChange={(e) => setSelectedDept(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
@@ -189,7 +195,7 @@ export default function BookAppointmentPage() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">2. Consulting Physician</label>
-              <select
+              <select aria-label="2. Consulting Physician"
                 value={selectedDoc}
                 onChange={(e) => setSelectedDoc(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
@@ -203,7 +209,7 @@ export default function BookAppointmentPage() {
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">3. Select Appointment Date</label>
-            <input
+            <input aria-label="3. Select Appointment Date"
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
@@ -221,7 +227,7 @@ export default function BookAppointmentPage() {
               <div className="py-8 text-center text-xs text-slate-400">Loading doctor clinic availability...</div>
             ) : availableSlots.length === 0 ? (
               <div className="py-6 text-center text-xs text-amber-600 bg-amber-50 rounded-2xl border border-amber-200">
-                No slots open for selected date. Please pick a Monday - Friday date.
+                No slots open for selected date. Please choose a different clinic date.
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -249,7 +255,7 @@ export default function BookAppointmentPage() {
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">5. Clinical Reason for Visit</label>
-            <textarea
+            <textarea aria-label="5. Clinical Reason for Visit"
               rows={3}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -260,7 +266,7 @@ export default function BookAppointmentPage() {
 
           <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
             <span className="text-[11px] text-slate-400">
-              Database Transactional Concurrency Lock Active
+              Availability is checked before confirmation
             </span>
             <button
               type="submit"
@@ -268,7 +274,7 @@ export default function BookAppointmentPage() {
               className="bg-[#0F766E] hover:bg-[#0D655E] text-white px-8 py-3 rounded-xl text-xs font-bold shadow-md transition-all flex items-center space-x-2 disabled:opacity-50"
             >
               {submitting ? (
-                <span>Locking slot & reserving...</span>
+                <span>Reserving your appointment…</span>
               ) : (
                 <>
                   <Check className="w-4 h-4 stroke-[3]" />

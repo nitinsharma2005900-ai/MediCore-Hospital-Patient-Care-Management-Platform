@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   FlaskConical, 
   CheckCircle, 
@@ -29,7 +29,7 @@ export default function LabDashboard() {
   const [remarks, setRemarks] = useState('Automated analyzer calibration validated.');
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     if (!token) return;
     try {
       const res = await fetch(`${apiUrl}/lab/orders`, {
@@ -38,18 +38,16 @@ export default function LabDashboard() {
       const data = await res.json();
       if (data.success && data.data) {
         setOrders(data.data);
-        if (data.data.length > 0 && !selectedOrder) {
-          setSelectedOrder(data.data[0]);
-        }
+        setSelectedOrder((current: any) => current || data.data.find((o: any) => o.status !== 'COMPLETED') || data.data[0] || null);
       }
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [token, apiUrl]);
 
   useEffect(() => {
     fetchOrders();
-  }, [token, apiUrl]);
+  }, [fetchOrders]);
 
   const handleEnterResult = async () => {
     if (!selectedOrder) return;
@@ -102,7 +100,7 @@ export default function LabDashboard() {
       {statusMsg && (
         <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center justify-between">
           <span>{statusMsg}</span>
-          <button onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
+          <button aria-label="Dismiss message" onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
         </div>
       )}
 
@@ -157,7 +155,7 @@ export default function LabDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Test / Analyte Name</label>
-                <input
+                <input aria-label="Test / Analyte Name"
                   type="text"
                   value={testName}
                   onChange={(e) => setTestName(e.target.value)}
@@ -166,7 +164,7 @@ export default function LabDashboard() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">LOINC Standard Code</label>
-                <input
+                <input aria-label="LOINC Standard Code"
                   type="text"
                   value={testCode}
                   onChange={(e) => setTestCode(e.target.value)}
@@ -175,7 +173,7 @@ export default function LabDashboard() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Measured Value</label>
-                <input
+                <input aria-label="Measured Value"
                   type="text"
                   value={measuredValue}
                   onChange={(e) => setMeasuredValue(e.target.value)}
@@ -184,7 +182,7 @@ export default function LabDashboard() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Unit of Measure</label>
-                <input
+                <input aria-label="Unit of Measure"
                   type="text"
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
@@ -193,7 +191,7 @@ export default function LabDashboard() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Reference Low</label>
-                <input
+                <input aria-label="Reference Low"
                   type="text"
                   value={refLow}
                   onChange={(e) => setRefLow(e.target.value)}
@@ -202,7 +200,7 @@ export default function LabDashboard() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Reference High</label>
-                <input
+                <input aria-label="Reference High"
                   type="text"
                   value={refHigh}
                   onChange={(e) => setRefHigh(e.target.value)}
@@ -213,7 +211,7 @@ export default function LabDashboard() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Clinical Interpretation</label>
-              <select
+              <select aria-label="Clinical Interpretation"
                 value={interpretation}
                 onChange={(e) => setInterpretation(e.target.value)}
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-bold"
@@ -228,7 +226,7 @@ export default function LabDashboard() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Technician Remarks & Instrument Notes</label>
-              <input
+              <input aria-label="Technician Remarks & Instrument Notes"
                 type="text"
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
