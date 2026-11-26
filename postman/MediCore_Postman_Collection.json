@@ -67,7 +67,7 @@
         "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"departmentId\": \"{{departmentId}}\",\n  \"preferredDate\": \"2026-12-10\"\n}"
         }
       }
     },
@@ -85,7 +85,7 @@
         "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"status\": \"OFFERED\"\n}"
         }
       }
     },
@@ -239,7 +239,7 @@
         "description": "Login/register/refresh are public. Me/logout require an active bearer session.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"refreshToken\": \"Synthetic refreshToken fixture\"\n}"
         }
       }
     },
@@ -469,7 +469,7 @@
         "description": "Public directory and slots. Availability changes require the owning doctor.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"dayOfWeek\": 1,\n  \"startTime\": \"Synthetic startTime fixture\",\n  \"endTime\": \"Synthetic endTime fixture\",\n  \"slotDurationMinutes\": 10,\n  \"timeZone\": \"Synthetic timeZone fixture\"\n}"
         }
       }
     },
@@ -767,7 +767,7 @@
         "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"status\": \"COLLECTED\"\n}"
         }
       }
     },
@@ -845,7 +845,7 @@
         "description": "Administrator only; operational projections exclude clinical identifiers.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"isActive\": true\n}"
         }
       }
     },
@@ -863,7 +863,7 @@
         "description": "Administrator only; operational projections exclude clinical identifiers.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"email\": \"patient@medicore.health\",\n  \"password\": \"Password123!\",\n  \"firstName\": \"Synthetic firstName fixture\",\n  \"lastName\": \"Synthetic lastName fixture\",\n  \"role\": \"RECEPTIONIST\"\n}"
         }
       }
     },
@@ -881,7 +881,7 @@
         "description": "Administrator only; operational projections exclude clinical identifiers.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"code\": \"Synthetic code fixture\",\n  \"name\": \"Synthetic name fixture\"\n}"
         }
       }
     },
@@ -899,7 +899,7 @@
         "description": "Administrator only; operational projections exclude clinical identifiers.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"patientId\": \"{{patientId}}\",\n  \"nurseUserId\": \"{{nurseUserId}}\"\n}"
         }
       }
     },
@@ -945,7 +945,7 @@
         "description": "Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"address\": \"Synthetic address fixture\",\n  \"emergencyContactName\": \"Synthetic emergencyContactName fixture\",\n  \"emergencyContactPhone\": \"+1-555-0199\"\n}"
         }
       }
     },
@@ -1009,7 +1009,7 @@
         "description": "Assigned doctor writes; patient self and assigned clinician read.",
         "body": {
           "mode": "raw",
-          "raw": "{}"
+          "raw": "{\n  \"status\": \"FILLED\"\n}"
         }
       }
     }

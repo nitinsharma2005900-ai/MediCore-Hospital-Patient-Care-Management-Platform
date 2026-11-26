@@ -13,8 +13,23 @@ const bodySchemas={
  '/prescriptions':'CreatePrescriptionSchema','/lab/orders':'CreateLabOrderSchema','/lab/results':'EnterLabResultSchema',
  '/billing/invoices':'CreateInvoiceSchema','/billing/payments':'RecordPaymentSchema','/consent/patient/{patientId}':'UpdateConsentSchema'
 };
+const customSchemas={
+ RefreshSessionSchema:z.object({refreshToken:z.string().min(1)}),
+ WaitingEntrySchema:z.object({patientId:z.string().uuid().optional(),doctorId:z.string().uuid().optional(),departmentId:z.string().uuid(),preferredDate:z.string().date(),urgencyLevel:z.enum(['LOW','MEDIUM','HIGH']).default('MEDIUM'),notes:z.string().max(500).optional()}),
+ WaitingStatusSchema:z.object({status:z.enum(['OFFERED','CONVERTED','CANCELLED'])}),
+ AvailabilitySchema:z.object({dayOfWeek:z.number().int().min(0).max(6),startTime:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),endTime:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),slotDurationMinutes:z.number().int().min(10).max(120),timeZone:z.string(),isActive:z.boolean().default(true)}),
+ ProfileContactSchema:z.object({address:z.string().min(5).max(500),emergencyContactName:z.string().min(2).max(100),emergencyContactPhone:z.string().min(7).max(30)}),
+ EncounterCompleteSchema:z.object({clinicalNotes:z.string().max(20000).optional()}),
+ PrescriptionTransitionSchema:z.object({status:z.enum(['FILLED','DISCONTINUED'])}),
+ LabTransitionSchema:z.object({status:z.enum(['COLLECTED','IN_ANALYSIS','CANCELLED'])}),
+ StaffCreateSchema:z.object({email:z.string().email(),password:z.string().min(12),firstName:z.string().min(1),lastName:z.string().min(1),role:z.enum(['RECEPTIONIST','DOCTOR','NURSE','LAB_TECHNICIAN','BILLING_OFFICER','ADMIN']),departmentId:z.string().optional(),specialization:z.string().optional(),licenseNumber:z.string().optional()}),
+ StaffStatusSchema:z.object({isActive:z.boolean()}),
+ DepartmentCreateSchema:z.object({code:z.string().min(2).max(12),name:z.string().min(2).max(100),description:z.string().max(500).optional()}),
+ CareAssignmentSchema:z.object({patientId:z.string().uuid(),nurseUserId:z.string().uuid(),active:z.boolean().default(true)})
+};
+Object.assign(bodySchemas,{'/auth/refresh':'RefreshSessionSchema','/appointments/waiting-list':'WaitingEntrySchema','/appointments/waiting-list/{id}':'WaitingStatusSchema','/doctors/{id}/availability':'AvailabilitySchema','/patients/{id}':'ProfileContactSchema','/encounters/{id}/complete':'EncounterCompleteSchema','/prescriptions/{id}/status':'PrescriptionTransitionSchema','/lab/orders/{id}/status':'LabTransitionSchema','/operations/staff':'StaffCreateSchema','/operations/staff/{id}':'StaffStatusSchema','/operations/departments':'DepartmentCreateSchema','/operations/care-assignments':'CareAssignmentSchema'});
 spec.openapi='3.1.0';
-for(const name of new Set(Object.values(bodySchemas)))if(shared[name])spec.components.schemas[name]=z.toJSONSchema(shared[name],{io:'input',unrepresentable:'any'});
+for(const name of new Set(Object.values(bodySchemas))){const schema=shared[name]||customSchemas[name];if(schema)spec.components.schemas[name]=z.toJSONSchema(schema,{io:'input',unrepresentable:'any'});}
 for(const file of fs.readdirSync(path.join(root,'apps/backend/src/routes')).filter(f=>f.endsWith('.routes.ts'))){
  const area=file.replace('.routes.ts','');const prefix={appointment:'appointments',patient:'patients',prescription:'prescriptions',encounter:'encounters',doctor:'doctors',department:'departments',notification:'notifications',lab:'lab',billing:'billing',consent:'consent',auth:'auth',audit:'audit',fhir:'fhir',operations:'operations'}[area];
  if(!prefix)continue;const text=fs.readFileSync(path.join(root,'apps/backend/src/routes',file),'utf8');

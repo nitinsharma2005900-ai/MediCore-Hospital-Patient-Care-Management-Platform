@@ -903,6 +903,296 @@
           "consentType",
           "granted"
         ]
+      },
+      "RefreshSessionSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "WaitingEntrySchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "patientId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "doctorId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "preferredDate": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "urgencyLevel": {
+            "default": "MEDIUM",
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "departmentId",
+          "preferredDate"
+        ]
+      },
+      "WaitingStatusSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "OFFERED",
+              "CONVERTED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "AvailabilitySchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "dayOfWeek": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          },
+          "startTime": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "endTime": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "slotDurationMinutes": {
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 120
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "isActive": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "dayOfWeek",
+          "startTime",
+          "endTime",
+          "slotDurationMinutes",
+          "timeZone"
+        ]
+      },
+      "ProfileContactSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 500
+          },
+          "emergencyContactName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "emergencyContactPhone": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 30
+          }
+        },
+        "required": [
+          "address",
+          "emergencyContactName",
+          "emergencyContactPhone"
+        ]
+      },
+      "EncounterCompleteSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "clinicalNotes": {
+            "type": "string",
+            "maxLength": 20000
+          }
+        }
+      },
+      "PrescriptionTransitionSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "FILLED",
+              "DISCONTINUED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "LabTransitionSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "COLLECTED",
+              "IN_ANALYSIS",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "StaffCreateSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "RECEPTIONIST",
+              "DOCTOR",
+              "NURSE",
+              "LAB_TECHNICIAN",
+              "BILLING_OFFICER",
+              "ADMIN"
+            ]
+          },
+          "departmentId": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string"
+          },
+          "licenseNumber": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "firstName",
+          "lastName",
+          "role"
+        ]
+      },
+      "StaffStatusSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isActive"
+        ]
+      },
+      "DepartmentCreateSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 12
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "CareAssignmentSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "patientId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "nurseUserId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "active": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "patientId",
+          "nurseUserId"
+        ]
       }
     }
   },
@@ -946,7 +1236,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
         "parameters": [],
         "security": []
       }
@@ -993,7 +1283,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
         "parameters": [],
         "security": []
       }
@@ -1032,7 +1322,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
         "parameters": [
           {
             "name": "page",
@@ -1085,7 +1375,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Public department directory.\nPermission: Public department directory.\nPermission: Public department directory.",
+        "description": "\nPermission: Public department directory.\nPermission: Public department directory.\nPermission: Public department directory.\nPermission: Public department directory.",
         "parameters": [
           {
             "name": "page",
@@ -1155,7 +1445,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
         "security": []
       }
     },
@@ -1207,7 +1497,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
         "security": []
       }
     },
@@ -1245,7 +1535,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": [
           {
             "name": "page",
@@ -1314,7 +1604,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": []
       }
     },
@@ -1362,7 +1652,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action."
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action."
       }
     },
     "/appointments/{id}/cancel": {
@@ -1409,7 +1699,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1459,7 +1749,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1510,7 +1800,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1561,7 +1851,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1609,7 +1899,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
         "parameters": [
           {
             "name": "page",
@@ -1668,7 +1958,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1716,7 +2006,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "parameters": [
           {
             "name": "page",
@@ -1775,7 +2065,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1826,7 +2116,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1874,7 +2164,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
         "parameters": [
           {
             "name": "page",
@@ -1933,7 +2223,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1981,7 +2271,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2029,7 +2319,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self only.\nPermission: Patient self only.\nPermission: Patient self only.",
+        "description": "\nPermission: Patient self only.\nPermission: Patient self only.\nPermission: Patient self only.\nPermission: Patient self only.",
         "parameters": [
           {
             "name": "patientId",
@@ -2075,7 +2365,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Patient self only.\nPermission: Patient self only.\nPermission: Patient self only.",
+        "description": "\nPermission: Patient self only.\nPermission: Patient self only.\nPermission: Patient self only.\nPermission: Patient self only.",
         "parameters": [
           {
             "name": "patientId",
@@ -2133,7 +2423,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Administrator only. Append-only audit history.\nPermission: Administrator only. Append-only audit history.\nPermission: Administrator only. Append-only audit history.",
+        "description": "\nPermission: Administrator only. Append-only audit history.\nPermission: Administrator only. Append-only audit history.\nPermission: Administrator only. Append-only audit history.\nPermission: Administrator only. Append-only audit history.",
         "parameters": [
           {
             "name": "page",
@@ -2186,7 +2476,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "page",
@@ -2244,7 +2534,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "page",
@@ -2302,7 +2592,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "page",
@@ -2360,7 +2650,7 @@
             "description": "Dependency unavailable; no partial clinical write committed"
           }
         },
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "page",
@@ -2395,7 +2685,7 @@
           "appointments"
         ],
         "summary": "GET /appointments/waiting-list",
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": [
           {
             "name": "page",
@@ -2451,7 +2741,7 @@
           "appointments"
         ],
         "summary": "POST /appointments/waiting-list",
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": [],
         "security": [
           {
@@ -2480,6 +2770,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WaitingEntrySchema"
+              }
+            }
+          }
         }
       }
     },
@@ -2489,7 +2789,7 @@
           "appointments"
         ],
         "summary": "PATCH /appointments/waiting-list/{id}",
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": [
           {
             "name": "id",
@@ -2528,6 +2828,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WaitingStatusSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -2537,7 +2847,7 @@
           "appointments"
         ],
         "summary": "GET /appointments/{id}",
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": [
           {
             "name": "id",
@@ -2585,7 +2895,7 @@
           "appointments"
         ],
         "summary": "PATCH /appointments/{id}/reschedule",
-        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
         "parameters": [
           {
             "name": "id",
@@ -2643,7 +2953,7 @@
           "auth"
         ],
         "summary": "POST /auth/refresh",
-        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
         "parameters": [],
         "security": [],
         "responses": {
@@ -2668,6 +2978,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshSessionSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -2677,7 +2997,7 @@
           "auth"
         ],
         "summary": "POST /auth/logout",
-        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
         "parameters": [],
         "security": [
           {
@@ -2715,7 +3035,7 @@
           "billing"
         ],
         "summary": "GET /billing/invoices/{id}",
-        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
         "parameters": [
           {
             "name": "id",
@@ -2763,7 +3083,7 @@
           "billing"
         ],
         "summary": "GET /billing/analytics",
-        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
         "parameters": [
           {
             "name": "page",
@@ -2821,7 +3141,7 @@
           "departments"
         ],
         "summary": "GET /departments/{id}",
-        "description": "\nPermission: Public department directory.\nPermission: Public department directory.\nPermission: Public department directory.",
+        "description": "\nPermission: Public department directory.\nPermission: Public department directory.\nPermission: Public department directory.\nPermission: Public department directory.",
         "parameters": [
           {
             "name": "id",
@@ -2865,7 +3185,7 @@
           "doctors"
         ],
         "summary": "GET /doctors/{id}",
-        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
         "parameters": [
           {
             "name": "id",
@@ -2909,7 +3229,7 @@
           "doctors"
         ],
         "summary": "PUT /doctors/{id}/availability",
-        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
         "parameters": [
           {
             "name": "id",
@@ -2948,6 +3268,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvailabilitySchema"
+              }
+            }
+          }
         }
       }
     },
@@ -2957,7 +3287,7 @@
           "encounters"
         ],
         "summary": "GET /encounters/{id}",
-        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
         "parameters": [
           {
             "name": "id",
@@ -3005,7 +3335,7 @@
           "encounters"
         ],
         "summary": "PATCH /encounters/{id}/complete",
-        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
         "parameters": [
           {
             "name": "id",
@@ -3044,6 +3374,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncounterCompleteSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -3053,7 +3393,7 @@
           "fhir"
         ],
         "summary": "GET /fhir/Patient/{id}",
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "id",
@@ -3101,7 +3441,7 @@
           "fhir"
         ],
         "summary": "GET /fhir/Appointment/{id}",
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "id",
@@ -3149,7 +3489,7 @@
           "fhir"
         ],
         "summary": "GET /fhir/Encounter/{id}",
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "id",
@@ -3197,7 +3537,7 @@
           "fhir"
         ],
         "summary": "GET /fhir/Observation/{id}",
-        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
         "parameters": [
           {
             "name": "id",
@@ -3245,7 +3585,7 @@
           "lab"
         ],
         "summary": "GET /lab/orders/{id}",
-        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "parameters": [
           {
             "name": "id",
@@ -3293,7 +3633,7 @@
           "lab"
         ],
         "summary": "PATCH /lab/results/{id}/validate",
-        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "parameters": [
           {
             "name": "id",
@@ -3341,7 +3681,7 @@
           "notifications"
         ],
         "summary": "GET /notifications",
-        "description": "\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.",
+        "description": "\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.",
         "parameters": [
           {
             "name": "page",
@@ -3399,7 +3739,7 @@
           "notifications"
         ],
         "summary": "PATCH /notifications/{id}/read",
-        "description": "\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.",
+        "description": "\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.",
         "parameters": [
           {
             "name": "id",
@@ -3447,7 +3787,7 @@
           "operations"
         ],
         "summary": "GET /operations/analytics-source",
-        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
         "parameters": [
           {
             "name": "page",
@@ -3505,7 +3845,7 @@
           "operations"
         ],
         "summary": "GET /operations/staff",
-        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
         "parameters": [
           {
             "name": "page",
@@ -3561,7 +3901,7 @@
           "operations"
         ],
         "summary": "POST /operations/staff",
-        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
         "parameters": [],
         "security": [
           {
@@ -3590,6 +3930,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffCreateSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -3599,7 +3949,7 @@
           "operations"
         ],
         "summary": "PATCH /operations/staff/{id}",
-        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
         "parameters": [
           {
             "name": "id",
@@ -3638,6 +3988,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffStatusSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -3647,7 +4007,7 @@
           "operations"
         ],
         "summary": "POST /operations/departments",
-        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
         "parameters": [],
         "security": [
           {
@@ -3675,6 +4035,16 @@
           },
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepartmentCreateSchema"
+              }
+            }
           }
         }
       }
@@ -3685,7 +4055,7 @@
           "operations"
         ],
         "summary": "POST /operations/care-assignments",
-        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
         "parameters": [],
         "security": [
           {
@@ -3714,6 +4084,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CareAssignmentSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -3723,7 +4103,7 @@
           "patients"
         ],
         "summary": "GET /patients",
-        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
         "parameters": [
           {
             "name": "page",
@@ -3781,7 +4161,7 @@
           "patients"
         ],
         "summary": "GET /patients/{id}",
-        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
         "parameters": [
           {
             "name": "id",
@@ -3827,7 +4207,7 @@
           "patients"
         ],
         "summary": "PATCH /patients/{id}",
-        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
         "parameters": [
           {
             "name": "id",
@@ -3866,6 +4246,16 @@
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileContactSchema"
+              }
+            }
+          }
         }
       }
     },
@@ -3875,7 +4265,7 @@
           "prescriptions"
         ],
         "summary": "GET /prescriptions/{id}",
-        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
         "parameters": [
           {
             "name": "id",
@@ -3923,7 +4313,7 @@
           "lab"
         ],
         "summary": "PATCH /lab/orders/{id}/status",
-        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
         "parameters": [
           {
             "name": "id",
@@ -3961,6 +4351,16 @@
           },
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LabTransitionSchema"
+              }
+            }
           }
         }
       }
@@ -3971,7 +4371,7 @@
           "prescriptions"
         ],
         "summary": "PATCH /prescriptions/{id}/status",
-        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
         "parameters": [
           {
             "name": "id",
@@ -4009,6 +4409,16 @@
           },
           "503": {
             "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrescriptionTransitionSchema"
+              }
+            }
           }
         }
       }
