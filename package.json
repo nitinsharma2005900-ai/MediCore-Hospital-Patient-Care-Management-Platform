@@ -1,0 +1,22 @@
+{
+  "name": "medicore-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MediCore - Hospital, Appointment & Patient Care Management Platform",
+  "workspaces": [
+    "packages/shared",
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:backend": "npm --workspace=apps/backend run dev",
+    "dev:frontend": "npm --workspace=apps/frontend run dev",
+    "dev:analytics": "python -m uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port 8000 --reload",
+    "seed": "npm --workspace=apps/backend run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

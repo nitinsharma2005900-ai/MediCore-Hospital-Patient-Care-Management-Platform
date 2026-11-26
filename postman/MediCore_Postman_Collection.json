@@ -1,0 +1,177 @@
+{
+  "info": {
+    "name": "MediCore Hospital & Patient Care API",
+    "description": "Complete Postman collection for testing all MediCore backend REST endpoints, 7 role personas, clinical workflows, and FHIR interoperability.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000/api/v1", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "patientId", "value": "", "type": "string" },
+    { "key": "doctorId", "value": "", "type": "string" },
+    { "key": "appointmentId", "value": "", "type": "string" },
+    { "key": "encounterId", "value": "", "type": "string" },
+    { "key": "invoiceId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login - Doctor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.tokens) {",
+                  "  pm.collectionVariables.set('token', res.data.tokens.accessToken);",
+                  "  pm.collectionVariables.set('doctorId', res.data.user.doctorProfileId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@medicore.health\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Patient",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"patient@medicore.health\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@medicore.health\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current User Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Clinical Departments & Doctors",
+      "item": [
+        {
+          "name": "List Departments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/departments", "host": ["{{baseUrl}}"], "path": ["departments"] }
+          }
+        },
+        {
+          "name": "List Doctors",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/doctors", "host": ["{{baseUrl}}"], "path": ["doctors"] }
+          }
+        },
+        {
+          "name": "Get Doctor Available Slots",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/doctors/{{doctorId}}/available-slots?date=2026-11-28", "host": ["{{baseUrl}}"], "path": ["doctors", "{{doctorId}}", "available-slots"], "query": [{ "key": "date", "value": "2026-11-28" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Appointments & Scheduling",
+      "item": [
+        {
+          "name": "List Appointments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/appointments", "host": ["{{baseUrl}}"], "path": ["appointments"] }
+          }
+        },
+        {
+          "name": "Book Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": \"{{doctorId}}\",\n  \"departmentId\": \"CARD\",\n  \"scheduledStartTime\": \"2026-11-30T10:00:00.000Z\",\n  \"scheduledEndTime\": \"2026-11-30T10:30:00.000Z\",\n  \"type\": \"ROUTINE\",\n  \"reason\": \"Follow-up cardiovascular evaluation\",\n  \"priority\": \"NORMAL\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/appointments", "host": ["{{baseUrl}}"], "path": ["appointments"] }
+          }
+        },
+        {
+          "name": "Check-in Appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/appointments/{{appointmentId}}/check-in", "host": ["{{baseUrl}}"], "path": ["appointments", "{{appointmentId}}", "check-in"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. FHIR R4 Interoperability",
+      "item": [
+        {
+          "name": "FHIR Search Patients",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/fhir/Patient", "host": ["{{baseUrl}}"], "path": ["fhir", "Patient"] }
+          }
+        },
+        {
+          "name": "FHIR Search Appointments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/fhir/Appointment", "host": ["{{baseUrl}}"], "path": ["fhir", "Appointment"] }
+          }
+        },
+        {
+          "name": "FHIR Search Encounters",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/fhir/Encounter", "host": ["{{baseUrl}}"], "path": ["fhir", "Encounter"] }
+          }
+        },
+        {
+          "name": "FHIR Search Observations (Labs/Vitals)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/fhir/Observation", "host": ["{{baseUrl}}"], "path": ["fhir", "Observation"] }
+          }
+        }
+      ]
+    }
+  ]
+}

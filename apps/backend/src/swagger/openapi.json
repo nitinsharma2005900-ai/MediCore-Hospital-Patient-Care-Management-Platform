@@ -1,0 +1,404 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MediCore Clinical Hospital REST API",
+    "description": "Comprehensive RESTful APIs for the MediCore Hospital, Appointment & Patient Care Management Platform. Provides endpoints for Authentication, Multi-Role Dashboards, Doctor Availability, Concurrency-Protected Appointments, Clinical Encounters, Vital Signs, Diagnoses, Prescriptions, Lab Orders, Billing, Patient Consent, Auditing, and FHIR R4 Interoperability.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "MediCore Engineering Team",
+      "email": "engineering@medicore.health"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter the JWT access token obtained from /auth/login or /auth/register"
+      }
+    },
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "data": { "type": "object" },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "details": { "type": "object" }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "page": { "type": "integer" },
+              "limit": { "type": "integer" },
+              "total": { "type": "integer" },
+              "requestId": { "type": "string" },
+              "timestamp": { "type": "string" }
+            }
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "doctor@medicore.health" },
+          "password": { "type": "string", "format": "password", "example": "Password123!" }
+        }
+      },
+      "RegisterPatientRequest": {
+        "type": "object",
+        "required": ["email", "password", "firstName", "lastName", "phone", "dateOfBirth", "gender", "emergencyContactName", "emergencyContactPhone", "address"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "jane.doe@example.com" },
+          "password": { "type": "string", "minLength": 8, "example": "SecurePass2026!" },
+          "firstName": { "type": "string", "example": "Jane" },
+          "lastName": { "type": "string", "example": "Doe" },
+          "phone": { "type": "string", "example": "+1-555-0199" },
+          "dateOfBirth": { "type": "string", "format": "date", "example": "1992-04-12" },
+          "gender": { "type": "string", "enum": ["MALE", "FEMALE", "OTHER"], "example": "FEMALE" },
+          "bloodGroup": { "type": "string", "example": "A+" },
+          "emergencyContactName": { "type": "string", "example": "John Doe" },
+          "emergencyContactPhone": { "type": "string", "example": "+1-555-0198" },
+          "address": { "type": "string", "example": "123 Health Ave, Springfield, OR" },
+          "insuranceProvider": { "type": "string", "example": "Blue Cross Blue Shield" },
+          "insurancePolicyNumber": { "type": "string", "example": "BCBS-90210" },
+          "allergies": { "type": "string", "example": "None reported" }
+        }
+      },
+      "BookAppointmentRequest": {
+        "type": "object",
+        "required": ["doctorId", "departmentId", "scheduledStartTime", "scheduledEndTime", "reason"],
+        "properties": {
+          "patientId": { "type": "string", "format": "uuid" },
+          "doctorId": { "type": "string", "format": "uuid" },
+          "departmentId": { "type": "string", "format": "uuid" },
+          "scheduledStartTime": { "type": "string", "format": "date-time", "example": "2026-11-28T09:00:00.000Z" },
+          "scheduledEndTime": { "type": "string", "format": "date-time", "example": "2026-11-28T09:30:00.000Z" },
+          "type": { "type": "string", "enum": ["ROUTINE", "FOLLOW_UP", "EMERGENCY", "SPECIALIST"], "default": "ROUTINE" },
+          "reason": { "type": "string", "example": "Persistent chest discomfort and palpitations" },
+          "notes": { "type": "string", "example": "Patient requests morning consultation." },
+          "priority": { "type": "string", "enum": ["LOW", "NORMAL", "HIGH", "URGENT"], "default": "NORMAL" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Authenticate user credentials and receive JWT access & refresh tokens",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful, returns tokens and user summary" },
+          "401": { "description": "Invalid credentials or account locked" }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Self-service registration for new patients",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterPatientRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Patient account and clinical profile successfully created" },
+          "409": { "description": "Email address already registered" }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Retrieve currently authenticated user session details",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Session authenticated" },
+          "401": { "description": "Missing or invalid token" }
+        }
+      }
+    },
+    "/departments": {
+      "get": {
+        "tags": ["Hospital Organization"],
+        "summary": "List all active hospital clinical departments",
+        "responses": {
+          "200": { "description": "Departments listed" }
+        }
+      }
+    },
+    "/doctors": {
+      "get": {
+        "tags": ["Medical Staff"],
+        "summary": "List doctors with optional department filter and search",
+        "parameters": [
+          { "name": "departmentId", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Doctors listed" }
+        }
+      }
+    },
+    "/doctors/{id}/available-slots": {
+      "get": {
+        "tags": ["Medical Staff"],
+        "summary": "Compute real-time 30-minute booking slots for a doctor on a specific date",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "date", "in": "query", "required": true, "schema": { "type": "string", "example": "2026-11-28" } }
+        ],
+        "responses": {
+          "200": { "description": "List of available slots" }
+        }
+      }
+    },
+    "/appointments": {
+      "get": {
+        "tags": ["Appointments"],
+        "summary": "List appointments (role-scoped)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of appointments" }
+        }
+      },
+      "post": {
+        "tags": ["Appointments"],
+        "summary": "Book a new clinical appointment with concurrency conflict protection",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BookAppointmentRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Appointment successfully booked" },
+          "409": { "description": "Booking conflict: doctor already booked during requested time slot" }
+        }
+      }
+    },
+    "/appointments/{id}/check-in": {
+      "patch": {
+        "tags": ["Appointments"],
+        "summary": "Receptionist patient check-in workflow",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Patient checked in successfully" }
+        }
+      }
+    },
+    "/appointments/{id}/cancel": {
+      "patch": {
+        "tags": ["Appointments"],
+        "summary": "Cancel an appointment with audit reason",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Appointment cancelled" }
+        }
+      }
+    },
+    "/encounters": {
+      "post": {
+        "tags": ["Clinical Encounters"],
+        "summary": "Initiate a patient encounter from a checked-in appointment",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Encounter created" }
+        }
+      }
+    },
+    "/encounters/vitals": {
+      "post": {
+        "tags": ["Clinical Encounters"],
+        "summary": "Record patient vital signs (Blood Pressure, Heart Rate, SpO2, Temperature, BMI)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Vitals recorded" }
+        }
+      }
+    },
+    "/encounters/diagnoses": {
+      "post": {
+        "tags": ["Clinical Encounters"],
+        "summary": "Record ICD-10 clinical diagnosis",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Diagnosis added" }
+        }
+      }
+    },
+    "/prescriptions": {
+      "get": {
+        "tags": ["Pharmacy & Prescriptions"],
+        "summary": "List prescriptions",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Prescriptions listed" }
+        }
+      },
+      "post": {
+        "tags": ["Pharmacy & Prescriptions"],
+        "summary": "Issue digital clinical prescription with items",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Prescription issued" }
+        }
+      }
+    },
+    "/lab/orders": {
+      "get": {
+        "tags": ["Laboratory"],
+        "summary": "List laboratory requisitions",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lab orders listed" }
+        }
+      },
+      "post": {
+        "tags": ["Laboratory"],
+        "summary": "Order laboratory test panel",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Lab order created" }
+        }
+      }
+    },
+    "/lab/results": {
+      "post": {
+        "tags": ["Laboratory"],
+        "summary": "Enter measured laboratory result",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Lab result recorded" }
+        }
+      }
+    },
+    "/billing/invoices": {
+      "get": {
+        "tags": ["Billing & Revenue"],
+        "summary": "List invoices and itemized balances",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Invoices listed" }
+        }
+      },
+      "post": {
+        "tags": ["Billing & Revenue"],
+        "summary": "Generate hospital invoice",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Invoice created" }
+        }
+      }
+    },
+    "/billing/payments": {
+      "post": {
+        "tags": ["Billing & Revenue"],
+        "summary": "Process simulated fee payment",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Payment recorded" }
+        }
+      }
+    },
+    "/consent/patient/{patientId}": {
+      "get": {
+        "tags": ["Patient Consent"],
+        "summary": "View patient consent records",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Consents listed" }
+        }
+      },
+      "post": {
+        "tags": ["Patient Consent"],
+        "summary": "Grant or revoke patient consent",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Consent updated" }
+        }
+      }
+    },
+    "/audit": {
+      "get": {
+        "tags": ["Auditing & Compliance"],
+        "summary": "Retrieve immutable system audit logs (Admin only)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Audit logs listed" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/fhir/Patient": {
+      "get": {
+        "tags": ["FHIR R4 Interoperability"],
+        "summary": "Export synthetic patients as FHIR R4 Bundle",
+        "responses": {
+          "200": { "description": "FHIR searchset Bundle" }
+        }
+      }
+    },
+    "/fhir/Appointment": {
+      "get": {
+        "tags": ["FHIR R4 Interoperability"],
+        "summary": "Export synthetic appointments as FHIR R4 Bundle",
+        "responses": {
+          "200": { "description": "FHIR searchset Bundle" }
+        }
+      }
+    },
+    "/fhir/Encounter": {
+      "get": {
+        "tags": ["FHIR R4 Interoperability"],
+        "summary": "Export synthetic encounters as FHIR R4 Bundle",
+        "responses": {
+          "200": { "description": "FHIR searchset Bundle" }
+        }
+      }
+    },
+    "/fhir/Observation": {
+      "get": {
+        "tags": ["FHIR R4 Interoperability"],
+        "summary": "Export synthetic laboratory observations as FHIR R4 Bundle",
+        "responses": {
+          "200": { "description": "FHIR searchset Bundle" }
+        }
+      }
+    }
+  }
+}

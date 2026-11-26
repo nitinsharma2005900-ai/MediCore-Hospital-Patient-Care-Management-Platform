@@ -1,0 +1,76 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import { config } from './config';
+import routes from './routes';
+import { requestIdMiddleware } from './middlewares/request-id.middleware';
+import { errorHandler } from './middlewares/error.middleware';
+import { getHealth, getReadiness } from './controllers/health.controller';
+import openapiSpec from './swagger/openapi.json';
+
+export const createApp = () => {
+  const app = express();
+
+  // 1. Security Headers
+  app.use(helmet({
+    contentSecurityPolicy: false // Allow Swagger UI inline assets
+  }));
+
+  // 2. CORS
+  app.use(cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (config.cors.origin.includes(origin) || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Dev-friendly permissive
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id']
+  }));
+
+  // 3. Request parsing & correlation ID
+  app.use(express.json({ limit: '2mb' }));
+  app.use(requestIdMiddleware);
+
+  if (process.env.NODE_ENV !== 'test') {
+    app.use(morgan('[:date[iso]] :method :url :status :response-time ms - [req-id: :res[x-request-id]]'));
+  }
+
+  // 4. Health & Diagnostics
+  app.get('/health', getHealth);
+  app.get('/ready', getReadiness);
+
+  // 5. Swagger UI Documentation
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec, {
+    customSiteTitle: 'MediCore API Documentation',
+    customCss: '.swagger-ui .topbar { background-color: #0F766E; }'
+  }));
+
+  // 6. Primary Business REST API
+  app.use('/api/v1', routes);
+
+  // 7. 404 Route Not Found
+  app.use('*', (req, res) => {
+    res.status(404).json({
+      success: false,
+      error: {
+        code: 'ROUTE_NOT_FOUND',
+        message: `The requested endpoint ${req.method} ${req.originalUrl} does not exist.`
+      },
+      meta: {
+        requestId: req.correlationId,
+        timestamp: new Date().toISOString()
+      }
+    });
+  });
+
+  // 8. Centralized Safe Error Handler
+  app.use(errorHandler);
+
+  return app;
+};

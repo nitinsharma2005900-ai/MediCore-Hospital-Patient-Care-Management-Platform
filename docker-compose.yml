@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. PostgreSQL Relational Database (Internal network only)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: medicore_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-medicore_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medicore_secure_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-medicore_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations/20261126000000_init/migration.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - medicore-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medicore_user -d medicore_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # 2. Redis Caching & BullMQ Queue Store
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: medicore_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - medicore-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # 3. Express.js REST API Backend Service
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: medicore_backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-medicore_user}:${POSTGRES_PASSWORD:-medicore_secure_password_2026}@postgres:5432/${POSTGRES_DB:-medicore_db}?schema=public
+      DATABASE_MODE: postgres
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-medicore_jwt_access_secret_sample_key_minimum_32_characters_for_security}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-medicore_jwt_refresh_secret_sample_key_minimum_32_characters_for_security}
+      CORS_ORIGIN: http://localhost:3000,http://127.0.0.1:3000
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - medicore-internal
+      - medicore-public
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:4000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # 4. FastAPI Analytics & Processing Microservice
+  # ----------------------------------------------------------------------------
+  analytics:
+    build:
+      context: .
+      dockerfile: apps/analytics-service/Dockerfile
+    container_name: medicore_analytics
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      BACKEND_BASE_URL: http://backend:4000
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - medicore-internal
+      - medicore-public
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # 5. Next.js App Router Frontend
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: medicore_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+      NEXT_PUBLIC_ANALYTICS_URL: http://localhost:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - medicore-public
+
+  # ----------------------------------------------------------------------------
+  # 6. Local Mailpit Sandbox for Email Notifications
+  # ----------------------------------------------------------------------------
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: medicore_mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP
+    networks:
+      - medicore-internal
+      - medicore-public
+
+networks:
+  # Internal network with no public database exposure (Assessment 09 & 14)
+  medicore-internal:
+    internal: true
+  medicore-public:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

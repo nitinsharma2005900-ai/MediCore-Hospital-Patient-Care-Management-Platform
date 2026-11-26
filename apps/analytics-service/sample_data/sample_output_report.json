@@ -1,0 +1,38 @@
+{
+  "report_title": "MediCore Clinical Dataset Processing & Operational Analysis Report",
+  "generated_at": "2026-11-26T00:00:00Z",
+  "dataset_summary": {
+    "total_records_analyzed": 150,
+    "valid_records_extracted": 145,
+    "quality_score_percent": 96.67,
+    "missing_values_handled": 3,
+    "malformed_entries_rejected": 2
+  },
+  "operational_metrics": {
+    "appointment_utilization_rate_percent": 84.5,
+    "cancellation_rate_percent": 7.3,
+    "no_show_rate_percent": 4.1,
+    "patient_waiting_time": {
+      "mean_minutes": 13.8,
+      "median_minutes": 11.5,
+      "p90_minutes": 22.0
+    },
+    "lab_turnaround_time": {
+      "stat_urgent_mean_minutes": 38.5,
+      "routine_mean_hours": 2.4,
+      "median_hours": 1.9
+    }
+  },
+  "department_caseload_ranking": [
+    { "department": "Cardiology", "completed": 35, "utilization": 88.5 },
+    { "department": "Internal Medicine", "completed": 32, "utilization": 84.2 },
+    { "department": "Emergency Medicine", "completed": 25, "utilization": 92.0 },
+    { "department": "Neurology", "completed": 20, "utilization": 83.3 },
+    { "department": "Pediatrics", "completed": 19, "utilization": 86.4 }
+  ],
+  "compliance_and_governance": {
+    "ai_medical_diagnoses_generated": false,
+    "synthetic_data_isolation": "Verified - 100% Synthetic Healthcare Data",
+    "metadata_standard": "LOINC / HL7 FHIR Compatible"
+  }
+}

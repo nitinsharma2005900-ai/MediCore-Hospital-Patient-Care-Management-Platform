@@ -1,0 +1,17 @@
+# MediCore Code Owners Configuration
+# Enforces mandatory clinical and security review on sensitive paths
+
+# Clinical Data Schema & Migrations (Requires Database Architect review)
+/database/                  @medicore-team/database-architects
+/database/migrations/       @medicore-team/database-architects
+/database/prisma/           @medicore-team/database-architects
+
+# Authentication, RBAC & Consent Checks (Requires Security Engineer review)
+/apps/backend/src/middlewares/auth.middleware.ts        @medicore-team/security-leads
+/apps/backend/src/middlewares/rbac.middleware.ts        @medicore-team/security-leads
+/apps/backend/src/middlewares/record-auth.middleware.ts @medicore-team/security-leads
+/apps/backend/src/middlewares/consent.middleware.ts     @medicore-team/security-leads
+
+# Clinical Processing & Interoperability
+/apps/analytics-service/    @medicore-team/data-engineers
+/integrations/fhir/         @medicore-team/interoperability-leads
