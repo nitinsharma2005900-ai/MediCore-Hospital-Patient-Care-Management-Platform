@@ -6,6 +6,12 @@ const sessions={};let patientId,otherPatientId,doctorId,departmentId,appointment
 const api=(role,method,path,body)=>{let r=request(app)[method]('/api/v1'+path);if(role)r=r.auth(sessions[role].tokens.accessToken,{type:'bearer'});return body?r.send(body):r;};
 (async()=>{
  await check('PostgreSQL migrations and private database connectivity',async()=>{const r=await pool.query('SELECT count(*)::int n FROM schema_migrations');assert(r.rows[0].n>=3);});
+ await check('Public registration persists a patient and cannot create a staff role',async()=>{
+  const email='synthetic.audit.'+randomUUID()+'@example.test';
+  const r=await api(null,'post','/auth/register',{email,password:'Password123!',firstName:'Audit',lastName:'Patient',phone:'+1-555-0199',dateOfBirth:'1990-01-01',gender:'FEMALE',emergencyContactName:'Synthetic Guardian',emergencyContactPhone:'+1-555-0101',address:'Synthetic assessment fixture address',role:'ADMIN'});
+  assert.equal(r.status,201);assert.equal(r.body.data.user.role,'PATIENT');
+  assert.equal((await pool.query('SELECT role FROM "User" WHERE email=$1',[email])).rows[0].role,'PATIENT');
+ });
  for(const role of ['patient','doctor','receptionist','nurse','labtech','billing','admin'])await check('Authenticate '+role+' against persisted users',async()=>{const r=await api(null,'post','/auth/login',{email:`${role}@medicore.health`,password:'Password123!'});assert.equal(r.status,200);sessions[role]=r.body.data;});
  patientId=sessions.patient.user.patientProfileId;doctorId=sessions.doctor.user.doctorProfileId;
  departmentId=(await pool.query('SELECT "departmentId" FROM "DoctorProfile" WHERE id=$1',[doctorId])).rows[0].departmentId;
