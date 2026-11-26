@@ -1,29 +1,34 @@
-# Demo-only free deployment. Review reuse and plan availability before Blueprint approval.
+# Demo-only free deployment using existing datastore capacity.
+# DATABASE_URL must name an isolated MediCore database and restricted login.
+# REDIS_URL must select a dedicated logical database; never flush the shared instance.
 # Free web services cannot receive private-network requests, so supply their public HTTPS URLs.
 # No dedicated free worker: RUN_WORKER starts the BullMQ consumer inside the API process.
 services:
   - type: web
-    name: medicore-backend
+    name: medicore-api-nitinsharma
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/backend
+    region: singapore
+    autoDeploy: false
+    buildCommand: npm ci --include=dev && npm run build --workspace=packages/shared && npm run build --workspace=apps/backend
     startCommand: node apps/backend/dist/server.js
     healthCheckPath: /ready
     envVars:
       - {key: NODE_ENV, value: production}
-      - key: DATABASE_URL
-        fromDatabase: {name: medicore-db, property: connectionString}
-      - key: REDIS_URL
-        fromService: {name: medicore-redis, type: keyvalue, property: connectionString}
+      - {key: NODE_VERSION, value: '22'}
+      - {key: DATABASE_URL, sync: false}
+      - {key: REDIS_URL, sync: false}
       - {key: JWT_ACCESS_SECRET, generateValue: true}
       - {key: JWT_REFRESH_SECRET, generateValue: true}
       - {key: SEED_DEMO, value: 'true'}
       - {key: RUN_WORKER, value: 'true'}
       - {key: CORS_ORIGIN, sync: false}
   - type: web
-    name: medicore-analytics
+    name: medicore-analytics-nitinsharma
     runtime: python
     plan: free
+    region: singapore
+    autoDeploy: false
     buildCommand: pip install -r apps/analytics-service/requirements.txt
     startCommand: uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -32,25 +37,17 @@ services:
       - {key: BACKEND_BASE_URL, sync: false}
       - {key: CORS_ORIGIN, sync: false}
   - type: web
-    name: medicore-frontend
+    name: medicore-nitinsharma
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend
+    region: singapore
+    autoDeploy: false
+    buildCommand: npm ci --include=dev && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend
     startCommand: npm run start --workspace=apps/frontend
     healthCheckPath: /
     envVars:
       - {key: NODE_ENV, value: production}
+      - {key: NODE_VERSION, value: '22'}
+      - {key: NEXT_TELEMETRY_DISABLED, value: '1'}
       - {key: BACKEND_BASE_URL, sync: false}
       - {key: ANALYTICS_SERVICE_URL, sync: false}
-  - type: keyvalue
-    name: medicore-redis
-    plan: free
-    ipAllowList: []
-    maxmemoryPolicy: noeviction
-databases:
-  - name: medicore-db
-    plan: free
-    postgresMajorVersion: '16'
-    databaseName: medicore
-    user: medicore
-    ipAllowList: []
