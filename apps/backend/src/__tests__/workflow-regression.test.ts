@@ -2,6 +2,8 @@ import request from 'supertest';
 import {createApp} from '../app';
 import {seedDatabase} from '../database/seed';
 import {store} from '../database/store';
+import {randomUUID} from 'crypto';
+import {LabOrderStatus} from '@medicore/shared';
 const app=createApp();let token:string;
 describe('Waiting-list and time-zone regressions',()=>{
  beforeAll(async()=>{await seedDatabase();const r=await request(app).post('/api/v1/auth/login').send({email:'receptionist@medicore.health',password:'Password123!'});token=r.body.data.tokens.accessToken;});
@@ -10,4 +12,17 @@ describe('Waiting-list and time-zone regressions',()=>{
  it('creates and offers a persisted-contract waiting entry',async()=>{const r=await request(app).post('/api/v1/appointments/waiting-list').auth(token,{type:'bearer'}).send({patientId:store.patients[0].id,departmentId:store.departments[0].id,preferredDate:'2030-01-01'});expect(r.status).toBe(201);entry=r.body.data.id;const offered=await request(app).patch(`/api/v1/appointments/waiting-list/${entry}`).auth(token,{type:'bearer'}).send({status:'OFFERED'});expect(offered.status).toBe(200);expect(offered.body.data.status).toBe('OFFERED');});
  it('rejects conversion without a matching booking and rejects terminal transitions',async()=>{const r=await request(app).patch(`/api/v1/appointments/waiting-list/${entry}`).auth(token,{type:'bearer'}).send({status:'CONVERTED'});expect(r.status).toBe(409);expect(r.body.error.code).toBe('BOOKING_REQUIRED');expect((await request(app).patch(`/api/v1/appointments/waiting-list/${entry}`).auth(token,{type:'bearer'}).send({status:'CANCELLED'})).status).toBe(200);expect((await request(app).patch(`/api/v1/appointments/waiting-list/${entry}`).auth(token,{type:'bearer'}).send({status:'OFFERED'})).status).toBe(409);});
  it('converts provider clinic times to UTC without changing local date',async()=>{const r=await request(app).post('/api/v1/auth/login').send({email:'doctor@medicore.health',password:'Password123!'});const id=r.body.data.user.doctorProfileId;const date='2030-01-07';const save=await request(app).put(`/api/v1/doctors/${id}/availability`).auth(r.body.data.tokens.accessToken,{type:'bearer'}).send({dayOfWeek:new Date(date).getUTCDay(),startTime:'09:00',endTime:'10:00',slotDurationMinutes:30,timeZone:'Asia/Kolkata'});expect(save.status).toBe(200);const slots=await request(app).get(`/api/v1/doctors/${id}/available-slots?date=${date}`);expect(slots.status).toBe(200);expect(slots.body.data[0].startTime).toBe(date+'T03:30:00.000Z');});
+ it('permits only valid prescription transitions by the ordering doctor',async()=>{
+  const login=await request(app).post('/api/v1/auth/login').send({email:'doctor@medicore.health',password:'Password123!'});const t=login.body.data.tokens.accessToken;
+  const rx=store.prescriptions.find(r=>r.doctorId===login.body.data.user.doctorProfileId&&r.status==='ACTIVE')!;expect(rx).toBeDefined();
+  expect((await request(app).patch(`/api/v1/prescriptions/${rx.id}/status`).auth(t,{type:'bearer'}).send({status:'FILLED'})).status).toBe(200);
+  expect((await request(app).patch(`/api/v1/prescriptions/${rx.id}/status`).auth(t,{type:'bearer'}).send({status:'DISCONTINUED'})).status).toBe(409);
+ });
+ it('enforces laboratory collection, analysis and terminal states',async()=>{
+  const login=await request(app).post('/api/v1/auth/login').send({email:'labtech@medicore.health',password:'Password123!'});const t=login.body.data.tokens.accessToken;
+  const template=store.labOrders.find(o=>o.assignedTechnicianUserId===login.body.data.user.id)!;expect(template).toBeDefined();
+  const order={...template,id:randomUUID(),orderNumber:'LAB-SYNTHETIC-TRANSITION',status:LabOrderStatus.PENDING};store.labOrders.push(order);
+  for(const status of ['COLLECTED','IN_ANALYSIS','CANCELLED'])expect((await request(app).patch(`/api/v1/lab/orders/${order.id}/status`).auth(t,{type:'bearer'}).send({status})).status).toBe(200);
+  expect((await request(app).patch(`/api/v1/lab/orders/${order.id}/status`).auth(t,{type:'bearer'}).send({status:'COLLECTED'})).status).toBe(409);
+ });
 });

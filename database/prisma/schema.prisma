@@ -1,3 +1,5 @@
+// LEGACY REFERENCE ONLY. Runtime uses pg and versioned SQL migrations.
+// See database/schema.sql and docs/evidence/schema-evidence.json for the actual deployed catalog.
 // MediCore PostgreSQL Relational Schema
 // Assessment 03 - Clinical Relational Database
 datasource db {
