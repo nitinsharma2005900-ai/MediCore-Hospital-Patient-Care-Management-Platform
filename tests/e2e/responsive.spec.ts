@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+const screenshotRoot=process.env.E2E_SCREENSHOT_DIR||'docs/screenshots';
 const roles=[['patient','Patient Portal'],['doctor','Clinical Workspace'],['receptionist','Reception'],['nurse','Nurse'],['labtech','Lab'],['billing','Billing'],['admin','Operations']];
 const sessionCache=new Map<string,Record<string,string>>();
 for(const [role] of roles)for(const width of [360,390,768,1024,1440,1920]){
@@ -15,12 +16,12 @@ for(const [role] of roles)for(const width of [360,390,768,1024,1440,1920]){
   }
   await expect(page.locator('main')).toBeVisible();
   await expect(page.getByRole('button',{name:'Notifications',exact:true})).toBeVisible();
-  await page.waitForTimeout(1000);
+  await page.waitForLoadState('networkidle');
   const dimensions=await page.locator('main').evaluate(el=>({scroll:el.scrollWidth,client:el.clientWidth}));
   expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client+2);
   expect(errors).toEqual([]);expect(failures).toEqual([]);
   if(width<1024){await page.getByRole('button',{name:'Open navigation',exact:true}).click();await expect(page.getByRole('button',{name:'Close navigation',exact:true})).toBeVisible();await page.keyboard.press('Escape');}
-  if(width===390||width===1440)await page.screenshot({path:`docs/screenshots/${role}-${width}.png`,fullPage:true});
+  if(width===390||width===1440)await page.screenshot({path:`${screenshotRoot}/${role}-${width}.png`,fullPage:true});
  });
 }
 test('unauthenticated nested role route redirects to login',async({page})=>{await page.goto('/dashboard/doctor');await expect(page).toHaveURL(/\/login$/);});
@@ -30,8 +31,15 @@ test('patient cannot open administrator dashboard',async({page})=>{
 test('patient books a real available appointment in the browser',async({page})=>{
  await page.goto('/login');await page.locator('input[type=email]').fill('patient@medicore.health');await page.locator('input[type=password]').fill('Password123!');await page.locator('button[type=submit]').click();await expect(page).toHaveURL(/\/dashboard$/);
  await page.getByRole('link',{name:'Book Specialist',exact:true}).click();await expect(page).toHaveURL(/\/appointments\/book$/);
+ await expect(page.getByLabel('2. Consulting Physician')).not.toHaveValue('',{timeout:30000});
+ const date=new Date(Date.now()+24*86400000).toISOString().slice(0,10);
+ const availability=page.waitForResponse(r=>r.url().includes('/available-slots?date='+date));
+ await page.getByLabel('3. Select Appointment Date').fill(date);
+ const response=await availability;expect(response.status()).toBe(200);
+ const slots=(await response.json()).data;expect(slots.length).toBeGreaterThan(0);
+ await page.getByRole('button',{name:slots[0].label,exact:true}).click();
  await page.locator('textarea').fill('Synthetic browser scheduling verification');
  await expect(page.getByRole('button',{name:/Confirm.*Booking|Book Appointment|Confirm.*Appointment/i})).toBeEnabled();
  await page.getByRole('button',{name:/Confirm.*Booking|Book Appointment|Confirm.*Appointment/i}).click();await expect(page.getByText(/Appointment booked successfully/)).toBeVisible();
- await page.screenshot({path:'docs/screenshots/appointment-booking.png',fullPage:true});
+ await page.screenshot({path:`${screenshotRoot}/appointment-booking.png`,fullPage:true});
 });

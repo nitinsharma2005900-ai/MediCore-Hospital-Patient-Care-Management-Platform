@@ -1,8 +1,9 @@
 import{test,expect}from'@playwright/test';
+const screenshotRoot=process.env.E2E_SCREENSHOT_DIR||'docs/screenshots';
 for(const width of [390,1440])test(`landing page at ${width}px`,async({page})=>{
  await page.setViewportSize({width,height:1000});await page.goto('/');await expect(page.getByRole('link',{name:'MediCore'})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+2);
- await page.screenshot({path:`docs/screenshots/landing-${width}.png`,fullPage:true});
+ await page.screenshot({path:`${screenshotRoot}/landing-${width}.png`,fullPage:true});
 });
 test('authorized invoice produces a printable PDF',async({page})=>{
  await page.goto('/login');await page.locator('input[type=email]').fill('billing@medicore.health');await page.locator('input[type=password]').fill('Password123!');await page.locator('button[type=submit]').click();await expect(page).toHaveURL(/\/dashboard$/);
