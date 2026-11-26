@@ -1,0 +1,102 @@
+frontend-1  |    ▲ Next.js 15.5.29
+frontend-1  |    - Local:        http://localhost:3000
+frontend-1  |    - Network:      http://0.0.0.0:3000
+frontend-1  | 
+frontend-1  |  ✓ Starting...
+frontend-1  |  ✓ Ready in 136ms
+redis-1     | 1:C 26 Nov 2026 05:23:13.958 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis-1     | 1:C 26 Nov 2026 05:23:13.958 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1     | 1:C 26 Nov 2026 05:23:13.959 * Redis version=7.4.12, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1     | 1:C 26 Nov 2026 05:23:13.959 * Configuration loaded
+redis-1     | 1:M 26 Nov 2026 05:23:13.959 * monotonic clock: POSIX clock_gettime
+redis-1     | 1:M 26 Nov 2026 05:23:13.960 * Running mode=standalone, port=6379.
+redis-1     | 1:M 26 Nov 2026 05:23:13.961 * Server initialized
+redis-1     | 1:M 26 Nov 2026 05:23:13.962 * Creating AOF base file appendonly.aof.1.base.rdb on server start
+redis-1     | 1:M 26 Nov 2026 05:23:13.962 * Creating AOF incr file appendonly.aof.1.incr.aof on server start
+redis-1     | 1:M 26 Nov 2026 05:23:13.962 * Ready to accept connections tcp
+postgres-1  | The files belonging to this database system will be owned by user "postgres".
+postgres-1  | This user must also own the server process.
+postgres-1  | 
+postgres-1  | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1  | The default database encoding has accordingly been set to "UTF8".
+postgres-1  | The default text search configuration will be set to "english".
+postgres-1  | 
+postgres-1  | Data page checksums are disabled.
+postgres-1  | 
+postgres-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1  | creating subdirectories ... ok
+postgres-1  | selecting dynamic shared memory implementation ... posix
+postgres-1  | selecting default max_connections ... 100
+postgres-1  | selecting default shared_buffers ... 128MB
+postgres-1  | selecting default time zone ... UTC
+postgres-1  | creating configuration files ... ok
+postgres-1  | running bootstrap script ... ok
+postgres-1  | sh: locale: not found
+postgres-1  | 2026-11-26 05:23:14.351 UTC [33] WARNING:  no usable system locales were found
+postgres-1  | performing post-bootstrap initialization ... ok
+postgres-1  | syncing data to disk ... ok
+postgres-1  | 
+postgres-1  | 
+postgres-1  | Success. You can now start the database server using:
+postgres-1  | 
+postgres-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1  | 
+postgres-1  | initdb: warning: enabling "trust" authentication for local connections
+backend-1   | {"event":"migration_applied","name":"20261126000000_init"}
+postgres-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+backend-1   | {"event":"migration_applied","name":"20261126010000_integrity"}
+backend-1   | {"event":"migration_applied","name":"20261126020000_assignments"}
+backend-1   | {"event":"migration_applied","name":"20261126030000_timezone"}
+backend-1   | {"event":"migration_applied","name":"20261126040000_audit"}
+backend-1   | {"event":"migration_applied","name":"20261126050000_relationships"}
+backend-1   | [MediCore Database Seed] Complete:
+backend-1   | - Users: 120
+backend-1   | - Departments: 10
+backend-1   | - Doctors: 15
+backend-1   | - Patients: 100
+backend-1   | - Appointments: 150
+backend-1   | - Encounters: 40
+backend-1   | - Prescriptions: 50
+backend-1   | - Lab Orders: 60
+backend-1   | - Invoices: 50
+backend-1   | {"event":"server_started","port":4000,"database":"postgres"}
+backend-1   | {"event":"http_request","method":"GET","route":"/health","status":200,"requestId":"e1890d68-626c-4507-9df2-9020f0981e98","durationMs":4}
+backend-1   | {"event":"http_request","method":"GET","route":"/health","status":200,"requestId":"4fa92a0d-4a62-472d-bff0-55ff1bb9bc00","durationMs":1}
+backend-1   | {"event":"http_request","method":"GET","route":"/health","status":200,"requestId":"10d61ea6-4b66-4eea-bee4-d33934d40567","durationMs":1}
+backend-1   | {"event":"http_request","method":"GET","route":"/ready","status":200,"requestId":"ab811398-f0f1-4c68-bad5-1cda5250213d","durationMs":12}
+postgres-1  | waiting for server to start....2026-11-26 05:23:15.486 UTC [39] LOG:  starting PostgreSQL 16.16 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+postgres-1  | 2026-11-26 05:23:15.487 UTC [39] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2026-11-26 05:23:15.489 UTC [42] LOG:  database system was shut down at 2026-11-26 05:23:14 UTC
+postgres-1  | 2026-11-26 05:23:15.493 UTC [39] LOG:  database system is ready to accept connections
+postgres-1  |  done
+postgres-1  | server started
+postgres-1  | CREATE DATABASE
+postgres-1  | 
+postgres-1  | 
+postgres-1  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+postgres-1  | 
+postgres-1  | 2026-11-26 05:23:15.658 UTC [39] LOG:  received fast shutdown request
+postgres-1  | waiting for server to shut down....2026-11-26 05:23:15.658 UTC [39] LOG:  aborting any active transactions
+postgres-1  | 2026-11-26 05:23:15.661 UTC [39] LOG:  background worker "logical replication launcher" (PID 45) exited with exit code 1
+postgres-1  | 2026-11-26 05:23:15.663 UTC [40] LOG:  shutting down
+analytics-1  | INFO:     Started server process [1]
+analytics-1  | INFO:     Waiting for application startup.
+analytics-1  | INFO:     Application startup complete.
+analytics-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+analytics-1  | INFO:     127.0.0.1:45348 - "GET /health HTTP/1.1" 200 OK
+analytics-1  | INFO:     127.0.0.1:60440 - "GET /health HTTP/1.1" 200 OK
+analytics-1  | INFO:     172.18.0.1:46726 - "GET /health HTTP/1.1" 200 OK
+postgres-1   | 2026-11-26 05:23:15.664 UTC [40] LOG:  checkpoint starting: shutdown immediate
+postgres-1   | 2026-11-26 05:23:15.829 UTC [40] LOG:  checkpoint complete: wrote 935 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.146 s, sync=0.019 s, total=0.166 s; sync files=301, longest=0.018 s, average=0.001 s; distance=4355 kB, estimate=4355 kB; lsn=0/1949CE0, redo lsn=0/1949CE0
+postgres-1   | 2026-11-26 05:23:15.836 UTC [39] LOG:  database system is shut down
+postgres-1   |  done
+postgres-1   | server stopped
+postgres-1   | 
+postgres-1   | PostgreSQL init process complete; ready for start up.
+postgres-1   | 
+postgres-1   | 2026-11-26 05:23:15.879 UTC [1] LOG:  starting PostgreSQL 16.16 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+postgres-1   | 2026-11-26 05:23:15.880 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1   | 2026-11-26 05:23:15.880 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1   | 2026-11-26 05:23:15.881 UTC [1] LOG:  listening on Unix socket "/run/postgresql/.s.PGSQL.5432"
+postgres-1   | 2026-11-26 05:23:15.884 UTC [55] LOG:  database system was shut down at 2026-11-26 05:23:15 UTC
+postgres-1   | 2026-11-26 05:23:15.890 UTC [1] LOG:  database system is ready to accept connections

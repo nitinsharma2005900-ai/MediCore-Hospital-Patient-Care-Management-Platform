@@ -66,3 +66,7 @@ Thumbs.db
 .env.*
 !.env.example
 *.tsbuildinfo
+
+# Curated synthetic test evidence is part of the submission.
+!docs/evidence/*.log
+!docs/evidence/*/*.log
