@@ -77,3 +77,5 @@ The outage script stops only the dedicated synthetic PostgreSQL/Redis instances 
 [Assessment checklist](ASSESSMENT_CHECKLIST.md) · [Security](SECURITY_REPORT.md) · [Incidents](INCIDENT_REPORT.md) · [Deployment](DEPLOYMENT_GUIDE.md) · [Known limitations](KNOWN_LIMITATIONS.md) · [Loom script](LOOM_DEMO_SCRIPT.md) · [Technical review](TECHNICAL_REVIEW_GUIDE.md) · [API reference](docs/API_REFERENCE.md) · [Final delivery report](FINAL_DELIVERY_REPORT.md).
 
 The final documentation PDF contains exactly 12 A4 pages. The final ZIP excludes actual environment files, credentials, dependencies, virtual environments, databases, caches and build output. Cohort policy must permit AI assistance; the learner remains responsible for correctness and explaining the code.
+
+To regenerate the submission from captured evidence, install `scripts/requirements-docs.txt`, then run `scripts/generate_submission_docs.py`, `scripts/build_documentation_pdf.py` and `scripts/build_package.py`. Inspect every regenerated PDF page before delivery. The packager verifies CRCs and performs a real extraction into ignored `.runtime`.

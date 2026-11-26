@@ -97,3 +97,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local.ps1
 ```
 
 Do not overwrite the existing ignored `.env`. For Docker, another machine or Render, follow DEPLOYMENT_GUIDE.md.
+
+## GitHub handoff
+
+The original Git commit was preserved and the audited implementation was developed on `feature/verified-audit`. [Pull request 2](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/pull/2) contains the source and evidence. [Issue 1](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/issues/1) tracks account-dependent deployment/review follow-up. No peer approval is claimed.
+
+The final package's `GIT_DELIVERY_STATUS.json` records the exact delivered branch, full commit hash and verified remote push status after the GitHub handoff. The ZIP checksum is in `MediCore_Final_Verified_Project.zip.sha256` next to the archive.
