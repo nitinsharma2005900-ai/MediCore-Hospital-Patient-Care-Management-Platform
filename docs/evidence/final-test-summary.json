@@ -1,0 +1,85 @@
+{
+  "recorded_at": "26 November 2026, 11:00 IST",
+  "suites": [
+    {
+      "name": "Backend Jest / Supertest (isolated memory fixtures)",
+      "executed": 45,
+      "passed": 45,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "React Testing Library / Vitest",
+      "executed": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Python pytest / HTTPX",
+      "executed": 23,
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Real PostgreSQL integration checks",
+      "executed": 39,
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Playwright browser tests",
+      "executed": 48,
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Controlled outage / queue checks",
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "total": 162,
+  "passed": 162,
+  "failed": 0,
+  "skipped": 0,
+  "backend_coverage": {
+    "lines": {
+      "total": 1827,
+      "covered": 1041,
+      "skipped": 0,
+      "pct": 56.97
+    },
+    "statements": {
+      "total": 2271,
+      "covered": 1213,
+      "skipped": 0,
+      "pct": 53.41
+    },
+    "functions": {
+      "total": 394,
+      "covered": 145,
+      "skipped": 0,
+      "pct": 36.8
+    },
+    "branches": {
+      "total": 947,
+      "covered": 343,
+      "skipped": 0,
+      "pct": 36.21
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "ci_url": "https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45760840824",
+  "ci_status": "success"
+}

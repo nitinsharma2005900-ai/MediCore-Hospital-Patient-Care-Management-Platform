@@ -1,61 +1,13 @@
-# Assessment 09: Docker Healthcare Environment
+## Assessment 09 — Docker healthcare environment
 
-## 1. Assessment Overview & Objectives
-Assessment 09 evaluates the containerization of MediCore across all services using Docker and Docker Compose. The configuration enforces production-grade security boundaries: multi-stage image builds, non-root system users, explicit container resource limits, robust healthchecks, isolated private bridge networks, and persistent storage volumes for relational and caching layers.
+**Original PDF objective:** Containerize UI, API, analytics, database, and workers. Keep database private, use non-root containers, health checks, persistent volumes, and safe configuration.
 
-## 2. Acceptance Criteria & Implementation Matrix
-| Requirement | Status | Implementation Details |
-|---|---|---|
-| Multi-Stage Dockerfiles | Verified | Distinct build and production stages in `apps/backend/Dockerfile`, `apps/frontend/Dockerfile`, and `apps/analytics-service/Dockerfile` |
-| Non-Root Execution | Verified | Containers create and execute under unprivileged user `nodejs:nodejs` or `appuser:appuser` |
-| Docker Compose Orchestration | Verified | `docker-compose.yml` orchestrates backend, frontend, analytics, postgres, and redis services |
-| Private Database Networking | Verified | PostgreSQL and Redis attached exclusively to internal `backend-net`; no host exposure |
-| Healthcheck Probes | Verified | Continuous HTTP and TCP healthcheck probes on all services with timeout and retry intervals |
-| Persistent Data Volumes | Verified | Named Docker volumes `postgres_data` and `redis_data` prevent data loss on container recreation |
-| Environment Configuration | Verified | Configured via `.env` with fallback parameters in `.env.example` |
+**Status:** Completed and verified
 
-## 3. Container Services Architecture
-```
-  [ Internet / User Browser ]
-               │
-               ▼
-   [ frontend : port 3000 ] (Public Network: frontend-net)
-         │           │
-         │           ▼
-         │   [ analytics-service : port 8000 ] (Private Network: backend-net)
-         ▼
-   [ backend : port 4000 ] (Private Network: backend-net)
-         │           │
-         ▼           ▼
-   [ postgres ]   [ redis ]
-   (No exposed host ports; protected by Docker internal network)
-```
+**Implementation and limitations:** Builds and full Compose runtime passed in GitHub Actions. Non-root application UIDs and unexposed database/Redis ports are checked. Docker is unavailable on this Windows host.
 
-## 4. Key Security Features in Dockerfiles
-- Multi-stage image build removes TypeScript compilers, devDependencies, and test runners from the final production images.
-- Unprivileged user creation:
-  ```dockerfile
-  RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-  USER appuser
-  ```
-- Strict read-only configuration where applicable and explicit resource constraints:
-  ```yaml
-  deploy:
-    resources:
-      limits:
-        cpus: '1.0'
-        memory: 1024M
-  ```
+**Source files:** `Dockerfiles; docker-compose.yml; .dockerignore`.
 
-## 5. Verification Commands
-To start the containerized stack:
-```bash
-docker compose up -d --build
-docker compose ps
-# NAME                     IMAGE                   STATUS
-# medicore-postgres        postgres:16-alpine      Up (healthy)
-# medicore-redis           redis:7-alpine          Up (healthy)
-# medicore-backend         medicore/backend        Up (healthy)
-# medicore-analytics       medicore/analytics      Up (healthy)
-# medicore-frontend        medicore/frontend       Up (healthy)
-```
+**Endpoints / scope:** Frontend, API, analytics, PostgreSQL, Redis and separate worker.
+
+**Tests and evidence:** Actual GitHub Actions containers job and container runtime logs. Actual execution results are in TEST_REPORT.md, with machine-readable records in docs/evidence. Deployment and review limitations are not treated as passed tests.

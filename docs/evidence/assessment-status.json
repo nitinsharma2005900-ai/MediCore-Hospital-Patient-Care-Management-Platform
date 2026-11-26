@@ -1,0 +1,137 @@
+[
+  {
+    "number": 1,
+    "name": "Healthcare role-based frontend",
+    "status": "Completed and verified",
+    "summary": "Seven dashboards verified at six widths; no claim that every possible UI state is exhaustively tested.",
+    "sources": "apps/frontend/src/app/dashboard; components/WorkspaceSidebar.tsx; components/CareActions.tsx",
+    "endpoints": "Role dashboards; /appointments/book; /invoices/{id}",
+    "tests": "Playwright responsive.spec.ts, submission.spec.ts; frontend AuthContext.test.tsx"
+  },
+  {
+    "number": 2,
+    "name": "Hospital backend APIs",
+    "status": "Completed and verified",
+    "summary": "Clinical writes, scheduling, billing, consent, staff and department operations are implemented. Role policy is fixed in code.",
+    "sources": "apps/backend/src/controllers; routes; packages/shared/src/index.ts",
+    "endpoints": "62 registered operations under /api/v1",
+    "tests": "Jest workflow/security tests; scripts/verify_postgres.cjs"
+  },
+  {
+    "number": 3,
+    "name": "Clinical relational database",
+    "status": "Completed and verified",
+    "summary": "24 tables including migration metadata; 51 foreign keys. pg is the active query layer; the Prisma file is a legacy reference.",
+    "sources": "database/migrations; database/schema.sql; src/database/postgres.ts",
+    "endpoints": "All persistent business API operations",
+    "tests": "PostgreSQL integration; schema-evidence.json; backup-restore.json"
+  },
+  {
+    "number": 4,
+    "name": "Clinical data security",
+    "status": "Completed and verified",
+    "summary": "Server-side role, assignment, consent and ownership checks; token rotation/revocation; append-only audit trigger. No regulatory compliance claim.",
+    "sources": "middlewares/scope.middleware.ts; auth.middleware.ts; controllers/auth.controller.ts",
+    "endpoints": "Authentication, clinical, billing, consent and FHIR APIs",
+    "tests": "security-regression.test.ts; PostgreSQL privacy checks"
+  },
+  {
+    "number": 5,
+    "name": "Python clinical data processing",
+    "status": "Completed and verified",
+    "summary": "Missing identity, invalid units, non-finite values, malformed reference metadata and timestamps are tested. Synthetic data only.",
+    "sources": "apps/analytics-service/processing; tests; sample_data",
+    "endpoints": "/processing/validate-lab-dataset; /processing/run-benchmark",
+    "tests": "pytest validator, security and benchmark tests"
+  },
+  {
+    "number": 6,
+    "name": "FastAPI clinical analytics",
+    "status": "Completed and verified",
+    "summary": "No invented fallback values. An authenticated administrator token is forwarded to the authoritative Express projection; unavailable data returns 503 or null metrics.",
+    "sources": "routers/analytics.py; processing/reporter.py; operations.routes.ts",
+    "endpoints": "/analytics/appointment-utilization, waiting-times, lab-turnaround, population-metrics, department-statistics",
+    "tests": "pytest HTTPX transport fixtures; actual PostgreSQL-to-FastAPI integration"
+  },
+  {
+    "number": 7,
+    "name": "Appointment and care workflow engine",
+    "status": "Completed and verified",
+    "summary": "GiST exclusion constraint and transaction lock prevent overlaps. IANA zones and UTC instants are tested. Prescription/lab lifecycle transitions also exist as APIs.",
+    "sources": "appointment.controller.ts; provider-workflow.controller.ts; services/availability.ts; SQL integrity migration",
+    "endpoints": "Appointments, waiting list, encounters, prescription/lab status transitions",
+    "tests": "workflow.test.ts; concurrency.test.ts; workflow-regression.test.ts; PostgreSQL checks"
+  },
+  {
+    "number": 8,
+    "name": "Healthcare interoperability",
+    "status": "Partially completed",
+    "summary": "FHIR is an explicit local R4-shaped mock. EMAIL/SMS delivery is a local database-backed simulator; no SMTP provider or external SMS delivery is verified.",
+    "sources": "controllers/fhir.controller.ts; jobs/notifications.ts; integrations",
+    "endpoints": "/fhir/Patient, Appointment, Encounter, Observation; /notifications",
+    "tests": "Four authenticated FHIR resource checks; durable sandbox worker/outage tests"
+  },
+  {
+    "number": 9,
+    "name": "Docker healthcare environment",
+    "status": "Completed and verified",
+    "summary": "Builds and full Compose runtime passed in GitHub Actions. Non-root application UIDs and unexposed database/Redis ports are checked. Docker is unavailable on this Windows host.",
+    "sources": "Dockerfiles; docker-compose.yml; .dockerignore",
+    "endpoints": "Frontend, API, analytics, PostgreSQL, Redis and separate worker",
+    "tests": "Actual GitHub Actions containers job and container runtime logs"
+  },
+  {
+    "number": 10,
+    "name": "Git and clinical change review",
+    "status": "Partially completed",
+    "summary": "Original commit preserved; meaningful audit commits and feature branch pushed. GitHub rejected private-repository branch protection with HTTP 403. No peer approval is claimed.",
+    "sources": ".github/CODEOWNERS; pull request template; review checklists; Git history",
+    "endpoints": "GitHub branches and pull request",
+    "tests": "Remote push/commit verification; github-protection.log"
+  },
+  {
+    "number": 11,
+    "name": "Healthcare CI/CD",
+    "status": "Partially completed",
+    "summary": "Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. Staging/live releases and protected environment reviewers remain unverified.",
+    "sources": ".github/workflows/ci.yml; deploy.yml",
+    "endpoints": "GitHub Actions quality and container jobs; manual Render release hooks",
+    "tests": "Actual successful CI runs and downloaded artifacts"
+  },
+  {
+    "number": 12,
+    "name": "Privacy and workflow testing",
+    "status": "Completed and verified",
+    "summary": "Executed results and coverage are reported exactly. Coverage is partial; memory-fixture tests are distinguished from actual PostgreSQL checks.",
+    "sources": "apps/backend/src/__tests__; analytics-service/tests; tests/e2e; scripts/verify_postgres.cjs",
+    "endpoints": "Success, validation, privacy, concurrency and dependency failure paths",
+    "tests": "TEST_REPORT.md and docs/evidence"
+  },
+  {
+    "number": 13,
+    "name": "Healthcare API documentation",
+    "status": "Completed and verified",
+    "summary": "Request schemas, examples, errors and permission rules are documented. FHIR success responses differ from the standard REST envelope.",
+    "sources": "src/swagger/openapi.json; postman collection; docs/API_REFERENCE.md",
+    "endpoints": "All 62 actual Express operations and five FastAPI analytics endpoints",
+    "tests": "Router inventory generation; OpenAPI validation; live Swagger checks"
+  },
+  {
+    "number": 14,
+    "name": "Secure hospital deployment",
+    "status": "Blocked",
+    "summary": "Render is not connected to this session. No cloud resource, HTTPS deployment, cloud backup, DNS configuration or production workflow is claimed as verified.",
+    "sources": "render.yaml; DEPLOYMENT_GUIDE.md; backup tools",
+    "endpoints": "No verified public Render application/API URL",
+    "tests": "Real local backup/restore and readiness checks; Render access discovery"
+  },
+  {
+    "number": 15,
+    "name": "Healthcare incident simulation",
+    "status": "Completed and verified",
+    "summary": "All incidents are controlled local simulations against synthetic data. They are not production incidents.",
+    "sources": "INCIDENT_REPORT.md; docs/incidents; verify_outages.cjs",
+    "endpoints": "Unauthorized access, collision, queue delay, database outage and lab association",
+    "tests": "Real PostgreSQL, queue and outage evidence"
+  }
+]

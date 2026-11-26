@@ -1,0 +1,512 @@
+PAGE 1
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 1
+PROJECT 03
+MediCore
+Hospital, Appointment & Patient Care Management Platform
+Healthcare / Hospital Management
+Assessment level Advanced / Very Difficult
+Mandatory exercises 15 hands-on assessments
+Submission standard Working implementation, tests, documentation, and demonstrable evidence
+Learner Project Scope & Assessment Handbook
+Version 1.0  |  Prepared for Orion LMS
+
+PAGE 2
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 2
+1. Project Overview
+Build a hospital operations platform for synthetic patient data. Staff manage appointments, encounters, prescriptions, 
+laboratory orders, billing, and patient communication. Access to clinical records must be restricted and auditable.
+2. Business Users and Core Modules
+Expected user roles:
+ Patient
+ receptionist
+ doctor
+ nurse
+ laboratory technician
+ billing officer
+ hospital administrator
+Core modules to be delivered:
+ Patient registration
+ staff and departments
+ appointments
+ encounters
+ diagnoses
+ prescriptions
+ lab orders/results
+ billing
+ consent
+ audit logs
+ FHIR exchange.
+3. Learning Outcomes
+ Translate a real business problem into a maintainable software architecture and a set of verifiable requirements.
+ Build a typed, responsive React/Next.js frontend and secure Node.js/Express REST APIs.
+ Design PostgreSQL schemas, constraints, transactions, indexes, and migrations appropriate to the domain.
+ Use Python and FastAPI for a clearly bounded processing, analytics, or integration service.
+ Integrate external services safely using timeouts, retries, authentication, webhook verification, and idempotency.
+ Containerize the system, collaborate through Git/GitHub, and automate quality checks and deployment with GitHub 
+Actions.
+ Prove correctness through unit, API, integration, end-to-end, security, and failure-path tests.
+ Deploy and operate a working application, explain design trade-offs, and respond to production-style incidents.
+4. Required Technology Stack
+Layer Required tools
+Frontend React, Next.js App Router, TypeScript, Tailwind CSS or Material UI
+State and data TanStack Query and/or Redux Toolkit; form validation with a suitable schema library
+Core backend Node.js, Express.js, REST APIs, modular service architecture
+Python service Python 3, FastAPI, Pydantic, pytest
+Database PostgreSQL; ORM/query layer selected and justified by the 
+
+PAGE 3
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 3
+learner
+Caching and jobs Redis; BullMQ or a suitable Python job mechanism where appropriate
+Authentication JWT/session approach, refresh/revocation, RBAC and resource-level authorization
+Testing Jest or Vitest, React Testing Library, Supertest, pytest, HTTPX, Playwright
+DevOps Git, GitHub, Docker, Docker Compose, GitHub Actions
+API documentation OpenAPI/Swagger and Postman collection
+Hosting A cloud VM or managed hosting environment, DNS, HTTPS, reverse proxy, backups and monitoring
+5. Architecture and Engineering Expectations
+Use a modular architecture. The Next.js application is the user interface; Express is the primary business API; FastAPI is 
+a separate service for the domain-specific processing/analytics responsibility described in the assessments. PostgreSQL 
+is the system of record. Redis may be used for caching and asynchronous jobs.
+ Define service boundaries and document which service owns each data entity. Avoid duplicating authoritative 
+business data across services.
+ Validate all untrusted input on the server. Never rely on frontend-only checks for security or business rules.
+ Use database transactions for operations that must succeed or fail together. Document concurrency-control 
+decisions.
+ Use consistent API response/error formats, pagination, filtering, request IDs, and versioning.
+ Keep secrets out of source control. Commit only a safe .env.example with placeholder values.
+ Make background jobs retry-safe and idempotent. Record failed jobs and provide a controlled recovery path.
+ Include health/readiness endpoints, structured logs, meaningful metrics, and graceful shutdown behavior.
+ Document trade-offs. A technically valid alternative is acceptable when the learner explains why it is appropriate.
+6. Mandatory Hands-on Assessments
+All 15 assessments below are mandatory. Complete each assessment, commit the implementation to the designated 
+GitHub repository, run the required tests, and submit the evidence listed. A partial or mocked implementation must be 
+clearly identified; it must not be presented as a completed production integration.
+Assessment 01 – Healthcare role-based frontend
+Objective: Build separate patient, clinician, receptionist, lab, billing, and administrator experiences. Display sensitive 
+information only where the logged-in role and record relationship permit it.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+
+PAGE 4
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 4
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 02 – Hospital backend APIs
+Objective: Implement patient registration, provider schedules, appointments, encounters, prescriptions, lab orders, 
+results, billing, and consent endpoints with validation and audit hooks.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 03 – Clinical relational database
+Objective: Model patients, providers, departments, appointments, encounters, diagnoses, medication orders, lab 
+orders/results, invoices, consents, and audit records with clear relationships.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Consider concurrency, duplicate requests/events, transaction boundaries, and safe retry behavior where relevant.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+
+PAGE 5
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 5
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 04 – Clinical data security
+Objective: Implement least-privilege RBAC, record-level authorization, consent checks, secure sessions, audit logging, 
+and protection against insecure direct object references.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Consider concurrency, duplicate requests/events, transaction boundaries, and safe retry behavior where relevant.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 05 – Python clinical data processing
+Objective: Process synthetic lab and appointment datasets, validate units and reference metadata, generate operational 
+reports, and handle malformed or missing values safely.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Include sample input/output, data validation, error handling, and a small performance or correctness benchmark.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+
+PAGE 6
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 6
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 06 – FastAPI clinical analytics
+Objective: Build appointment utilization, wait-time, lab turnaround, and synthetic population reporting endpoints. Do not 
+generate medical diagnoses or treatment recommendations.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Include sample input/output, data validation, error handling, and a small performance or correctness benchmark.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 07 – Appointment and care workflow engine
+Objective: Handle provider availability, time zones, booking conflicts, cancellations, waiting lists, encounter lifecycle, and 
+controlled prescription/lab workflow transitions.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Consider concurrency, duplicate requests/events, transaction boundaries, and safe retry behavior where relevant.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+
+PAGE 7
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 7
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 08 – Healthcare interoperability
+Objective: Integrate with a public/test FHIR endpoint or local FHIR mock for synthetic Patient, Appointment, Encounter, 
+and Observation resources. Add email/SMS sandbox notifications.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Consider concurrency, duplicate requests/events, transaction boundaries, and safe retry behavior where relevant.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 09 – Docker healthcare environment
+Objective: Containerize UI, API, analytics, database, and workers. Keep database private, use non-root containers, 
+health checks, persistent volumes, and safe configuration.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Demonstrate reproducible configuration across local, staging, and production-like environments without committing 
+secrets.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+
+PAGE 8
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 8
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 10 – Git and clinical change review
+Objective: Use protected branches, peer reviews, migration reviews, issue tracking, and explicit review for changes 
+affecting access control or clinical data structures.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 11 – Healthcare CI/CD
+Objective: Automate tests, static analysis, dependency scanning, container builds, staging deployment, migration 
+checks, and approval-controlled releases.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Demonstrate reproducible configuration across local, staging, and production-like environments without committing 
+secrets.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+
+PAGE 9
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 9
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 12 – Privacy and workflow testing
+Objective: Test appointment collisions, role boundaries, consent changes, invalid prescriptions, missing lab data, audit 
+generation, and cross-patient access attempts.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Consider concurrency, duplicate requests/events, transaction boundaries, and safe retry behavior where relevant.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 13 – Healthcare API documentation
+Objective: Document patient, provider, appointment, encounter, lab, billing, consent, and FHIR exchange endpoints with 
+examples and error definitions.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+
+PAGE 10
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 10
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 14 – Secure hospital deployment
+Objective: Deploy with HTTPS, least-privilege infrastructure access, secret management, backups, restore validation, 
+audit retention, monitoring, and documented incident contacts.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Demonstrate reproducible configuration across local, staging, and production-like environments without committing 
+secrets.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Assessment 15 – Healthcare incident simulation
+Objective: Investigate unauthorized record access, appointment conflict, delayed notifications, database outage, and 
+incorrect lab result association. Provide an incident report and evidence.
+Learner implementation checklist
+ Create the required implementation in the project repository using clear module boundaries and readable naming.
+ Consider concurrency, duplicate requests/events, transaction boundaries, and safe retry behavior where relevant.
+ Validate inputs and handle expected failures; do not expose stack traces, credentials, or sensitive data to end users.
+ Add automated tests for the main success path, invalid input, authorization or boundary cases, and at least one 
+failure path.
+ Record setup/configuration steps and explain important design decisions in the project documentation.
+Acceptance criteria
+ The feature can be run and demonstrated from the documented setup instructions.
+ The expected business behavior is enforced by the backend/service, not just simulated in the interface.
+ Relevant automated tests pass and test results are included in the submission.
+ The implementation handles invalid input and foreseeable failure conditions with useful, safe errors.
+ The learner can explain the design, demonstrate the feature, and make a small requested change during review.
+Required evidence and deliverables
+
+PAGE 11
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 11
+ Source code committed to the project GitHub repository with meaningful commit history.
+ Assessment-specific README or documentation describing setup, design, and usage.
+ Automated test files and a captured test run or CI result.
+ Screenshots, short screen recording, API collection, logs, or live URL as appropriate to the assessment.
+Domain-specific challenge: Prevent overlapping doctor appointments and unauthorized record access. Use synthetic 
+data only and demonstrate access auditing and consent-aware workflows.
+7. Domain-Specific Capstone Challenge
+Prevent overlapping doctor appointments and unauthorized record access. Use synthetic data only and demonstrate 
+access auditing and consent-aware workflows.
+The evaluator may introduce a controlled failure or edge case. The learner must reproduce the issue, inspect logs and 
+data, identify the root cause, implement a fix, add a regression test, and explain how recurrence will be prevented.
+8. Cross-Cutting Non-Functional Requirements
+Security: Enforce authorization server-side; validate input; protect secrets; use HTTPS in deployed environments; apply 
+least privilege; avoid exposing sensitive records in logs.
+Reliability: Handle timeouts, retries, duplicate events, process restarts, and dependency outages. Do not retry non-
+idempotent actions blindly.
+Performance: Paginate large collections, index measured query patterns, avoid N+1 access, and provide evidence for 
+significant optimization claims.
+Accessibility and usability: Use semantic controls, keyboard navigation, visible validation, loading/empty/error states, 
+and responsive layouts.
+Maintainability: Use clear modules, typed contracts, linting/formatting, meaningful names, migration discipline, and 
+documented configuration.
+Observability: Use structured logs, correlation/request IDs, health checks, actionable error reporting, and basic metrics.
+Data integrity: Use constraints, transactions, explicit state transitions, audit history for important changes, and 
+backup/restore validation.
+9. Submission Package
+ GitHub repository URL with source code and commit history.
+ Live application URL and API base URL, where deployment is required.
+ README containing prerequisites, environment setup, migrations, seed data, local run, test, and deployment 
+commands.
+ Architecture diagram, database ER diagram, and service/data-flow diagram.
+ OpenAPI/Swagger specification and Postman collection.
+ Automated test suites and coverage/test execution report.
+ Dockerfiles and Docker Compose configuration.
+ GitHub Actions workflow files and CI/CD run evidence.
+ Deployment notes, domain/HTTPS evidence, backup and restore evidence.
+ Short demo recording or scheduled live demonstration, plus known limitations.
+10. Evaluation and Scoring
+
+PAGE 12
+TECHNICAL SKILLS EVALUATION COHORT  |  PROJECT ASSESSMENT
+MediCore  •  Learner Project Brief  •  Page 12
+Each assessment is scored out of 100 points using the same dimensions below. The complete project is scored out of 
+1,500 points. Evaluators should record evidence and feedback for every assessment; a high total does not automatically 
+waive a critical security or data-integrity failure.
+Dimension Points per assessment
+Functional correctness 30 points
+Architecture and technical implementation 25 points
+Code quality and maintainability 15 points
+Testing and error handling 15 points
+Documentation and demonstration 15 points
+Total: 100 points per assessment × 15 assessments = 1,500 points per project.
+Suggested performance bands
+Score Interpretation
+90–100% Exceptional
+80–89% Strong
+70–79% Competent
+60–69% Needs improvement
+Below 60% Does not yet meet expectations
+11. Live Technical Review
+ The learner must explain the architecture and trace one important user journey from browser to database and back.
+ The evaluator may ask the learner to change a requirement, add a test, debug a defect, or explain a query/API 
+decision.
+ The learner must distinguish completed features from mocks, stubs, and known limitations.
+ The learner may use AI coding assistants if cohort policy permits, but remains responsible for correctness, security, 
+licensing, and explaining every submitted component.
+ Do not submit secrets, real patient records, real financial credentials, or personal data. Use synthetic data and 
+sandbox services.
+12. Learner Completion Checklist
+  I have completed all 15 assessments and can demonstrate each one.
+  My repository contains meaningful commits and no secrets.
+  My application can be installed and run using the documented steps.
+  My automated tests pass and cover important success and failure cases.
+  My API documentation and architecture diagrams match the implementation.
+  My deployed application uses HTTPS and does not expose the database publicly.
+  I have documented limitations, assumptions, and third-party services that are mocked.
+  I am prepared to explain and modify my implementation during a live review.
+13. Assumptions and Responsible Use
+This is an educational engineering assessment, not a certification of legal, financial, medical, or regulatory compliance. 
+Use synthetic data and sandbox integrations. Do not process real payments, medical records, payroll, insurance claims, 
+or identity documents. Any real-world deployment requires domain-specific security, privacy, legal, and compliance 
+review.
+A learner may choose an equivalent technology or hosting provider only with evaluator approval and a written 
+explanation showing that all learning outcomes and acceptance criteria remain satisfied.

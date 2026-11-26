@@ -1,220 +1,79 @@
-# MediCore — Enterprise Hospital, Appointment & Patient Care Management Platform
+# MediCore
 
-[![CI Pipeline](https://github.com/medicore/medicore/actions/workflows/ci.yml/badge.svg)](https://github.com/medicore/medicore)
-[![Total Score](https://img.shields.io/badge/Evaluation%20Score-1%2C500%20%2F%201%2C500%20Points-0F766E)](ASSESSMENT_CHECKLIST.md)
-[![Assessments Completed](https://img.shields.io/badge/Assessments%20Completed-15%20%2F%2015-16A34A)](ASSESSMENT_CHECKLIST.md)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-14%20App%20Router-black)](https://nextjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688)](https://fastapi.tiangolo.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)](https://www.postgresql.org/)
+Hospital, Appointment & Patient Care Management Platform · Developer: **Nitin Sharma** · Synthetic educational data only.
 
-> **Educational Regulatory Notice:**  
-> MediCore operates strictly on **100% synthetic, fictional healthcare data**. Zero real Protected Health Information (PHI) or live payment processing is utilized. This software is engineered for enterprise healthcare demonstration and assessment.
+MediCore preserves the existing Next.js/Express/FastAPI application and now persists business records in PostgreSQL. It provides seven role workspaces, provider availability, booking, clinical care, laboratory review, billing, consent, audit history and operational analytics. Payments and outbound messages are simulations; FHIR is an authenticated local mock.
 
----
+## Verified result
 
-## 1. System Overview
+162 final recorded checks: 162 passed, 0 failed, 0 skipped. See [TEST_REPORT.md](TEST_REPORT.md) for actual suite counts, coverage and boundaries. [GitHub source](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform). Render deployment remains blocked by account access; no live URL is claimed.
 
-**MediCore** is a modern hospital management, clinical appointment scheduling, and patient care platform engineered to replicate the robustness, data privacy standards, and workflow integrity of Tier-1 healthcare software (e.g. Epic Systems, Cerner, Athenahealth).
-
-The platform addresses all **15 mandatory assessments (1,500 points)** outlined in `project3.pdf`, featuring:
-- **7 Segregated User Roles:** Patient, Receptionist, Doctor, Nurse, Laboratory Technician, Billing Officer, and Hospital Administrator.
-- **Transactional Concurrency Locks:** Guarantees zero overlapping appointments or double-booking under concurrent load.
-- **Clinical Data Security:** JWT token rotation, session revocation, anti-IDOR protections, consent-aware queries, and immutable audit logs.
-- **Python FastAPI Analytics:** Vectorized LOINC laboratory dataset validation and dynamic calculation of hospital wait times, turnaround times, and department capacity.
-- **HL7 FHIR R4 Interoperability:** Standardized mapping and mock exchange for `Patient`, `Appointment`, `Encounter`, and `Observation` resources.
-- **Production Containerization & CI/CD:** Multi-stage Docker images, non-root users, GitHub Actions workflows, and automated disaster recovery scripts.
-
----
-
-## 2. System Architecture
-
-```
-                                [ Web Browser / Mobile Clients ]
-                                                │
-                                                ▼
-                                    [ Next.js 14 Frontend ]
-                                        (Port 3000)
-                                      App Router / UI
-                                         │          │
-                     ┌───────────────────┘          └───────────────────┐
-                     ▼                                                  ▼
-          [ Express.js REST API ]                            [ FastAPI Analytics ]
-               (Port 4001)                                        (Port 8001)
-     Modular Controllers & Middleware                   Pandas / LOINC Dataset Validator
-     JWT Auth, RBAC & Anti-IDOR Checks                  Real-time Wait Time & TAT Engine
-                     │                                                  │
-                     ▼                                                  │
-          [ PostgreSQL 16 Database ]                                    │
-           21 3NF Relational Tables                                     │
-         Prisma ORM & Concurrency Lock                                  │
-                     │                                                  │
-                     ▼                                                  ▼
-          [ Redis 7 Cache & BullMQ ]                        [ HL7 FHIR R4 Exchange ]
-```
-
----
-
-## 3. Technology Stack
-
-| Domain | Technology | Key Capabilities & Justifications |
+| # | Assessment | Status |
 |---|---|---|
-| **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS | High-performance server rendering, responsive healthcare palette (`#0F766E`, `#2563EB`), Framer Motion transitions, Recharts data visualization. |
-| **Backend API** | Node.js 22, Express.js, TypeScript, Zod | Modular service architecture, standardized JSON envelope, UUID v4 correlation IDs (`X-Request-ID`), least-privilege RBAC. |
-| **Relational Database** | PostgreSQL 16, Prisma ORM | 21 relational models, 3NF normalization, foreign key cascades, unique compound index on `(doctorId, scheduledAt)`. |
-| **Analytics Microservice**| Python 3.11, FastAPI, Pydantic, Pandas, NumPy | Vectorized LOINC test validation, physical range anomaly flags, statistical wait time & lab TAT calculation. |
-| **Shared Contracts** | `@medicore/shared` (TypeScript Workspace) | Unified Zod validation schemas, domain enums, and FHIR R4 data models shared across client and server. |
-| **Interoperability** | HL7 FHIR R4, Sandbox Notifications | FHIR client with exponential backoff; idempotent email/SMS sandbox simulator. |
-| **DevOps & Containers** | Docker, Docker Compose, GitHub Actions | Non-root container users, internal network isolation, CI lint/typecheck/test workflows, Render blueprint. |
-| **Testing** | Jest, Supertest, Pytest | 24 Jest backend integration tests + 10 Pytest analytics tests (100% pass rate). |
+| 01 | Healthcare role-based frontend | Completed and verified |
+| 02 | Hospital backend APIs | Completed and verified |
+| 03 | Clinical relational database | Completed and verified |
+| 04 | Clinical data security | Completed and verified |
+| 05 | Python clinical data processing | Completed and verified |
+| 06 | FastAPI clinical analytics | Completed and verified |
+| 07 | Appointment and care workflow engine | Completed and verified |
+| 08 | Healthcare interoperability | Partially completed |
+| 09 | Docker healthcare environment | Completed and verified |
+| 10 | Git and clinical change review | Partially completed |
+| 11 | Healthcare CI/CD | Partially completed |
+| 12 | Privacy and workflow testing | Completed and verified |
+| 13 | Healthcare API documentation | Completed and verified |
+| 14 | Secure hospital deployment | Blocked |
+| 15 | Healthcare incident simulation | Completed and verified |
 
----
+## Run on this Windows computer
 
-## 4. Seven User Personas & Demo Credentials
-
-Every persona can be instantly accessed using the **1-Click Quick-Login Buttons** on the sign-in page (`http://localhost:3000/login`).
-
-| Role | Demo Email | Shared Password | Core Permissions & Responsibilities |
-|---|---|---|---|
-| **Patient** | `patient@medicore.health` | `Password123!` | Self-service booking, view own prescriptions & lab results, consent privacy manager. |
-| **Receptionist** | `receptionist@medicore.health` | `Password123!` | Patient intake, daily check-in queue, arrival timestamping, appointment rescheduling. |
-| **Doctor** | `doctor@medicore.health` | `Password123!` | Consultation queue, clinical notes, ICD-10 diagnoses, e-prescribing, lab requisitions. |
-| **Nurse** | `nurse@medicore.health` | `Password123!` | Triage queue, vital signs capture (BP, pulse, temp, SpO2), automated BMI computation. |
-| **Lab Technician** | `labtech@medicore.health` | `Password123!` | Specimen analysis queue, LOINC finding entry, abnormal flag tagging, result release. |
-| **Billing Officer** | `billing@medicore.health` | `Password123!` | Itemized invoicing, fee calculation, simulated payment settlement (no diagnosis leakage). |
-| **Hospital Admin**| `admin@medicore.health` | `Password123!` | FastAPI operational analytics charts, clinical departments, immutable security audit logs. |
-
----
-
-## 5. Quick-Start Guide (Localhost Execution)
-
-### Prerequisites
-- **Node.js**: v20+ (Node v22 recommended)
-- **Python**: v3.10+ (Python 3.11 recommended)
-- **Git**
-
-### Installation (PowerShell)
-```powershell
-# 1. Clone repository and navigate to root
-cd c:\Users\amits\Downloads\Medicore
-
-# 2. Install workspace dependencies
-npm install
-
-# 3. Build shared types and backend
-npm run build
-
-# 4. Install Python microservice dependencies
-pip install -r apps/analytics-service/requirements.txt
-```
-
-### Starting Services Concurrently
-Open three separate terminal windows or run background daemons:
+Requirements: Node.js 22, Python 3.13, PostgreSQL and Redis executables. Existing local tools are reused by the setup script in a separate cluster; Docker is an alternative.
 
 ```powershell
-# Terminal 1 — Express Backend API (Port 4001, auto-fallback from 4000)
-node apps/backend/dist/server.js
-
-# Terminal 2 — FastAPI Analytics Microservice (Port 8001)
-python -m uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port 8001
-
-# Terminal 3 — Next.js Frontend Application (Port 3000)
-npm --workspace=apps/frontend run start
+Set-Location 'C:\Users\amits\Downloads\MediCore_Complete_Project'
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local.ps1
+npm ci
+python -m pip install -r apps/analytics-service/requirements.txt
+npm run build --workspace=packages/shared
+npm run build --workspace=apps/backend
+npm run build --workspace=apps/frontend
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local.ps1
 ```
 
-### Service URLs
-- **Web Application:** [http://localhost:3000](http://localhost:3000)
-- **Express Backend Swagger UI:** [http://localhost:4001/api-docs](http://localhost:4001/api-docs)
-- **Express Backend Health:** [http://localhost:4001/health](http://localhost:4001/health)
-- **FastAPI Analytics Docs:** [http://localhost:8001/docs](http://localhost:8001/docs)
-- **FastAPI Health:** [http://localhost:8001/health](http://localhost:8001/health)
+- Frontend: http://localhost:3010
+- REST API: http://localhost:4010/api/v1
+- Express Swagger: http://localhost:4010/api-docs/
+- FastAPI: http://localhost:8010 · Swagger: http://localhost:8010/docs
+- Readiness: http://localhost:4010/ready
 
----
+Use separate demo sessions for role testing. [All demo accounts](DEMO_ACCOUNTS.md) use the intentionally public synthetic password `Password123!`. Never use real patient data, real payments or infrastructure credentials in the demo.
 
-## 6. Automated Testing Verification
+## Architecture and persistence
 
-MediCore includes 34 automated unit and integration tests validating clinical privacy, race condition concurrency, and data processing throughput.
+Next.js uses React, TypeScript, Tailwind, TanStack Query and Framer Motion. Express owns business rules and data; FastAPI processes bounded synthetic datasets and calculates metrics from an authorized operational projection. PostgreSQL uses the `pg` query layer, versioned SQL migrations, constraints and a transaction-scoped compatibility adapter for the original controllers. Redis/BullMQ processes a PostgreSQL-backed notification outbox. [Architecture and ER diagrams](docs/architecture/).
 
-### 1. Backend Integration Tests (Jest & Supertest)
+Default runtime mode is PostgreSQL. Only isolated Jest fixtures explicitly use memory. No runtime fallback to memory or invented analytics exists. The original Prisma template is marked as an unused legacy reference; `database/schema.sql`, migrations and captured catalog are authoritative. The adapter's global transaction lock and full-state loading are documented scaling limits.
+
+## Tests
+
 ```powershell
-npm --workspace=apps/backend run test
-```
-**Results (24/24 Tests Passed):**
-- `workflow.test.ts`: Encounter state transitions (`SCHEDULED` -> `CHECKED_IN` -> `COMPLETED`), nursing vitals linkage, dosage validation.
-- `concurrency.test.ts`: Simultaneous booking requests for the same slot trigger `409 Conflict` for the second caller; double-booking impossible.
-- `auth.test.ts`: Token rotation, session revocation on logout, rate limiting.
-- `record-auth.test.ts`: Anti-IDOR enforcement; patient cannot read another patient's records; consent revocation blocks historical queries.
-
-### 2. Python Analytics Tests (Pytest)
-```powershell
-$env:PYTHONPATH="."
-python -m pytest apps/analytics-service/tests
-```
-**Results (10/10 Tests Passed):**
-- `test_validator.py`: LOINC code verification, biological reference ranges, missing field imputation.
-- `test_benchmarks.py`: 1,000 to 10,000 synthetic records processed in < 360ms.
-- `test_analytics_endpoints.py`: Dynamic calculation of wait times, utilization %, and TAT.
-
----
-
-## 7. 15 Mandatory Assessments Traceability
-
-Full details are documented in [`ASSESSMENT_CHECKLIST.md`](ASSESSMENT_CHECKLIST.md) and individual files in [`docs/assessments/`](docs/assessments/).
-
-| Assessment | Scope | Verification Status |
-|---|---|---|
-| **Assessment 01** | Healthcare Role-Based Frontend (Next.js, 7 roles, responsive, accessibility) | **100% Completed & Verified** |
-| **Assessment 02** | Hospital Backend REST APIs (Modular Express, Zod, correlation IDs, errors) | **100% Completed & Verified** |
-| **Assessment 03** | Clinical Relational Database (21 PostgreSQL models, Prisma, migrations, seed) | **100% Completed & Verified** |
-| **Assessment 04** | Clinical Data Security (JWT rotation, RBAC, anti-IDOR, consent, rate limiting) | **100% Completed & Verified** |
-| **Assessment 05** | Python Clinical Data Processing (LOINC validation, missing values, benchmarks) | **100% Completed & Verified** |
-| **Assessment 06** | FastAPI Clinical Analytics (Dynamic wait times, lab TAT, utilization metrics) | **100% Completed & Verified** |
-| **Assessment 07** | Appointment & Care Workflow Engine (Concurrency locks, check-in, vitals, Rx) | **100% Completed & Verified** |
-| **Assessment 08** | Healthcare Interoperability (HL7 FHIR R4 resources, idempotent notifications) | **100% Completed & Verified** |
-| **Assessment 09** | Docker Healthcare Environment (Multi-stage builds, non-root, private DB network) | **100% Completed & Verified** |
-| **Assessment 10** | Git & Clinical Change Review (CODEOWNERS, PR templates, migration checklists) | **100% Completed & Verified** |
-| **Assessment 11** | Healthcare CI/CD (GitHub Actions workflows, vulnerability scanning, deploy) | **100% Completed & Verified** |
-| **Assessment 12** | Privacy & Workflow Testing (34 automated tests for concurrency, IDOR, consent) | **100% Completed & Verified** |
-| **Assessment 13** | Healthcare API Documentation (OpenAPI 3.0.3, Swagger UI, Postman collection) | **100% Completed & Verified** |
-| **Assessment 14** | Secure Hospital Deployment (Render blueprint `render.yaml`, backup/restore scripts) | **100% Completed & Verified** |
-| **Assessment 15** | Healthcare Incident Simulation (5 post-mortem incident reports with fixes) | **100% Completed & Verified** |
-
----
-
-## 8. Docker & Production Containerization
-
-Start the entire hospital environment with private database isolation:
-```powershell
-docker compose up -d --build
-```
-Containers include:
-- `medicore-frontend`: Next.js web application (Port 3000)
-- `medicore-backend`: Express REST API (Port 4000/4001)
-- `medicore-analytics`: Python FastAPI analytics service (Port 8000/8001)
-- `medicore-postgres`: PostgreSQL 16 database (internal `backend-net`, no host exposure)
-- `medicore-redis`: Redis 7 cache & BullMQ queue (internal `backend-net`, no host exposure)
-
----
-
-## 9. Disaster Recovery Automation
-
-Automated PowerShell scripts ensure continuous database reliability and disaster recovery:
-```powershell
-# Backup: Creates timestamped gzip archive with SHA-256 verification checksum
-./scripts/backup-db.ps1 -BackupDirectory "./backups"
-
-# Restore: Verifies checksum integrity, creates pre-restore snapshot, restores cleanly
-./scripts/restore-db.ps1 -BackupFile "./backups/medicore_backup_20261126_020000.sql.gz"
+npm test --workspace=apps/backend -- --runInBand --silent --coverage
+npm test --workspace=apps/frontend
+npm run lint
+npm run typecheck --workspace=apps/frontend
+$env:PYTHONPATH='apps/analytics-service'
+python -m pytest apps/analytics-service/tests -q
+node scripts/verify_postgres.cjs
+npx playwright install chromium
+npx playwright test
+python scripts/verify_backup.py
 ```
 
----
+The outage script stops only the dedicated synthetic PostgreSQL/Redis instances after validating ports. It requires API worker polling to be disabled during its controlled queue-failure fixture. Use `scripts/verify_outages.cjs` only as described in INCIDENT_REPORT.md; do not run it against another deployment.
 
-## 10. Key Project Deliverables
+## Submission
 
-- **Comprehensive Project Dossier (17 Pages PDF):** [`MediCore_Project_Documentation.pdf`](MediCore_Project_Documentation.pdf)
-- **Assessments Traceability Matrix:** [`ASSESSMENT_CHECKLIST.md`](ASSESSMENT_CHECKLIST.md)
-- **Loom Video Walkthrough Script (6-8 min):** [`LOOM_DEMO_SCRIPT.md`](LOOM_DEMO_SCRIPT.md)
-- **Technical Review & Interview Guide (26 Q&As):** [`TECHNICAL_REVIEW_GUIDE.md`](TECHNICAL_REVIEW_GUIDE.md)
-- **Five Incident Post-Mortem Reports:** [`docs/incidents/`](docs/incidents/)
-- **Postman API Collection:** [`postman/MediCore_Postman_Collection.json`](postman/MediCore_Postman_Collection.json)
-- **Final Complete Project ZIP:** `MediCore_Complete_Project.zip`
+[Assessment checklist](ASSESSMENT_CHECKLIST.md) · [Security](SECURITY_REPORT.md) · [Incidents](INCIDENT_REPORT.md) · [Deployment](DEPLOYMENT_GUIDE.md) · [Known limitations](KNOWN_LIMITATIONS.md) · [Loom script](LOOM_DEMO_SCRIPT.md) · [Technical review](TECHNICAL_REVIEW_GUIDE.md) · [API reference](docs/API_REFERENCE.md) · [Final delivery report](FINAL_DELIVERY_REPORT.md).
+
+The final documentation PDF contains exactly 12 A4 pages. The final ZIP excludes actual environment files, credentials, dependencies, virtual environments, databases, caches and build output. Cohort policy must permit AI assistance; the learner remains responsible for correctness and explaining the code.

@@ -1,0 +1,204 @@
+{
+  "timestamp": "2026-11-26T05:17:00.937Z",
+  "engine": "PostgreSQL",
+  "results": [
+    {
+      "name": "PostgreSQL migrations and private database connectivity",
+      "status": "passed",
+      "ms": 89
+    },
+    {
+      "name": "Public registration persists a patient and cannot create a staff role",
+      "status": "passed",
+      "ms": 474
+    },
+    {
+      "name": "Authenticate patient against persisted users",
+      "status": "passed",
+      "ms": 206
+    },
+    {
+      "name": "Authenticate doctor against persisted users",
+      "status": "passed",
+      "ms": 220
+    },
+    {
+      "name": "Authenticate receptionist against persisted users",
+      "status": "passed",
+      "ms": 269
+    },
+    {
+      "name": "Authenticate nurse against persisted users",
+      "status": "passed",
+      "ms": 178
+    },
+    {
+      "name": "Authenticate labtech against persisted users",
+      "status": "passed",
+      "ms": 317
+    },
+    {
+      "name": "Authenticate billing against persisted users",
+      "status": "passed",
+      "ms": 182
+    },
+    {
+      "name": "Authenticate admin against persisted users",
+      "status": "passed",
+      "ms": 191
+    },
+    {
+      "name": "Concurrent HTTP booking across two application instances gives 201 and 409",
+      "status": "passed",
+      "ms": 328
+    },
+    {
+      "name": "PostgreSQL GiST constraint rejects overlapping direct SQL writers",
+      "status": "passed",
+      "ms": 11
+    },
+    {
+      "name": "Patient cross-record access is denied and audited",
+      "status": "passed",
+      "ms": 95
+    },
+    {
+      "name": "Administrators cannot read full clinical charts",
+      "status": "passed",
+      "ms": 81
+    },
+    {
+      "name": "Reception checks in persisted appointment",
+      "status": "passed",
+      "ms": 89
+    },
+    {
+      "name": "Assigned doctor starts consistent encounter",
+      "status": "passed",
+      "ms": 91
+    },
+    {
+      "name": "Assigned nurse records vitals",
+      "status": "passed",
+      "ms": 75
+    },
+    {
+      "name": "Clinician records diagnosis without automated recommendations",
+      "status": "passed",
+      "ms": 94
+    },
+    {
+      "name": "Invalid prescription is rejected",
+      "status": "passed",
+      "ms": 89
+    },
+    {
+      "name": "Valid clinician prescription persists with its items",
+      "status": "passed",
+      "ms": 105
+    },
+    {
+      "name": "Assigned clinician places laboratory order",
+      "status": "passed",
+      "ms": 89
+    },
+    {
+      "name": "Incorrect laboratory patient association rejected by API",
+      "status": "passed",
+      "ms": 95
+    },
+    {
+      "name": "Incorrect laboratory association rejected independently by PostgreSQL",
+      "status": "passed",
+      "ms": 3
+    },
+    {
+      "name": "Missing laboratory result data rejected",
+      "status": "passed",
+      "ms": 264
+    },
+    {
+      "name": "Technician enters preliminary result",
+      "status": "passed",
+      "ms": 88
+    },
+    {
+      "name": "Patient cannot view preliminary result",
+      "status": "passed",
+      "ms": 69
+    },
+    {
+      "name": "Ordering doctor validates and releases result",
+      "status": "passed",
+      "ms": 177
+    },
+    {
+      "name": "Patient revocation blocks clinical access immediately",
+      "status": "passed",
+      "ms": 269
+    },
+    {
+      "name": "Doctor completes encounter and parent appointment",
+      "status": "passed",
+      "ms": 106
+    },
+    {
+      "name": "Billing creates itemized invoice with exact cents",
+      "status": "passed",
+      "ms": 81
+    },
+    {
+      "name": "Simulated patient payment settles persistent invoice",
+      "status": "passed",
+      "ms": 114
+    },
+    {
+      "name": "FHIR exports require auth and include only authorized patient",
+      "status": "passed",
+      "ms": 192
+    },
+    {
+      "name": "FHIR Patient bundle is authenticated, scoped and readable",
+      "status": "passed",
+      "ms": 175
+    },
+    {
+      "name": "FHIR Appointment bundle is authenticated, scoped and readable",
+      "status": "passed",
+      "ms": 1557
+    },
+    {
+      "name": "FHIR Encounter bundle is authenticated, scoped and readable",
+      "status": "passed",
+      "ms": 755
+    },
+    {
+      "name": "FHIR Observation bundle is authenticated, scoped and readable",
+      "status": "passed",
+      "ms": 590
+    },
+    {
+      "name": "Analytics source is admin-only and excludes clinical identifiers",
+      "status": "passed",
+      "ms": 167
+    },
+    {
+      "name": "FastAPI derives analytics from authorized PostgreSQL source",
+      "status": "passed",
+      "ms": 1157
+    },
+    {
+      "name": "New API instance sees persistent records and sessions",
+      "status": "passed",
+      "ms": 111
+    },
+    {
+      "name": "Logout persistently revokes the current session",
+      "status": "passed",
+      "ms": 200
+    }
+  ],
+  "total": 39,
+  "passed": 39,
+  "failed": 0
+}
