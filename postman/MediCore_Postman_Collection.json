@@ -1,177 +1,1017 @@
 {
   "info": {
-    "name": "MediCore Hospital & Patient Care API",
-    "description": "Complete Postman collection for testing all MediCore backend REST endpoints, 7 role personas, clinical workflows, and FHIR interoperability.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "name": "MediCore verified hospital API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Use synthetic data only. Log in first; accessToken is a session secret, do not export populated environment files."
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:4000/api/v1", "type": "string" },
-    { "key": "token", "value": "", "type": "string" },
-    { "key": "patientId", "value": "", "type": "string" },
-    { "key": "doctorId", "value": "", "type": "string" },
-    { "key": "appointmentId", "value": "", "type": "string" },
-    { "key": "encounterId", "value": "", "type": "string" },
-    { "key": "invoiceId", "value": "", "type": "string" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4010/api/v1"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
   "item": [
     {
-      "name": "1. Authentication",
-      "item": [
-        {
-          "name": "Login - Doctor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res.success && res.data && res.data.tokens) {",
-                  "  pm.collectionVariables.set('token', res.data.tokens.accessToken);",
-                  "  pm.collectionVariables.set('doctorId', res.data.user.doctorProfileId);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"doctor@medicore.health\",\n  \"password\": \"Password123!\"\n}"
-            },
-            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+      "name": "GET /appointments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
           }
-        },
-        {
-          "name": "Login - Patient",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"patient@medicore.health\",\n  \"password\": \"Password123!\"\n}"
-            },
-            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
-          }
-        },
-        {
-          "name": "Login - Admin",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@medicore.health\",\n  \"password\": \"Password123!\"\n}"
-            },
-            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
-          }
-        },
-        {
-          "name": "Get Current User Profile (Me)",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
-          }
-        }
-      ]
+        ],
+        "url": "{{baseUrl}}/appointments",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action."
+      }
     },
     {
-      "name": "2. Clinical Departments & Doctors",
-      "item": [
-        {
-          "name": "List Departments",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/departments", "host": ["{{baseUrl}}"], "path": ["departments"] }
+      "name": "GET /appointments/waiting-list",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
           }
-        },
-        {
-          "name": "List Doctors",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/doctors", "host": ["{{baseUrl}}"], "path": ["doctors"] }
-          }
-        },
-        {
-          "name": "Get Doctor Available Slots",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/doctors/{{doctorId}}/available-slots?date=2026-11-28", "host": ["{{baseUrl}}"], "path": ["doctors", "{{doctorId}}", "available-slots"], "query": [{ "key": "date", "value": "2026-11-28" }] }
-          }
-        }
-      ]
+        ],
+        "url": "{{baseUrl}}/appointments/waiting-list",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action."
+      }
     },
     {
-      "name": "3. Appointments & Scheduling",
-      "item": [
-        {
-          "name": "List Appointments",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/appointments", "host": ["{{baseUrl}}"], "path": ["appointments"] }
+      "name": "POST /appointments/waiting-list",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
           }
-        },
-        {
-          "name": "Book Appointment",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"doctorId\": \"{{doctorId}}\",\n  \"departmentId\": \"CARD\",\n  \"scheduledStartTime\": \"2026-11-30T10:00:00.000Z\",\n  \"scheduledEndTime\": \"2026-11-30T10:30:00.000Z\",\n  \"type\": \"ROUTINE\",\n  \"reason\": \"Follow-up cardiovascular evaluation\",\n  \"priority\": \"NORMAL\"\n}"
-            },
-            "url": { "raw": "{{baseUrl}}/appointments", "host": ["{{baseUrl}}"], "path": ["appointments"] }
-          }
-        },
-        {
-          "name": "Check-in Appointment",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/appointments/{{appointmentId}}/check-in", "host": ["{{baseUrl}}"], "path": ["appointments", "{{appointmentId}}", "check-in"] }
-          }
+        ],
+        "url": "{{baseUrl}}/appointments/waiting-list",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
         }
-      ]
+      }
     },
     {
-      "name": "4. FHIR R4 Interoperability",
-      "item": [
-        {
-          "name": "FHIR Search Patients",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/fhir/Patient", "host": ["{{baseUrl}}"], "path": ["fhir", "Patient"] }
+      "name": "PATCH /appointments/waiting-list/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
           }
-        },
-        {
-          "name": "FHIR Search Appointments",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/fhir/Appointment", "host": ["{{baseUrl}}"], "path": ["fhir", "Appointment"] }
-          }
-        },
-        {
-          "name": "FHIR Search Encounters",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/fhir/Encounter", "host": ["{{baseUrl}}"], "path": ["fhir", "Encounter"] }
-          }
-        },
-        {
-          "name": "FHIR Search Observations (Labs/Vitals)",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/fhir/Observation", "host": ["{{baseUrl}}"], "path": ["fhir", "Observation"] }
-          }
+        ],
+        "url": "{{baseUrl}}/appointments/waiting-list/{{id}}",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
         }
-      ]
+      }
+    },
+    {
+      "name": "GET /appointments/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/appointments/{{id}}",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action."
+      }
+    },
+    {
+      "name": "POST /appointments",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/appointments",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"doctorId\": \"{{doctorId}}\",\n  \"departmentId\": \"{{departmentId}}\",\n  \"scheduledStartTime\": \"{{scheduledStartTime}}\",\n  \"scheduledEndTime\": \"{{scheduledEndTime}}\",\n  \"reason\": \"Synthetic reason fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "PATCH /appointments/{id}/check-in",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/appointments/{{id}}/check-in",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "PATCH /appointments/{id}/reschedule",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/appointments/{{id}}/reschedule",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"newStartTime\": \"{{newStartTime}}\",\n  \"newEndTime\": \"{{newEndTime}}\",\n  \"reason\": \"Synthetic reason fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "PATCH /appointments/{id}/cancel",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/appointments/{{id}}/cancel",
+        "description": "Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cancellationReason\": \"Synthetic cancellationReason fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /audit",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/audit",
+        "description": "Administrator only. Append-only audit history."
+      }
+    },
+    {
+      "name": "POST /auth/login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "description": "Login/register/refresh are public. Me/logout require an active bearer session.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"patient@medicore.health\",\n  \"password\": \"Password123!\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /auth/register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/register",
+        "description": "Login/register/refresh are public. Me/logout require an active bearer session.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"patient@medicore.health\",\n  \"password\": \"Password123!\",\n  \"firstName\": \"Synthetic firstName fixture\",\n  \"lastName\": \"Synthetic lastName fixture\",\n  \"phone\": \"+1-555-0199\",\n  \"dateOfBirth\": \"Synthetic dateOfBirth fixture\",\n  \"gender\": \"MALE\",\n  \"emergencyContactName\": \"Synthetic emergencyContactName fixture\",\n  \"emergencyContactPhone\": \"+1-555-0199\",\n  \"address\": \"Synthetic address fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /auth/refresh",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/refresh",
+        "description": "Login/register/refresh are public. Me/logout require an active bearer session.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "POST /auth/logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/logout",
+        "description": "Login/register/refresh are public. Me/logout require an active bearer session.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "GET /auth/me",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/me",
+        "description": "Login/register/refresh are public. Me/logout require an active bearer session."
+      }
+    },
+    {
+      "name": "GET /billing/invoices",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/billing/invoices",
+        "description": "Patient self or billing officer/administrator for operational billing. Simulated payments only."
+      }
+    },
+    {
+      "name": "GET /billing/invoices/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/billing/invoices/{{id}}",
+        "description": "Patient self or billing officer/administrator for operational billing. Simulated payments only."
+      }
+    },
+    {
+      "name": "GET /billing/analytics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/billing/analytics",
+        "description": "Patient self or billing officer/administrator for operational billing. Simulated payments only."
+      }
+    },
+    {
+      "name": "POST /billing/invoices",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/billing/invoices",
+        "description": "Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientId\": \"{{patientId}}\",\n  \"items\": [\n    {\n      \"description\": \"Synthetic description fixture\",\n      \"category\": \"CONSULTATION\",\n      \"quantity\": 1,\n      \"unitPrice\": 1\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /billing/payments",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/billing/payments",
+        "description": "Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"invoiceId\": \"{{invoiceId}}\",\n  \"amount\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /consent/patient/{patientId}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/consent/patient/{{patientId}}",
+        "description": "Patient self only."
+      }
+    },
+    {
+      "name": "POST /consent/patient/{patientId}",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/consent/patient/{{patientId}}",
+        "description": "Patient self only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"consentType\": \"GENERAL_CARE\",\n  \"granted\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /departments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/departments",
+        "description": "Public department directory."
+      }
+    },
+    {
+      "name": "GET /departments/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/departments/{{id}}",
+        "description": "Public department directory."
+      }
+    },
+    {
+      "name": "GET /doctors",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/doctors",
+        "description": "Public directory and slots. Availability changes require the owning doctor."
+      }
+    },
+    {
+      "name": "GET /doctors/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/doctors/{{id}}",
+        "description": "Public directory and slots. Availability changes require the owning doctor."
+      }
+    },
+    {
+      "name": "GET /doctors/{id}/available-slots",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/doctors/{{id}}/available-slots",
+        "description": "Public directory and slots. Availability changes require the owning doctor."
+      }
+    },
+    {
+      "name": "PUT /doctors/{id}/availability",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/doctors/{{id}}/availability",
+        "description": "Public directory and slots. Availability changes require the owning doctor.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "POST /encounters",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/encounters",
+        "description": "Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"appointmentId\": \"{{appointmentId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"chiefComplaint\": \"Synthetic chiefComplaint fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /encounters/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/encounters/{{id}}",
+        "description": "Assigned doctor or assigned nurse with scoped consent; patient may read own encounters."
+      }
+    },
+    {
+      "name": "PATCH /encounters/{id}/complete",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/encounters/{{id}}/complete",
+        "description": "Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "POST /encounters/vitals",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/encounters/vitals",
+        "description": "Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"encounterId\": \"{{encounterId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"systolicBp\": 50,\n  \"diastolicBp\": 30,\n  \"heartRate\": 30\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /encounters/diagnoses",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/encounters/diagnoses",
+        "description": "Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"encounterId\": \"{{encounterId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"icdCode\": \"Synthetic icdCode fixture\",\n  \"icdDescription\": \"Synthetic icdDescription fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /fhir/Patient",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Patient",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Patient/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Patient/{{id}}",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Appointment",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Appointment",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Appointment/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Appointment/{{id}}",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Encounter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Encounter",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Encounter/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Encounter/{{id}}",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Observation",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Observation",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /fhir/Observation/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/fhir/Observation/{{id}}",
+        "description": "Authenticated patient self or assigned clinician with consent. Local R4-shaped mock."
+      }
+    },
+    {
+      "name": "GET /lab/orders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/lab/orders",
+        "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values."
+      }
+    },
+    {
+      "name": "GET /lab/orders/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/lab/orders/{{id}}",
+        "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values."
+      }
+    },
+    {
+      "name": "POST /lab/orders",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/lab/orders",
+        "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"encounterId\": \"{{encounterId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"testPanelName\": \"Synthetic testPanelName fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /lab/results",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/lab/results",
+        "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"labOrderId\": \"{{labOrderId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"testName\": \"Synthetic testName fixture\",\n  \"testCode\": \"Synthetic testCode fixture\",\n  \"measuredValue\": \"Synthetic measuredValue fixture\",\n  \"unit\": \"Synthetic unit fixture\"\n}"
+        }
+      }
+    },
+    {
+      "name": "PATCH /lab/results/{id}/validate",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/lab/results/{{id}}/validate",
+        "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "PATCH /lab/orders/{id}/status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/lab/orders/{{id}}/status",
+        "description": "Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "GET /notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/notifications",
+        "description": "Authenticated user owns the notification."
+      }
+    },
+    {
+      "name": "PATCH /notifications/{id}/read",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/notifications/{{id}}/read",
+        "description": "Authenticated user owns the notification.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "GET /operations/analytics-source",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/operations/analytics-source",
+        "description": "Administrator only; operational projections exclude clinical identifiers."
+      }
+    },
+    {
+      "name": "GET /operations/staff",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/operations/staff",
+        "description": "Administrator only; operational projections exclude clinical identifiers."
+      }
+    },
+    {
+      "name": "PATCH /operations/staff/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/operations/staff/{{id}}",
+        "description": "Administrator only; operational projections exclude clinical identifiers.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "POST /operations/staff",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/operations/staff",
+        "description": "Administrator only; operational projections exclude clinical identifiers.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "POST /operations/departments",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/operations/departments",
+        "description": "Administrator only; operational projections exclude clinical identifiers.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "POST /operations/care-assignments",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/operations/care-assignments",
+        "description": "Administrator only; operational projections exclude clinical identifiers.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "GET /patients",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/patients",
+        "description": "Self or assigned clinician with active consent for charts; operational staff get demographic listings only."
+      }
+    },
+    {
+      "name": "GET /patients/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/patients/{{id}}",
+        "description": "Self or assigned clinician with active consent for charts; operational staff get demographic listings only."
+      }
+    },
+    {
+      "name": "PATCH /patients/{id}",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/patients/{{id}}",
+        "description": "Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
+    },
+    {
+      "name": "GET /prescriptions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/prescriptions",
+        "description": "Assigned doctor writes; patient self and assigned clinician read."
+      }
+    },
+    {
+      "name": "GET /prescriptions/{id}",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/prescriptions/{{id}}",
+        "description": "Assigned doctor writes; patient self and assigned clinician read."
+      }
+    },
+    {
+      "name": "POST /prescriptions",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/prescriptions",
+        "description": "Assigned doctor writes; patient self and assigned clinician read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"encounterId\": \"{{encounterId}}\",\n  \"patientId\": \"{{patientId}}\",\n  \"items\": [\n    {\n      \"medicationName\": \"Synthetic medicationName fixture\",\n      \"dosage\": \"Synthetic dosage fixture\",\n      \"frequency\": \"Synthetic frequency fixture\",\n      \"durationDays\": 1,\n      \"quantity\": 1\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "PATCH /prescriptions/{id}/status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/prescriptions/{{id}}/status",
+        "description": "Assigned doctor writes; patient self and assigned clinician read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      }
     }
   ]
 }

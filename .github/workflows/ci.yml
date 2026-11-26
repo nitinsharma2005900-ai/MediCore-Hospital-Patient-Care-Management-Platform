@@ -1,107 +1,77 @@
-name: MediCore Healthcare Platform CI
-
+name: MediCore verified quality
 on:
   push:
-    branches: [main, develop, 'feature/**']
   pull_request:
-    branches: [main, develop]
-
+permissions:
+  contents: read
 jobs:
-  # ----------------------------------------------------------------------------
-  # 1. Express Backend Automated Test Suite
-  # ----------------------------------------------------------------------------
-  backend-test:
-    name: Backend Jest Tests & Type Check
+  quality:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: {POSTGRES_USER: medicore, POSTGRES_PASSWORD: disposable-ci-password, POSTGRES_DB: medicore}
+        ports: ['5432:5432']
+        options: --health-cmd "pg_isready -U medicore" --health-interval 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://medicore:disposable-ci-password@127.0.0.1:5432/medicore
+      REDIS_URL: redis://127.0.0.1:6379
+      JWT_ACCESS_SECRET: disposable-ci-access-key-with-at-least-48-characters
+      JWT_REFRESH_SECRET: disposable-ci-refresh-key-with-at-least-48-characters
+      BACKEND_BASE_URL: http://127.0.0.1:4010
+      ANALYTICS_SERVICE_URL: http://127.0.0.1:8010
+      CORS_ORIGIN: http://localhost:3010
+      PORT: 4010
+      SEED_DEMO: 'true'
+      RUN_WORKER: 'true'
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: Install Monorepo Dependencies
-        run: npm ci
-
-      - name: Build Shared Package
-        run: npm run build --workspace=packages/shared
-
-      - name: Backend TypeScript Compile
-        run: npm run build --workspace=apps/backend
-
-      - name: Execute Automated Backend Test Suite
-        run: npm --workspace=apps/backend run test
-
-  # ----------------------------------------------------------------------------
-  # 2. Python FastAPI Analytics & Processing Test Suite
-  # ----------------------------------------------------------------------------
-  python-analytics-test:
-    name: Python Analytics Pytest & Benchmarks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-          cache: 'pip'
-
-      - name: Install Python Requirements
-        run: pip install -r apps/analytics-service/requirements.txt
-
-      - name: Execute Pytest Validation & Benchmark Tests
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22', cache: npm}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13', cache: pip}
+      - run: npm ci
+      - run: pip install -r apps/analytics-service/requirements.txt
+      - run: npm run build --workspace=packages/shared && npm run build --workspace=apps/backend
+      - run: npm run lint
+      - run: npm test --workspace=apps/backend -- --runInBand --silent --coverage
+      - run: npm test --workspace=apps/frontend
+      - run: PYTHONPATH=apps/analytics-service python -m pytest apps/analytics-service/tests -q --junitxml=python-results.xml
+      - run: npm audit --audit-level=high
+      - run: npm run build --workspace=apps/frontend
+      - name: Start migrated PostgreSQL environment
         run: |
-          cd apps/analytics-service
-          export PYTHONPATH="."
-          python -m pytest tests -v
-
-  # ----------------------------------------------------------------------------
-  # 3. Next.js Frontend Build & Lint
-  # ----------------------------------------------------------------------------
-  frontend-build:
-    name: Next.js Frontend Production Build
+          node apps/backend/dist/server.js > backend.log 2>&1 &
+          python -m uvicorn main:app --app-dir apps/analytics-service --host 127.0.0.1 --port 8010 > analytics.log 2>&1 &
+          node node_modules/next/dist/bin/next start apps/frontend -p 3010 > frontend.log 2>&1 &
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:4010/ready && curl --fail --silent http://127.0.0.1:8010/health && curl --fail --silent http://localhost:3010/login > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - run: node scripts/verify_postgres.cjs
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: actual-test-evidence
+          path: |
+            docs/evidence/
+            docs/screenshots/
+            apps/backend/coverage/
+            python-results.xml
+            *.log
+  containers:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: Install Monorepo Dependencies
-        run: npm ci
-
-      - name: Build Shared Package
-        run: npm run build --workspace=packages/shared
-
-      - name: Build Next.js Production Bundle
-        run: npm run build --workspace=apps/frontend
-        env:
-          NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
-          NEXT_PUBLIC_ANALYTICS_URL: http://localhost:8000
-
-  # ----------------------------------------------------------------------------
-  # 4. Security & Vulnerability Scanning
-  # ----------------------------------------------------------------------------
-  security-audit:
-    name: Dependency Vulnerability Audit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Monorepo Security Audit
-        run: npm audit --audit-level=high || true
+      - uses: actions/checkout@v4
+      - name: Build non-root application containers
+        run: |
+          docker build -f apps/backend/Dockerfile -t medicore-backend:ci .
+          docker build -f apps/frontend/Dockerfile -t medicore-frontend:ci .
+          docker build -f apps/analytics-service/Dockerfile -t medicore-analytics:ci .
