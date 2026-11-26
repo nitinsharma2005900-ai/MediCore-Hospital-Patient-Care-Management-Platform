@@ -15,6 +15,11 @@ python=ET.parse(root/'docs/python-tests.xml').getroot();python_total=sum(int(s.a
 python_failed=sum(int(s.attrib.get('failures',0))+int(s.attrib.get('errors',0)) for s in python.findall('.//testsuite'))
 browser_stats=browser.get('stats',{});browser_passed=browser_stats.get('expected',0);browser_failed=browser_stats.get('unexpected',0);browser_skipped=browser_stats.get('skipped',0)
 counts=[('Backend Jest / Supertest (isolated memory fixtures)',backend.get('numTotalTests',0),backend.get('numPassedTests',0),backend.get('numFailedTests',0),backend.get('numPendingTests',0)),('React Testing Library / Vitest',frontend.get('numTotalTests',0),frontend.get('numPassedTests',0),frontend.get('numFailedTests',0),frontend.get('numPendingTests',0)),('Python pytest / HTTPX',python_total,python_total-python_failed,python_failed,0),('Real PostgreSQL integration checks',pg.get('total',0),pg.get('passed',0),pg.get('failed',0),0),('Playwright browser tests',browser_passed+browser_failed+browser_skipped,browser_passed,browser_failed,browser_skipped),('Controlled outage / queue checks',outage.get('total',0),outage.get('passed',0),outage.get('failed',0),0)]
+live=load('docs/evidence/live-results.json');live_browser=load('docs/evidence/live-playwright-results.json').get('stats',{})
+if live:
+ counts.append(('Live Render API / workflow checks',live['total'],live['passed'],live['failed'],live.get('skipped',0)))
+if live_browser:
+ counts.append(('Live Render Playwright browser tests',sum(live_browser.get(k,0) for k in ['expected','unexpected','skipped']),live_browser.get('expected',0),live_browser.get('unexpected',0),live_browser.get('skipped',0)))
 total=sum(x[1] for x in counts);passed=sum(x[2] for x in counts);failed=sum(x[3] for x in counts);skipped=sum(x[4] for x in counts)
 ci=load('docs/evidence/github-ci.json')
 ci_url=ci.get('url',repo+'/actions');ci_status=ci.get('conclusion') or ci.get('status','not captured')
@@ -29,10 +34,10 @@ items=[
 ('Healthcare interoperability','Partially completed','controllers/fhir.controller.ts; jobs/notifications.ts; integrations','/fhir/Patient, Appointment, Encounter, Observation; /notifications','Four authenticated FHIR resource checks; durable sandbox worker/outage tests','FHIR is an explicit local R4-shaped mock. EMAIL/SMS delivery is a local database-backed simulator; no SMTP provider or external SMS delivery is verified.'),
 ('Docker healthcare environment','Completed and verified','Dockerfiles; docker-compose.yml; .dockerignore','Frontend, API, analytics, PostgreSQL, Redis and separate worker','Actual GitHub Actions containers job and container runtime logs','Builds and full Compose runtime passed in GitHub Actions. Non-root application UIDs and unexposed database/Redis ports are checked. Docker is unavailable on this Windows host.'),
 ('Git and clinical change review','Partially completed','.github/CODEOWNERS; pull request template; review checklists; Git history','GitHub branches and pull request','Remote push/commit verification; github-protection.log','Original commit preserved; meaningful audit commits and feature branch pushed. GitHub rejected private-repository branch protection with HTTP 403. No peer approval is claimed.'),
-('Healthcare CI/CD','Partially completed','.github/workflows/ci.yml; deploy.yml','GitHub Actions quality and container jobs; manual Render release hooks','Actual successful CI runs and downloaded artifacts','Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. Staging/live releases and protected environment reviewers remain unverified.'),
+('Healthcare CI/CD','Partially completed','.github/workflows/ci.yml; deploy.yml','GitHub Actions quality and container jobs; manual Render release hooks','Actual successful CI runs and downloaded artifacts; Render deploy records','Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. The live demo was released through the authorized Render CLI; staged release hooks and protected environment reviewers remain unverified.'),
 ('Privacy and workflow testing','Completed and verified','apps/backend/src/__tests__; analytics-service/tests; tests/e2e; scripts/verify_postgres.cjs','Success, validation, privacy, concurrency and dependency failure paths','TEST_REPORT.md and docs/evidence','Executed results and coverage are reported exactly. Coverage is partial; memory-fixture tests are distinguished from actual PostgreSQL checks.'),
 ('Healthcare API documentation','Completed and verified','src/swagger/openapi.json; postman collection; docs/API_REFERENCE.md','All 62 actual Express operations and five FastAPI analytics endpoints','Router inventory generation; OpenAPI validation; live Swagger checks','Request schemas, examples, errors and permission rules are documented. FHIR success responses differ from the standard REST envelope.'),
-('Secure hospital deployment','Blocked','render.yaml; DEPLOYMENT_GUIDE.md; backup tools','No verified public Render application/API URL','Real local backup/restore and readiness checks; Render access discovery','Render is not connected to this session. No cloud resource, HTTPS deployment, cloud backup, DNS configuration or production workflow is claimed as verified.'),
+('Secure hospital deployment','Partially completed','render.yaml; DEPLOYMENT_GUIDE.md; bootstrap_render_database.cjs; verify_live.cjs','Public HTTPS frontend, Express API and FastAPI on Render','render-deployment.json; live-results.json; live-playwright-results.json; genuine cloud screenshots','Three free services are live, using private existing datastore instances with a separate MediCore database/login and Redis database 2. All seven roles, care/billing/privacy, analytics and queue delivery were exercised. Off-host cloud backups, retention archival, a separate migration owner, dedicated worker and production availability remain outstanding.'),
 ('Healthcare incident simulation','Completed and verified','INCIDENT_REPORT.md; docs/incidents; verify_outages.cjs','Unauthorized access, collision, queue delay, database outage and lab association','Real PostgreSQL, queue and outage evidence','All incidents are controlled local simulations against synthetic data. They are not production incidents.')]
 assessment_data=[{'number':i+1,'name':name,'status':status,'summary':summary,'sources':sources,'endpoints':endpoints,'tests':tests} for i,(name,status,sources,endpoints,tests,summary) in enumerate(items)]
 write('docs/evidence/assessment-status.json',json.dumps(assessment_data,indent=2))
@@ -57,7 +62,7 @@ GitHub CI: **{ci_status}**. [Captured run]({ci_url}). Three application Docker i
 ## Verified boundaries
 
 - Real PostgreSQL requests cover registration, role restriction, competing bookings, direct SQL exclusion, check-in, encounters, vitals, diagnoses, prescriptions, lab association, release, consent revocation, invoice/payment persistence, FHIR and FastAPI.
-- Browser checks cover all seven roles at 360, 390, 768, 1024, 1440 and 1920 pixels; route protection, real appointment booking, landing pages and printable invoices. Screenshots come from Chromium against the running local app.
+- Browser checks cover all seven roles at 360, 390, 768, 1024, 1440 and 1920 pixels; route protection, real appointment booking, landing pages and printable invoices. Separate Chromium runs cover localhost and the public Render app; cloud screenshots are in docs/screenshots/live.
 - Outage checks actually stop and restart only the session-owned PostgreSQL cluster on port 5546 and Redis on 6386. They verify 503 responses, retained records, a durable notification outbox, three retries and controlled recovery.
 - A real `pg_dump` archive was restored into a new disposable database. Row counts and critical constraints matched. The application database was not overwritten.
 
@@ -65,7 +70,7 @@ GitHub CI: **{ci_status}**. [Captured run]({ci_url}). Three application Docker i
 
 The initial project used memory despite claiming PostgreSQL verification. A direct SQL overlap test exposed timestamp conversion drift, corrected by the `timestamptz` migration. Browser checks exposed missing Tailwind utilities on Windows and overflowing patient tabs; both were fixed. The notification menu initially consumed the wrong API response shape; it now reads the actual envelope. Refresh replay/logout and unauthenticated FHIR access were corrected. Test fixture mistakes were corrected without removing or weakening security assertions.
 
-No exhaustive test of every possible page state, assistive technology or production integration is claimed. Render deployment and live production testing are blocked by account access. Full detailed results: `docs/backend-tests.json`, `docs/python-tests.xml`, `docs/evidence/frontend-tests.json`, `postgres-results.json`, `playwright-results.json`, `outage-results.json`, `backup-restore.json` and container logs.
+No exhaustive test of every possible page state, assistive technology or production integration is claimed. Live synthetic checks cover HTTPS, seven roles, privacy, concurrent bookings, care, labs, billing, Redis delivery and authoritative FastAPI analytics. Initial live attempt failures and corrections are retained in docs/evidence/live-verification-notes.md. Full detailed results: `docs/backend-tests.json`, `docs/python-tests.xml`, `docs/evidence/frontend-tests.json`, `postgres-results.json`, `playwright-results.json`, `live-results.json`, `live-playwright-results.json`, `outage-results.json`, `backup-restore.json` and container logs.
 ''')
 brief=(root/'docs/original-assessment-extracted.txt').read_text(encoding='utf-8')
 sections=['# Assessment traceability\n\n'+f'Audited against all 12 pages of project3.pdf. Updated {stamp}. No evaluation score is assigned.\n\n'+table]
@@ -90,16 +95,16 @@ for i,(name,status,sources,endpoints,tests,summary) in enumerate(items,1):
 write('ASSESSMENT_CHECKLIST.md','\n\n'.join(sections))
 write('KNOWN_LIMITATIONS.md','''# Known limitations
 
-- Render deployment is blocked: the Render plugin remains unconnected. No public application/API URL or production screenshot is verified. The Blueprint requires account review and actual service URLs.
+- The complete synthetic demo is live on three free Render services. It shares existing datastore compute with other projects, while using a separate database/login and Redis logical database/queue. Shared compute is an availability boundary, not a production isolation guarantee. No paid resources were purchased.
 - GitHub returned HTTP 403 for private-repository branch protection on this account. No peer review/approval is claimed. CODEOWNERS names the real repository owner, not fictional teams.
 - FHIR is a documented local R4-shaped mock. EMAIL/SMS are explicit local delivery simulators backed by PostgreSQL/Redis. There is no verified SMTP, external SMS, real payment or insurance integration.
 - The active persistence adapter preserves the original controllers by loading a request-scoped unit of work and serializing it with a PostgreSQL advisory lock. It is correct for this synthetic demonstration but is not a high-throughput hospital architecture. A larger system should use scoped SQL repositories and finer transaction locks; the database exclusion constraint remains essential.
 - Rate-limit buckets are in process memory. Refresh sessions, business data, consent, audits and notification delivery are persisted in PostgreSQL. Multi-instance abuse controls need a shared rate limiter.
 - Both the JWT access token and refresh token are held in browser tab storage. React escapes displayed text, but stronger XSS defenses and an HttpOnly session/BFF design should be evaluated before real-world use. Current bearer-only API calls do not use ambient authentication cookies.
-- The local PostgreSQL role owns the demonstration database. Production should separate the migration owner from a restricted runtime role. Audit update/delete is blocked by a trigger, but infrastructure administrators can alter database policy.
+- The Render role has no superuser, CREATEROLE, CREATEDB or BYPASSRLS privilege and owns only the MediCore database. It still runs migrations and business requests under one login; production should separate those roles. The temporary provisioner URL was removed after setup. Audit update/delete is blocked by a trigger, but infrastructure administrators can alter database policy.
 - The final test report is evidence of the stated cases, not proof of exhaustive correctness or legal/medical/regulatory compliance. Screen readers, browsers other than Chromium, cloud disaster recovery, retention archival and production load are not verified.
 - Windows setup defaults reference existing PostgreSQL/Redis tools on this computer. Other computers should use Docker or supply tool paths. Database and Redis ports are isolated from the other projects already running here.
-- Free Render PostgreSQL expires after 30 days; only one free database and one free Key Value instance can exist per workspace. Free Key Value data can disappear on restart, and free web services sleep. The PostgreSQL outbox supports queue recovery; the worker pauses when its hosting web service sleeps.
+- The existing free Render PostgreSQL instance expires on 25 December 2026 at 19:00 UTC. Only one free PostgreSQL instance and one free Key Value instance can be active per workspace. Free Key Value data can disappear on restart, free web services sleep after 15 idle minutes, and 750 monthly instance hours are shared by the workspace. The PostgreSQL outbox supports queue recovery; the worker pauses when its hosting web service sleeps. Cold starts and redeploys can briefly interrupt requests; retry after startup.
 - Free Render does not provide a dedicated background worker or managed PostgreSQL backups. The free demo configuration runs the BullMQ consumer inside the API process. A paid worker/backup solution requires the user's approval; no purchase was made.
 ''')
 write('SECURITY_REPORT.md','''# Security review
@@ -137,7 +142,16 @@ write('DEPLOYMENT_GUIDE.md',f'''# Deployment and recovery guide
 
 ## Actual status
 
-Source repository: [{repo}]({repo}). Render is not connected to this session. There is **no verified public Render application or API URL**. Local services and real GitHub CI/Docker execution are verified separately; they are not evidence of cloud deployment.
+Source repository: [{repo}]({repo}). The complete synthetic application is deployed and verified on Render:
+
+- Website: https://medicore-nitinsharma.onrender.com
+- Express API: https://medicore-api-nitinsharma.onrender.com/api/v1
+- API readiness: https://medicore-api-nitinsharma.onrender.com/ready
+- Express Swagger: https://medicore-api-nitinsharma.onrender.com/api-docs/
+- FastAPI: https://medicore-analytics-nitinsharma.onrender.com/health
+- FastAPI Swagger: https://medicore-analytics-nitinsharma.onrender.com/docs
+
+Actual deploy IDs, source revisions, free plans, private connectivity checks and public verification are in docs/evidence/render-deployment.json, live-results.json and live-playwright-results.json. This is a free educational demonstration, with the limitations below.
 
 ## Windows localhost
 
@@ -147,7 +161,7 @@ This checkout uses 3010 (Next.js), 4010 (Express), 8010 (FastAPI), 5546 (dedicat
 Set-Location 'C:\\Users\\amits\\Downloads\\MediCore_Complete_Project'
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local.ps1
 npm ci
-python -m pip install -r apps/analytics-service/requirements.txt
+py -3.13 -m pip install -r apps/analytics-service/requirements.txt
 npm run build --workspace=packages/shared
 npm run build --workspace=apps/backend
 npm run build --workspace=apps/frontend
@@ -167,22 +181,22 @@ docker compose up -d --build --wait
 
 The six services include a dedicated worker. PostgreSQL and Redis have private networks, persistent volumes and no published ports. Frontend/API/analytics ports are loopback-only. Application containers run without root. GitHub Actions checks the actual builds, Compose health, non-root UIDs and datastore port isolation. Docker is not installed on this Windows host.
 
-## Render account action required
+## Render configuration and redeployment
 
-1. Connect the Render plugin in ChatGPT or sign into the [Render dashboard](https://dashboard.render.com/). Authorize the private GitHub repository above. No credential should be pasted into chat or committed.
-2. Inspect existing services, regions and the workspace's free database/Key Value limits. Reuse only compatible MediCore resources; do not point MediCore at another project's business database. Review the Blueprint preview for duplicates before approving it.
-3. Review `render.yaml`. All declared plans are free. The free alternative runs the same BullMQ consumer within the API process; a dedicated paid worker must not be purchased without approval.
+1. Render CLI authorization was completed in the browser. The official CLI and API were used because the Render plugin was unavailable. Never paste control-plane credentials into chat, app variables, Git or documentation.
+2. The Singapore workspace already contained free PostgreSQL and Key Value instances. A separate `medicore_demo_20261126` database and restricted `medicore_app_20261126` login were provisioned on that PostgreSQL instance. Existing business records were not changed. Redis URL selects logical database 2; BullMQ uses the medicore-notifications queue. Never run FLUSHALL or modify another project's data, users, network rules or plan.
+3. `render.yaml` declares only the three MediCore free web services and accepts existing private datastore URLs via secret environment variables. It passed Render Blueprint validation. The same BullMQ consumer runs inside the API process; no paid worker was purchased. Autodeploy is off for controlled manual releases.
 4. For a predictable first deployment, create/reuse datastores, deploy backend, deploy analytics with the actual backend HTTPS URL, then build frontend with both actual service HTTPS URLs. Free web services cannot receive private-network traffic, so their public HTTPS URLs are required for service-to-service HTTP. Database/Redis connections use private service URLs.
-5. Backend: repository root; build `npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/backend`; start `node apps/backend/dist/server.js`; health `/ready`. Supply DATABASE_URL, REDIS_URL, distinct generated JWT secrets, exact frontend CORS_ORIGIN, SEED_DEMO=true for this synthetic demo, RUN_WORKER=true. Bind dynamically to Render's PORT on 0.0.0.0.
+5. Backend: repository root; Node 22; build `npm ci --include=dev && npm run build --workspace=packages/shared && npm run build --workspace=apps/backend`; start `node apps/backend/dist/server.js`; health `/ready`. DATABASE_URL uses the restricted MediCore login and private hostname; REDIS_URL uses private database 2. Distinct random JWT secrets exist only in Render, exact frontend CORS_ORIGIN is configured, SEED_DEMO=true and RUN_WORKER=true. The app binds Render's PORT on 0.0.0.0. The one-time bootstrap script was verified with a non-superuser provisioner. Its temporary DATABASE_BOOTSTRAP_URL and start-command prefix were removed after provisioning; do not add them to ordinary redeploys.
 6. Analytics: root; build `pip install -r apps/analytics-service/requirements.txt`; start `uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port $PORT`; health `/health`; set BACKEND_BASE_URL to the actual API HTTPS origin and exact CORS_ORIGIN.
-7. Frontend: root; build `npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend`; start `npm run start --workspace=apps/frontend`. Set BACKEND_BASE_URL and ANALYTICS_SERVICE_URL to the actual HTTPS origins **before building**, because rewrites are compiled. Browser API calls use the same frontend origin. The startup helper serves the standalone build with the dynamic PORT.
+7. Frontend: root; Node 22; build `npm ci --include=dev && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend`; start `npm run start --workspace=apps/frontend`. BACKEND_BASE_URL and ANALYTICS_SERVICE_URL are the actual HTTPS origins **at build time**, because rewrites are compiled. Browser API calls use the same frontend origin. The startup helper serves the standalone build with the dynamic PORT.
 8. Validate all seven logins, the complete workflow, denial cases, persistence after restart, both Swagger UIs, analytics, queue delivery and HTTPS in a fresh browser session. Record actual URLs and screenshots only after verification. No localhost API origin belongs in production variables.
 
 Render provides managed HTTPS for its default domains. Custom DNS requires an actual owned domain and configured records; none was provisioned. Free PostgreSQL expires after 30 days, free Key Value is not durable, free web services sleep and no dedicated free worker exists. Free managed database backups are unavailable. See [Render free plans](https://render.com/docs/free), [Blueprint reference](https://render.com/docs/blueprint-spec), and [worker plans](https://render.com/docs/migrate-from-heroku). No paid service or subscription was purchased.
 
 ## Backup / restore and operations
 
-`python scripts/verify_backup.py` creates a real custom-format pg_dump archive in ignored `.runtime`, restores into a new uniquely named disposable database, compares counts/constraints, then removes only that disposable database. Evidence is in docs/evidence/backup-restore.json. `scripts/run-backup.ps1` creates an actual backup plus SHA-256 file and fails if pg_dump fails. It never produces a simulated success.
+`py -3.13 scripts/verify_backup.py` creates a real custom-format pg_dump archive in ignored `.runtime`, restores into a new uniquely named disposable database, compares counts/constraints, then removes only that disposable database. Evidence is in docs/evidence/backup-restore.json. `scripts/run-backup.ps1` creates an actual backup plus SHA-256 file and fails if pg_dump fails. It never produces a simulated success.
 
 For a production restore, first verify the SHA-256, capture a fresh pre-restore backup, isolate writes, restore into a separate target, compare row counts and critical constraints, then perform an explicitly approved cutover. The provided verification tool deliberately does not overwrite the application database. Configure off-host encrypted backups and test recovery before treating a deployment as production. Cloud backup and retention archival are not configured/verified here.
 
@@ -190,7 +204,7 @@ Monitor `/health`, `/ready`, structured request IDs, queue attempts and delivery
 
 ## GitHub release controls
 
-The CI workflow runs tests, lint/type checks, npm audit, migration validation, Playwright and Docker/Compose. Deployment is manual workflow_dispatch with separate staging/production environments and secret Render deploy hooks. Configure real environment reviewers, three deploy-hook secrets and public endpoint variables before use. Private branch protection was rejected with HTTP 403 on this account; see docs/evidence/github-protection.log. No peer review, staging release or live Render release is claimed.
+The CI workflow runs tests, lint/type checks, npm audit, migration validation, Playwright and Docker/Compose. The verified live demo was deployed manually through the authorized official Render CLI. The workflow_dispatch release scaffold still requires real environment reviewers, three deploy-hook secrets and public endpoint variables before use. Private branch protection was rejected with HTTP 403 on this account; see docs/evidence/github-protection.log. No peer review or protected staging release is claimed.
 
 No external AI, FHIR, SMTP or SMS API key is needed for the verified local demo. FHIR and outbound messages are explicitly local mock/simulator integrations.
 ''')
@@ -202,7 +216,7 @@ MediCore preserves the existing Next.js/Express/FastAPI application and now pers
 
 ## Verified result
 
-{total} final recorded checks: {passed} passed, {failed} failed, {skipped} skipped. See [TEST_REPORT.md](TEST_REPORT.md) for actual suite counts, coverage and boundaries. [GitHub source]({repo}). Render deployment remains blocked by account access; no live URL is claimed.
+{total} final recorded checks: {passed} passed, {failed} failed, {skipped} skipped. See [TEST_REPORT.md](TEST_REPORT.md) for suite counts and coverage. [Live MediCore](https://medicore-nitinsharma.onrender.com) · [Express Swagger](https://medicore-api-nitinsharma.onrender.com/api-docs/) · [FastAPI Swagger](https://medicore-analytics-nitinsharma.onrender.com/docs) · [GitHub source]({repo}). The complete free Render demo uses private PostgreSQL/Redis and the embedded BullMQ worker. Cold starts can take about a minute; refresh after startup. The database expires 25 December 2026.
 
 {table}
 
@@ -214,7 +228,7 @@ Requirements: Node.js 22, Python 3.13, PostgreSQL and Redis executables. Existin
 Set-Location 'C:\\Users\\amits\\Downloads\\MediCore_Complete_Project'
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local.ps1
 npm ci
-python -m pip install -r apps/analytics-service/requirements.txt
+py -3.13 -m pip install -r apps/analytics-service/requirements.txt
 npm run build --workspace=packages/shared
 npm run build --workspace=apps/backend
 npm run build --workspace=apps/frontend
@@ -243,11 +257,11 @@ npm test --workspace=apps/frontend
 npm run lint
 npm run typecheck --workspace=apps/frontend
 $env:PYTHONPATH='apps/analytics-service'
-python -m pytest apps/analytics-service/tests -q
+py -3.13 -m pytest apps/analytics-service/tests -q
 node scripts/verify_postgres.cjs
 npx playwright install chromium
 npx playwright test
-python scripts/verify_backup.py
+py -3.13 scripts/verify_backup.py
 ```
 
 The outage script stops only the dedicated synthetic PostgreSQL/Redis instances after validating ports. It requires API worker polling to be disabled during its controlled queue-failure fixture. Use `scripts/verify_outages.cjs` only as described in INCIDENT_REPORT.md; do not run it against another deployment.
@@ -257,6 +271,8 @@ The outage script stops only the dedicated synthetic PostgreSQL/Redis instances 
 [Assessment checklist](ASSESSMENT_CHECKLIST.md) · [Security](SECURITY_REPORT.md) · [Incidents](INCIDENT_REPORT.md) · [Deployment](DEPLOYMENT_GUIDE.md) · [Known limitations](KNOWN_LIMITATIONS.md) · [Loom script](LOOM_DEMO_SCRIPT.md) · [Technical review](TECHNICAL_REVIEW_GUIDE.md) · [API reference](docs/API_REFERENCE.md) · [Final delivery report](FINAL_DELIVERY_REPORT.md).
 
 The final documentation PDF contains exactly 12 A4 pages. The final ZIP excludes actual environment files, credentials, dependencies, virtual environments, databases, caches and build output. Cohort policy must permit AI assistance; the learner remains responsible for correctness and explaining the code.
+
+To regenerate the submission, use Python 3.13, install `scripts/requirements-docs.txt`, then run `scripts/generate_submission_docs.py`, `scripts/build_documentation_pdf.py` and `scripts/build_package.py`. Inspect every regenerated PDF page. The packager checks CRCs and performs a real extraction into ignored `.runtime`. The final package's `GIT_DELIVERY_STATUS.json` records the delivered branch, exact commit and remote push; its adjacent ZIP checksum is outside the archive.
 ''')
 write('LOOM_DEMO_SCRIPT.md',f'''# MediCore demonstration script — 7 minutes 30 seconds
 
@@ -278,7 +294,7 @@ write('LOOM_DEMO_SCRIPT.md',f'''# MediCore demonstration script — 7 minutes 30
 
 **5:45–6:15 — GitHub.** Show {repo}, real commits, feature branch/pull request and actual Actions results. Branch protection was unavailable for the private repository on this account; no peer approval is claimed.
 
-**6:15–6:50 — Deployment.** If Render is still blocked, say: “Local and CI Docker execution are verified, but Render access is not connected. I am showing the deployment configuration, not claiming a live deployment.” If a deployment is later verified, show the actual HTTPS URL and the same workflow in a fresh session.
+**6:15–6:50 — Deployment.** Open https://medicore-nitinsharma.onrender.com in a fresh session, show API readiness and analytics health, and explain the three free services, private datastore addresses and embedded worker. State the database's 25 December 2026 expiry, idle cold starts and missing managed backups. Show actual deployment evidence without revealing environment values.
 
 **6:50–7:30 — Conclusion.** Show the real test counts and five controlled incident reports. Mention the local FHIR/mock delivery scope, scaling limits and remaining cloud/review work. Offer to trace a browser action through Express to PostgreSQL or make a small change during review.
 
@@ -319,7 +335,7 @@ questions=[
 ('What does CI verify?','Builds, types/lint, unit/API/Python/browser checks, dependency audit, migrations, images and complete Compose health/security checks. Consult the actual Actions run rather than assuming a YAML file proves success.'),
 ('What prevents an unapproved release?','The release is manually dispatched and expects configured environments, reviewers and deploy-hook secrets. Those cloud approval/release settings are not verified in this session.'),
 ('How would you restore a backup?','Verify its checksum and restore to a separate disposable target first. Compare counts and constraints, take a pre-cutover backup, and approve the production cutover explicitly.'),
-('What remains blocked?','Render account access, live HTTPS deployment/production verification, cloud backup/retention and actual peer review. Private branch protection was rejected by the account plan.'),
+('What remains incomplete?','The synthetic Render demo is live and verified. Off-host cloud backups/retention, separate migration credentials, protected staging releases and actual peer review remain incomplete. Private branch protection was rejected by the account plan; free hosting has expiry and sleep limits.'),
 ('How can you make a safe small change during review?','Find the route and shared validation schema, update the service/controller, add a meaningful regression for the changed behavior, run affected checks and explain the database/permission impact.')]
 write('TECHNICAL_REVIEW_GUIDE.md','# Technical review guide\n\nAnswers describe the actual implementation and its limits.\n\n'+'\n\n'.join(f'## {i}. {q}\n\n{a}' for i,(q,a) in enumerate(questions,1)))
 write('FINAL_DELIVERY_REPORT.md',f'''# MediCore final delivery report
@@ -353,7 +369,9 @@ The actual PostgreSQL workflow, database-level overlap, consent/IDOR boundaries,
 - Express Swagger: http://localhost:4010/api-docs/
 - FastAPI: http://localhost:8010 · Swagger: http://localhost:8010/docs
 - GitHub: {repo}
-- Render application/API URLs: **not available or verified**. Render is not connected; deployment/production checks remain blocked.
+- Render website: https://medicore-nitinsharma.onrender.com
+- Production demo API: https://medicore-api-nitinsharma.onrender.com/api/v1 · Swagger: https://medicore-api-nitinsharma.onrender.com/api-docs/
+- Render FastAPI: https://medicore-analytics-nitinsharma.onrender.com/health · Swagger: https://medicore-analytics-nitinsharma.onrender.com/docs
 
 ## Demo accounts
 
@@ -371,7 +389,7 @@ All files are in `C:\\Users\\amits\\Downloads\\MediCore_Complete_Project`:
 
 ## Remaining blockers
 
-Render must be connected and its actual existing resources inspected before cloud deployment. Free plan limits, lack of a free dedicated worker, expiring PostgreSQL and missing managed backups are documented. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. FHIR and outbound messages remain explicitly local mocks/simulators; no external API key is required. Cloud backup/retention, production infrastructure privilege separation, live DNS/HTTPS and all production workflows remain unverified.
+Render is deployed and live synthetic workflows are verified. Three free web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The temporary provisioner credential was removed. Remaining limits include the database's 25 December 2026 expiry, shared monthly hours, idle sleeps, embedded worker, missing off-host cloud backups/retention and a combined migration/runtime database owner. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. Protected staging release hooks remain unconfigured. FHIR and outbound messages remain explicit local mocks/simulators; no external API key is required. Default onrender.com DNS and HTTPS are verified; no custom domain was requested or provisioned.
 
 ## Run again
 
@@ -379,7 +397,7 @@ Render must be connected and its actual existing resources inspected before clou
 Set-Location 'C:\\Users\\amits\\Downloads\\MediCore_Complete_Project'
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local.ps1
 npm ci
-python -m pip install -r apps/analytics-service/requirements.txt
+py -3.13 -m pip install -r apps/analytics-service/requirements.txt
 npm run build --workspace=packages/shared
 npm run build --workspace=apps/backend
 npm run build --workspace=apps/frontend
@@ -387,6 +405,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local.ps1
 ```
 
 Do not overwrite the existing ignored `.env`. For Docker, another machine or Render, follow DEPLOYMENT_GUIDE.md.
+
+## GitHub handoff
+
+Original Git history was preserved. The audit was developed on `feature/verified-audit`, and [pull request 2]({repo}/pull/2) was merged into main without a fabricated peer approval. Subsequent commits implement and test the actual Render deployment. [Issue 1]({repo}/issues/1) tracks remaining review/production hardening. Latest captured source CI: `{ci.get('headSha','not captured')}`; [run]({ci_url}).
+
+The final ZIP includes `GIT_DELIVERY_STATUS.json` with the delivered main commit and verified push status. `MediCore_Final_Verified_Project.zip.sha256` sits next to the archive. Live services' actual deployed revisions are recorded individually in `docs/evidence/render-deployment.json`; a documentation-only delivery commit does not require redeploying unchanged application code.
 ''')
 write('docs/evidence/final-test-summary.json',json.dumps({'recorded_at':stamp,'suites':[{'name':n,'executed':t,'passed':p,'failed':f,'skipped':s} for n,t,p,f,s in counts],'total':total,'passed':passed,'failed':failed,'skipped':skipped,'backend_coverage':coverage,'ci_url':ci_url,'ci_status':ci_status},indent=2))
 print(f'Generated submission reports: {total} checks, {passed} passed, {failed} failed; {len(questions)} review questions')

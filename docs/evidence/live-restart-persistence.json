@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-11-26T06:18:27.118087+00:00",
+  "status": "passed",
+  "serviceId": "srv-dc3sm3bl550s73fg4ltg",
+  "beforeUptimeSeconds": 567.863963557,
+  "afterUptimeSeconds": 8.401032616,
+  "retainedSession": true,
+  "retainedPaidInvoice": true,
+  "unrelatedServicesRestarted": false,
+  "scope": "Restart only MediCore API; no shared datastore restart or outage"
+}

@@ -1,0 +1,13 @@
+{"event":"database_provisioning_failed","code":"42501"}
+{"event":"database_provisioning_failed","code":"42501"}
+{"event":"provisioning_capabilities","rolcreatedb":true,"rolcreaterole":true,"rolsuper":false}
+{"event":"medicore_database_provisioned","database":"medicore_demo_20261126","role":"medicore_app_20261126","isolated":true}
+{"event":"migration_applied","name":"20261126000000_init"}
+{"event":"migration_applied","name":"20261126010000_integrity"}
+{"event":"migration_applied","name":"20261126020000_assignments"}
+{"event":"migration_applied","name":"20261126030000_timezone"}
+{"event":"migration_applied","name":"20261126040000_audit"}
+{"event":"migration_applied","name":"20261126050000_relationships"}
+{"event":"server_started","port":10000,"database":"postgres"}
+{"event":"server_started","port":10000,"database":"postgres"}
+{"event":"server_started","port":10000,"database":"postgres"}

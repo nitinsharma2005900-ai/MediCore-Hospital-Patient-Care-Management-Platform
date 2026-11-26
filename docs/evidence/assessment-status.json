@@ -93,10 +93,10 @@
     "number": 11,
     "name": "Healthcare CI/CD",
     "status": "Partially completed",
-    "summary": "Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. Staging/live releases and protected environment reviewers remain unverified.",
+    "summary": "Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. The live demo was released through the authorized Render CLI; staged release hooks and protected environment reviewers remain unverified.",
     "sources": ".github/workflows/ci.yml; deploy.yml",
     "endpoints": "GitHub Actions quality and container jobs; manual Render release hooks",
-    "tests": "Actual successful CI runs and downloaded artifacts"
+    "tests": "Actual successful CI runs and downloaded artifacts; Render deploy records"
   },
   {
     "number": 12,
@@ -119,11 +119,11 @@
   {
     "number": 14,
     "name": "Secure hospital deployment",
-    "status": "Blocked",
-    "summary": "Render is not connected to this session. No cloud resource, HTTPS deployment, cloud backup, DNS configuration or production workflow is claimed as verified.",
-    "sources": "render.yaml; DEPLOYMENT_GUIDE.md; backup tools",
-    "endpoints": "No verified public Render application/API URL",
-    "tests": "Real local backup/restore and readiness checks; Render access discovery"
+    "status": "Partially completed",
+    "summary": "Three free services are live, using private existing datastore instances with a separate MediCore database/login and Redis database 2. All seven roles, care/billing/privacy, analytics and queue delivery were exercised. Off-host cloud backups, retention archival, a separate migration owner, dedicated worker and production availability remain outstanding.",
+    "sources": "render.yaml; DEPLOYMENT_GUIDE.md; bootstrap_render_database.cjs; verify_live.cjs",
+    "endpoints": "Public HTTPS frontend, Express API and FastAPI on Render",
+    "tests": "render-deployment.json; live-results.json; live-playwright-results.json; genuine cloud screenshots"
   },
   {
     "number": 15,

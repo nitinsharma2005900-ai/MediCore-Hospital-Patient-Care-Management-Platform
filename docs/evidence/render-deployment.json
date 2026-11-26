@@ -1,0 +1,151 @@
+{
+  "recordedAt": "2026-11-26T06:21:31.434064+00:00",
+  "workspaceId": "tea-dbbkduc9v7es73fhjcv0",
+  "services": {
+    "backend": {
+      "id": "srv-dc3sm3bl550s73fg4ltg",
+      "url": "https://medicore-api-nitinsharma.onrender.com",
+      "plan": "free",
+      "region": "singapore",
+      "startCommand": "node apps/backend/dist/server.js",
+      "environmentVariableNames": [
+        "CORS_ORIGIN",
+        "DATABASE_URL",
+        "JWT_ACCESS_SECRET",
+        "JWT_REFRESH_SECRET",
+        "NODE_ENV",
+        "NODE_VERSION",
+        "REDIS_URL",
+        "RUN_WORKER",
+        "SEED_DEMO"
+      ],
+      "checks": {
+        "noProvisionerCredential": true,
+        "databaseName": "medicore_demo_20261126",
+        "databaseRole": "medicore_app_20261126",
+        "databasePrivate": true,
+        "redisLogicalDatabase": "/2",
+        "redisPrivate": true,
+        "workerEnabled": true,
+        "distinctJwtSecrets": true,
+        "corsOrigin": "https://medicore-nitinsharma.onrender.com"
+      },
+      "deploys": [
+        {
+          "id": "dep-dc3souuc6qcc73bqecc0",
+          "status": "live",
+          "createdAt": "2026-11-26T06:06:51.713822Z",
+          "finishedAt": "2026-11-26T06:08:22.660838Z",
+          "commit": {
+            "id": "93900d60dfe5e217202cec77b51f78b4dbfdd4be",
+            "message": "fix: grant explicit role membership during Render database setup",
+            "createdAt": "2026-11-26T06:03:46Z"
+          }
+        },
+        {
+          "id": "dep-dc3snqbl550s73fg9a60",
+          "status": "deactivated",
+          "createdAt": "2026-11-26T06:04:25.465966Z",
+          "finishedAt": "2026-11-26T06:06:16.459005Z",
+          "commit": {
+            "id": "93900d60dfe5e217202cec77b51f78b4dbfdd4be",
+            "message": "fix: grant explicit role membership during Render database setup",
+            "createdAt": "2026-11-26T06:03:46Z"
+          }
+        },
+        {
+          "id": "dep-dc3sm3rl550s73fg4ngg",
+          "status": "update_failed",
+          "createdAt": "2026-11-26T06:00:47.599373Z",
+          "finishedAt": "2026-11-26T06:02:28.794006Z",
+          "commit": {
+            "id": "42380e2cf04e8f4f7474594d76f8c21ea2e30aba",
+            "message": "chore: deploy with isolated existing Render datastores",
+            "createdAt": "2026-11-26T05:58:22Z"
+          }
+        }
+      ]
+    },
+    "analytics": {
+      "id": "srv-dc3sm459el5s739hch20",
+      "url": "https://medicore-analytics-nitinsharma.onrender.com",
+      "plan": "free",
+      "region": "singapore",
+      "startCommand": "uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port $PORT",
+      "environmentVariableNames": [
+        "BACKEND_BASE_URL",
+        "CORS_ORIGIN",
+        "PYTHON_VERSION"
+      ],
+      "checks": {
+        "noProvisionerCredential": true
+      },
+      "deploys": [
+        {
+          "id": "dep-dc3sm4t9el5s739hci4g",
+          "status": "live",
+          "createdAt": "2026-11-26T06:00:51.029556Z",
+          "finishedAt": "2026-11-26T06:02:23.187954Z",
+          "commit": {
+            "id": "42380e2cf04e8f4f7474594d76f8c21ea2e30aba",
+            "message": "chore: deploy with isolated existing Render datastores",
+            "createdAt": "2026-11-26T05:58:22Z"
+          }
+        }
+      ]
+    },
+    "frontend": {
+      "id": "srv-dc3sm556e07s73dfm9u0",
+      "url": "https://medicore-nitinsharma.onrender.com",
+      "plan": "free",
+      "region": "singapore",
+      "startCommand": "npm run start --workspace=apps/frontend",
+      "environmentVariableNames": [
+        "ANALYTICS_SERVICE_URL",
+        "BACKEND_BASE_URL",
+        "NEXT_TELEMETRY_DISABLED",
+        "NODE_ENV",
+        "NODE_VERSION"
+      ],
+      "checks": {
+        "noProvisionerCredential": true
+      },
+      "deploys": [
+        {
+          "id": "dep-dc3sm5t6e07s73dfmbg0",
+          "status": "live",
+          "createdAt": "2026-11-26T06:00:55.222851Z",
+          "finishedAt": "2026-11-26T06:03:16.686026Z",
+          "commit": {
+            "id": "42380e2cf04e8f4f7474594d76f8c21ea2e30aba",
+            "message": "chore: deploy with isolated existing Render datastores",
+            "createdAt": "2026-11-26T05:58:22Z"
+          }
+        }
+      ]
+    }
+  },
+  "datastores": {
+    "postgres": {
+      "id": "dpg-dc3j0k5g1s2s73djgvn0-a",
+      "name": "fincore-demo-db",
+      "plan": "free",
+      "region": "singapore",
+      "status": "available",
+      "expiresAt": "2026-12-25T19:00:32.291304Z",
+      "ipAllowList": [],
+      "externalAccessDisabled": true
+    },
+    "redis": {
+      "id": "red-dc3j0khksfps73a7abg0",
+      "name": "fincore-demo-redis",
+      "plan": "free",
+      "region": "singapore",
+      "status": "available",
+      "expiresAt": null,
+      "ipAllowList": [],
+      "externalAccessDisabled": true
+    }
+  },
+  "paidResourcesCreated": false
+}

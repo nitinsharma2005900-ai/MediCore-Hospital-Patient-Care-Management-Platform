@@ -1,6 +1,6 @@
 # MediCore final delivery report
 
-Updated 26 November 2026, 11:00 IST. Developer: Nitin Sharma. Source was improved in the existing workspace; it was not rebuilt from scratch.
+Updated 26 November 2026, 11:56 IST. Developer: Nitin Sharma. Source was improved in the existing workspace; it was not rebuilt from scratch.
 
 ## Review and implementation
 
@@ -25,7 +25,7 @@ Important changes are under apps/backend/src/database, middlewares, controllers 
 | 11 | Healthcare CI/CD | Partially completed |
 | 12 | Privacy and workflow testing | Completed and verified |
 | 13 | Healthcare API documentation | Completed and verified |
-| 14 | Secure hospital deployment | Blocked |
+| 14 | Secure hospital deployment | Partially completed |
 | 15 | Healthcare incident simulation | Completed and verified |
 
 No evaluation score is assigned. Partial/blocked assessments are not presented as completed production work.
@@ -40,9 +40,11 @@ No evaluation score is assigned. Partial/blocked assessments are not presented a
 | Real PostgreSQL integration checks | 39 | 39 | 0 | 0 |
 | Playwright browser tests | 48 | 48 | 0 | 0 |
 | Controlled outage / queue checks | 4 | 4 | 0 | 0 |
-| **Total final recorded checks** | **162** | **162** | **0** | **0** |
+| Live Render API / workflow checks | 57 | 57 | 0 | 0 |
+| Live Render Playwright browser tests | 48 | 48 | 0 | 0 |
+| **Total final recorded checks** | **267** | **267** | **0** | **0** |
 
-Backend Jest line coverage: 56.97%; statement coverage: 53.41%. Frontend/Python coverage percentages were not measured. Shared/backend and frontend production builds, frontend type checking and ESLint passed. Docker images and the full Compose environment passed real GitHub CI. Latest captured CI state: success; [evidence](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45762497877). See TEST_REPORT.md for the exact boundaries, failure corrections and raw reports.
+Backend Jest line coverage: 56.97%; statement coverage: 53.41%. Frontend/Python coverage percentages were not measured. Shared/backend and frontend production builds, frontend type checking and ESLint passed. Docker images and the full Compose environment passed real GitHub CI. Latest captured CI state: success; [evidence](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45767540450). See TEST_REPORT.md for the exact boundaries, failure corrections and raw reports.
 
 The actual PostgreSQL workflow, database-level overlap, consent/IDOR boundaries, five incident scenarios, Redis/database restart recovery and isolated backup restore were exercised. No real patient data or payments were used.
 
@@ -53,7 +55,9 @@ The actual PostgreSQL workflow, database-level overlap, consent/IDOR boundaries,
 - Express Swagger: http://localhost:4010/api-docs/
 - FastAPI: http://localhost:8010 · Swagger: http://localhost:8010/docs
 - GitHub: https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform
-- Render application/API URLs: **not available or verified**. Render is not connected; deployment/production checks remain blocked.
+- Render website: https://medicore-nitinsharma.onrender.com
+- Production demo API: https://medicore-api-nitinsharma.onrender.com/api/v1 · Swagger: https://medicore-api-nitinsharma.onrender.com/api-docs/
+- Render FastAPI: https://medicore-analytics-nitinsharma.onrender.com/health · Swagger: https://medicore-analytics-nitinsharma.onrender.com/docs
 
 ## Demo accounts
 
@@ -81,7 +85,7 @@ All files are in `C:\Users\amits\Downloads\MediCore_Complete_Project`:
 
 ## Remaining blockers
 
-Render must be connected and its actual existing resources inspected before cloud deployment. Free plan limits, lack of a free dedicated worker, expiring PostgreSQL and missing managed backups are documented. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. FHIR and outbound messages remain explicitly local mocks/simulators; no external API key is required. Cloud backup/retention, production infrastructure privilege separation, live DNS/HTTPS and all production workflows remain unverified.
+Render is deployed and live synthetic workflows are verified. Three free web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The temporary provisioner credential was removed. Remaining limits include the database's 25 December 2026 expiry, shared monthly hours, idle sleeps, embedded worker, missing off-host cloud backups/retention and a combined migration/runtime database owner. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. Protected staging release hooks remain unconfigured. FHIR and outbound messages remain explicit local mocks/simulators; no external API key is required. Default onrender.com DNS and HTTPS are verified; no custom domain was requested or provisioned.
 
 ## Run again
 
@@ -89,7 +93,7 @@ Render must be connected and its actual existing resources inspected before clou
 Set-Location 'C:\Users\amits\Downloads\MediCore_Complete_Project'
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local.ps1
 npm ci
-python -m pip install -r apps/analytics-service/requirements.txt
+py -3.13 -m pip install -r apps/analytics-service/requirements.txt
 npm run build --workspace=packages/shared
 npm run build --workspace=apps/backend
 npm run build --workspace=apps/frontend
@@ -100,8 +104,6 @@ Do not overwrite the existing ignored `.env`. For Docker, another machine or Ren
 
 ## GitHub handoff
 
-The original Git commit was preserved and the audited implementation was developed on `feature/verified-audit`. [Pull request 2](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/pull/2) contains the source and evidence. [Issue 1](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/issues/1) tracks account-dependent deployment/review follow-up. No peer approval is claimed.
+Original Git history was preserved. The audit was developed on `feature/verified-audit`, and [pull request 2](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/pull/2) was merged into main without a fabricated peer approval. Subsequent commits implement and test the actual Render deployment. [Issue 1](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/issues/1) tracks remaining review/production hardening. Latest captured source CI: `3bf114425746b5be4f69ea2a62767de2e638e51f`; [run](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45767540450).
 
-The final package's `GIT_DELIVERY_STATUS.json` records the exact delivered branch, full commit hash and verified remote push status after the GitHub handoff. The ZIP checksum is in `MediCore_Final_Verified_Project.zip.sha256` next to the archive.
-
-Pull request 2 was merged into main. The merged application source passed both GitHub quality and complete Compose jobs at commit edf0539d024033d960cde86b7ddc1dac63123a67. Subsequent delivery commits update evidence metadata only.
+The final ZIP includes `GIT_DELIVERY_STATUS.json` with the delivered main commit and verified push status. `MediCore_Final_Verified_Project.zip.sha256` sits next to the archive. Live services' actual deployed revisions are recorded individually in `docs/evidence/render-deployment.json`; a documentation-only delivery commit does not require redeploying unchanged application code.

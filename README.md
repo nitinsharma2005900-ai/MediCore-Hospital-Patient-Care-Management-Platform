@@ -6,7 +6,7 @@ MediCore preserves the existing Next.js/Express/FastAPI application and now pers
 
 ## Verified result
 
-162 final recorded checks: 162 passed, 0 failed, 0 skipped. See [TEST_REPORT.md](TEST_REPORT.md) for actual suite counts, coverage and boundaries. [GitHub source](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform). Render deployment remains blocked by account access; no live URL is claimed.
+267 final recorded checks: 267 passed, 0 failed, 0 skipped. See [TEST_REPORT.md](TEST_REPORT.md) for suite counts and coverage. [Live MediCore](https://medicore-nitinsharma.onrender.com) · [Express Swagger](https://medicore-api-nitinsharma.onrender.com/api-docs/) · [FastAPI Swagger](https://medicore-analytics-nitinsharma.onrender.com/docs) · [GitHub source](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform). The complete free Render demo uses private PostgreSQL/Redis and the embedded BullMQ worker. Cold starts can take about a minute; refresh after startup. The database expires 25 December 2026.
 
 | # | Assessment | Status |
 |---|---|---|
@@ -23,7 +23,7 @@ MediCore preserves the existing Next.js/Express/FastAPI application and now pers
 | 11 | Healthcare CI/CD | Partially completed |
 | 12 | Privacy and workflow testing | Completed and verified |
 | 13 | Healthcare API documentation | Completed and verified |
-| 14 | Secure hospital deployment | Blocked |
+| 14 | Secure hospital deployment | Partially completed |
 | 15 | Healthcare incident simulation | Completed and verified |
 
 ## Run on this Windows computer
@@ -34,7 +34,7 @@ Requirements: Node.js 22, Python 3.13, PostgreSQL and Redis executables. Existin
 Set-Location 'C:\Users\amits\Downloads\MediCore_Complete_Project'
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-local.ps1
 npm ci
-python -m pip install -r apps/analytics-service/requirements.txt
+py -3.13 -m pip install -r apps/analytics-service/requirements.txt
 npm run build --workspace=packages/shared
 npm run build --workspace=apps/backend
 npm run build --workspace=apps/frontend
@@ -63,11 +63,11 @@ npm test --workspace=apps/frontend
 npm run lint
 npm run typecheck --workspace=apps/frontend
 $env:PYTHONPATH='apps/analytics-service'
-python -m pytest apps/analytics-service/tests -q
+py -3.13 -m pytest apps/analytics-service/tests -q
 node scripts/verify_postgres.cjs
 npx playwright install chromium
 npx playwright test
-python scripts/verify_backup.py
+py -3.13 scripts/verify_backup.py
 ```
 
 The outage script stops only the dedicated synthetic PostgreSQL/Redis instances after validating ports. It requires API worker polling to be disabled during its controlled queue-failure fixture. Use `scripts/verify_outages.cjs` only as described in INCIDENT_REPORT.md; do not run it against another deployment.
@@ -78,4 +78,4 @@ The outage script stops only the dedicated synthetic PostgreSQL/Redis instances 
 
 The final documentation PDF contains exactly 12 A4 pages. The final ZIP excludes actual environment files, credentials, dependencies, virtual environments, databases, caches and build output. Cohort policy must permit AI assistance; the learner remains responsible for correctness and explaining the code.
 
-To regenerate the submission from captured evidence, install `scripts/requirements-docs.txt`, then run `scripts/generate_submission_docs.py`, `scripts/build_documentation_pdf.py` and `scripts/build_package.py`. Inspect every regenerated PDF page before delivery. The packager verifies CRCs and performs a real extraction into ignored `.runtime`.
+To regenerate the submission, use Python 3.13, install `scripts/requirements-docs.txt`, then run `scripts/generate_submission_docs.py`, `scripts/build_documentation_pdf.py` and `scripts/build_package.py`. Inspect every regenerated PDF page. The packager checks CRCs and performs a real extraction into ignored `.runtime`. The final package's `GIT_DELIVERY_STATUS.json` records the delivered branch, exact commit and remote push; its adjacent ZIP checksum is outside the archive.

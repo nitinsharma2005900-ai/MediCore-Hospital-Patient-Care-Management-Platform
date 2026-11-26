@@ -1,6 +1,6 @@
 # Assessment traceability
 
-Audited against all 12 pages of project3.pdf. Updated 26 November 2026, 11:00 IST. No evaluation score is assigned.
+Audited against all 12 pages of project3.pdf. Updated 26 November 2026, 11:56 IST. No evaluation score is assigned.
 
 | # | Assessment | Status |
 |---|---|---|
@@ -17,7 +17,7 @@ Audited against all 12 pages of project3.pdf. Updated 26 November 2026, 11:00 IS
 | 11 | Healthcare CI/CD | Partially completed |
 | 12 | Privacy and workflow testing | Completed and verified |
 | 13 | Healthcare API documentation | Completed and verified |
-| 14 | Secure hospital deployment | Blocked |
+| 14 | Secure hospital deployment | Partially completed |
 | 15 | Healthcare incident simulation | Completed and verified |
 
 ## Assessment 01 — Healthcare role-based frontend
@@ -176,13 +176,13 @@ Audited against all 12 pages of project3.pdf. Updated 26 November 2026, 11:00 IS
 
 **Status:** Partially completed
 
-**Implementation and limitations:** Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. Staging/live releases and protected environment reviewers remain unverified.
+**Implementation and limitations:** Tests, lint, type checks, dependency audit, migrations, browser checks and containers run in CI. The live demo was released through the authorized Render CLI; staged release hooks and protected environment reviewers remain unverified.
 
 **Source files:** `.github/workflows/ci.yml; deploy.yml`.
 
 **Endpoints / scope:** GitHub Actions quality and container jobs; manual Render release hooks.
 
-**Tests and evidence:** Actual successful CI runs and downloaded artifacts. Actual execution results are in TEST_REPORT.md, with machine-readable records in docs/evidence. Deployment and review limitations are not treated as passed tests.
+**Tests and evidence:** Actual successful CI runs and downloaded artifacts; Render deploy records. Actual execution results are in TEST_REPORT.md, with machine-readable records in docs/evidence. Deployment and review limitations are not treated as passed tests.
 
 
 ## Assessment 12 — Privacy and workflow testing
@@ -219,15 +219,15 @@ Audited against all 12 pages of project3.pdf. Updated 26 November 2026, 11:00 IS
 
 **Original PDF objective:** Deploy with HTTPS, least-privilege infrastructure access, secret management, backups, restore validation, audit retention, monitoring, and documented incident contacts.
 
-**Status:** Blocked
+**Status:** Partially completed
 
-**Implementation and limitations:** Render is not connected to this session. No cloud resource, HTTPS deployment, cloud backup, DNS configuration or production workflow is claimed as verified.
+**Implementation and limitations:** Three free services are live, using private existing datastore instances with a separate MediCore database/login and Redis database 2. All seven roles, care/billing/privacy, analytics and queue delivery were exercised. Off-host cloud backups, retention archival, a separate migration owner, dedicated worker and production availability remain outstanding.
 
-**Source files:** `render.yaml; DEPLOYMENT_GUIDE.md; backup tools`.
+**Source files:** `render.yaml; DEPLOYMENT_GUIDE.md; bootstrap_render_database.cjs; verify_live.cjs`.
 
-**Endpoints / scope:** No verified public Render application/API URL.
+**Endpoints / scope:** Public HTTPS frontend, Express API and FastAPI on Render.
 
-**Tests and evidence:** Real local backup/restore and readiness checks; Render access discovery. Actual execution results are in TEST_REPORT.md, with machine-readable records in docs/evidence. Deployment and review limitations are not treated as passed tests.
+**Tests and evidence:** render-deployment.json; live-results.json; live-playwright-results.json; genuine cloud screenshots. Actual execution results are in TEST_REPORT.md, with machine-readable records in docs/evidence. Deployment and review limitations are not treated as passed tests.
 
 
 ## Assessment 15 — Healthcare incident simulation

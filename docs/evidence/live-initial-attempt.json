@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-11-26T06:06:57.661Z",
+  "frontend": "https://medicore-nitinsharma.onrender.com",
+  "backend": "https://medicore-api-nitinsharma.onrender.com",
+  "analytics": "https://medicore-analytics-nitinsharma.onrender.com",
+  "scope": "Live synthetic cloud checks; no dependency outages or destructive SQL",
+  "results": [
+    {
+      "name": "Public frontend and both service health endpoints use HTTPS",
+      "status": "passed",
+      "ms": 1655
+    },
+    {
+      "name": "Both public API documentation pages are available",
+      "status": "passed",
+      "ms": 448
+    },
+    {
+      "name": "Production CORS allows the website and rejects unrelated origins",
+      "status": "passed",
+      "ms": 272
+    },
+    {
+      "name": "Unauthenticated clinical request and invalid login are rejected",
+      "status": "passed",
+      "ms": 2300
+    },
+    {
+      "name": "Public registration persists a patient and ignores requested administrator role",
+      "status": "failed",
+      "ms": 639,
+      "message": "Expected HTTP 201, received 400\n\n400 !== 201\n"
+    }
+  ],
+  "total": 5,
+  "passed": 4,
+  "failed": 1,
+  "skipped": 0
+}

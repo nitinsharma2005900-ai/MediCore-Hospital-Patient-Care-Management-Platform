@@ -101,7 +101,7 @@ new_page('')
 c.setFillColor(PALE);c.roundRect(M,H-281,CW,154,16,fill=1,stroke=0);c.setFillColor(TEAL);c.setFont(BOLD,48);c.drawString(M+25,H-204,'MediCore');c.setFillColor(BLUE);c.rect(M+26,H-228,52,5,fill=1,stroke=0)
 y=H-325;paragraph('Hospital, Appointment &amp;<br/>Patient Care Management Platform',ParagraphStyle('cover',parent=TITLE,fontSize=25,leading=34))
 paragraph('Implementation, audit, test evidence and submission documentation',LEAD);y-=18
-table([['Developer','Nitin Sharma'],['Assessment level','Advanced / Very Difficult'],['Framework','15 mandatory assessments · 1,500 possible evaluation points'],['Evidence date',summary['recorded_at']],['Submission status','Verified local implementation; cloud deployment blocked by account access']],widths=[135,CW-135],header=False,size=10)
+table([['Developer','Nitin Sharma'],['Assessment level','Advanced / Very Difficult'],['Framework','15 mandatory assessments · 1,500 possible evaluation points'],['Evidence date',summary['recorded_at']],['Submission status','Verified locally, in CI and as a live synthetic Render demo']],widths=[135,CW-135],header=False,size=10)
 paragraph('Synthetic data only. No medical, legal or regulatory compliance claim. No evaluation score is assigned.',SMALL)
 
 new_page('Executive summary')
@@ -113,10 +113,10 @@ paragraph('The existing interface and service structure were preserved. The audi
 paragraph('The runtime now uses PostgreSQL transactions and constraints, consent-aware record scope, active session checks and a Redis/BullMQ worker with a durable outbox. UI corrections include mobile navigation, accessible controls, functional care/billing tools and real dashboard data.')
 section('Demonstrable result')
 table([['Area','Verified behavior'],['Scheduling','Provider availability, time zones, collision rejection and controlled changes'],['Clinical privacy','Patient ownership, doctor/nurse assignment, consent and released lab values'],['Care and billing','Encounter → diagnosis/prescription → laboratory → invoice → simulated payment'],['Evidence','Automated suites, actual browser screenshots, incidents, backup/restore and CI']],widths=[100,CW-100])
-paragraph('Render access is not connected. External SMTP/SMS delivery, peer approvals and live production verification remain explicitly unverified. These limits are reflected in the assessment table and detailed Markdown reports.',SMALL)
+paragraph('The complete synthetic demo is live on Render: three free web services, private PostgreSQL/Redis connectivity and an embedded worker. External SMTP/SMS delivery, protected releases, cloud backups and peer approvals remain incomplete.',SMALL)
 
 new_page('Technology and architecture')
-table([['Layer','Actual implementation'],['Interface','Next.js App Router, React, TypeScript, Tailwind, TanStack Query, Framer Motion'],['Business API','Node.js / Express, REST, Zod validation, JWT sessions and scoped authorization'],['Analytics','Python 3 / FastAPI, Pydantic, pandas, NumPy, HTTPX and pytest'],['Data and jobs','PostgreSQL / pg query layer, SQL migrations, Redis and BullMQ'],['Delivery','Docker/Compose, GitHub Actions, OpenAPI and Postman; Render configuration prepared']],widths=[95,CW-95])
+table([['Layer','Actual implementation'],['Interface','Next.js App Router, React, TypeScript, Tailwind, TanStack Query, Framer Motion'],['Business API','Node.js / Express, REST, Zod validation, JWT sessions and scoped authorization'],['Analytics','Python 3 / FastAPI, Pydantic, pandas, NumPy, HTTPX and pytest'],['Data and jobs','PostgreSQL / pg query layer, SQL migrations, Redis and BullMQ'],['Delivery','Docker/Compose, GitHub Actions, OpenAPI/Postman and live Render demo']],widths=[95,CW-95])
 diagram([('Next.js UI',.18,.84),('Express API',.5,.84),('PostgreSQL',.82,.84),('FastAPI',.18,.23),('BullMQ worker',.5,.23),('Redis',.82,.23)],[(0,1),(1,2),(3,1),(4,2),(4,5)],190,'system-architecture')
 paragraph('Express owns business data and rules. FastAPI requests an authorized operational projection rather than maintaining its own patient database. PostgreSQL is also the durable notification outbox; Redis schedules retryable jobs.',BODY)
 section('Preservation trade-off')
@@ -166,9 +166,9 @@ for title,text in [
 paragraph('Production hardening remains necessary: scoped SQL repositories, shared rate limits, stronger browser session isolation, separate migration/runtime privileges and verified cloud controls. This synthetic project makes no compliance certification claim.',SMALL)
 
 new_page('All 15 mandatory assessments')
-status_short={'Completed and verified':'Verified locally / in CI','Partially completed':'Partial — see limitations','Blocked':'Blocked — Render access'}
+status_short={'Completed and verified':'Verified — see scope','Partially completed':'Partial — see limitations','Blocked':'Blocked — see report'}
 table([['#','Assessment','Actual verification status']]+[[f'{a["number"]:02}',a['name'],status_short[a['status']]] for a in assessments],widths=[28,245,CW-273],size=8.3)
-paragraph('“Verified” refers to the implemented scope and recorded cases, not exhaustive correctness or external production certification. Interoperability uses explicit local mocks/simulators. Git protection/peer review, live releases and cloud deployment remain partial or blocked. The detailed traceability file maps original PDF objectives, sources, APIs, tests and evidence.',SMALL)
+paragraph('“Verified” refers to recorded local, CI and live synthetic cases, not exhaustive correctness or production certification. Interoperability uses local mocks/simulators. Git protection/peer review, protected releases, cloud backup/retention and production isolation remain incomplete. The detailed checklist maps objectives, sources, APIs, tests and evidence.',SMALL)
 
 new_page('Testing and incident simulations')
 table([['Suite','Executed','Passed','Failed']]+[[s['name'].split('(')[0],s['executed'],s['passed'],s['failed']] for s in summary['suites']]+[['Total',summary['total'],summary['passed'],summary['failed']]],widths=[CW-156,56,50,50],size=8.3)
@@ -185,24 +185,24 @@ paragraph('Important fixes: real persistence, timezone-safe ranges, refresh/logo
 
 new_page('Actual application screenshots')
 top=y;gap=18;tile=(CW-gap)/2
-screenshot('patient-1440.png',M,top,tile,154,'Patient workspace — 1440 px')
-screenshot('receptionist-1440.png',M+tile+gap,top,tile,154,'Appointment management — 1440 px')
-screenshot('doctor-1440.png',M,top-185,tile,154,'Clinical care workflow — 1440 px')
-screenshot('admin-1440.png',M+tile+gap,top-185,tile,154,'Operational analytics — 1440 px')
-mobile_top=top-375;screenshot('patient-390.png',M,mobile_top,105,225,'Patient workspace — 390 px')
-paragraph('These images were captured from the actual local application in Chromium. They are not generated mockups. Full-resolution PNG files for every role at 390 and 1440 pixels accompany the source.',SMALL,x=M+130,width=CW-130,top=mobile_top-10)
-paragraph('Browser automation also verified 360, 768, 1024 and 1920 pixel dashboards, route protection, booking, landing pages and printable invoices. The production Render interface is not pictured because no cloud deployment was verified.',SMALL,x=M+130,width=CW-130,top=mobile_top-103)
+screenshot('live/patient-1440.png',M,top,tile,154,'Render patient workspace — 1440 px')
+screenshot('live/receptionist-1440.png',M+tile+gap,top,tile,154,'Render appointment management — 1440 px')
+screenshot('live/doctor-1440.png',M,top-185,tile,154,'Render clinical care — 1440 px')
+screenshot('live/admin-1440.png',M+tile+gap,top-185,tile,154,'Render operational analytics — 1440 px')
+mobile_top=top-375;screenshot('live/patient-390.png',M,mobile_top,105,225,'Render patient workspace — 390 px')
+paragraph('These images were captured from the public Render application in fresh Chromium sessions. Full-resolution cloud PNG files for every role at 390 and 1440 pixels accompany the source in docs/screenshots/live.',SMALL,x=M+130,width=CW-130,top=mobile_top-10)
+paragraph('All 48 live browser cases passed, including seven dashboards at six widths, protected routes, real booking, landing pages and printable invoices. Separate live API checks verified the full care/billing workflow, privacy, concurrent booking, queue delivery and real analytics.',SMALL,x=M+130,width=CW-130,top=mobile_top-103)
 
 new_page('Deployment and submission')
 paragraph('<b>GitHub repository</b><br/><link href="'+repo+'" color="#2563EB">MediCore-Hospital-Patient-Care-Management-Platform</link>',BODY)
-paragraph('<b>Render application / production API</b><br/>Blocked: Render account access is not connected. No verified live HTTPS URL, cloud backup or production workflow is claimed.',BODY)
+paragraph('<b>Live Render demo</b><br/><link href="https://medicore-nitinsharma.onrender.com" color="#2563EB">medicore-nitinsharma.onrender.com</link><br/>API: <link href="https://medicore-api-nitinsharma.onrender.com/api-docs/" color="#2563EB">medicore-api-nitinsharma.onrender.com/api-docs/</link><br/>FastAPI: <link href="https://medicore-analytics-nitinsharma.onrender.com/docs" color="#2563EB">medicore-analytics-nitinsharma.onrender.com/docs</link>',SMALL)
 section('Run again on Windows')
 paragraph('Open the existing workspace, run setup-local.ps1, install npm/Python dependencies, build shared/backend/frontend and run start-local.ps1. Exact PowerShell commands, tool paths and secret setup are in README.md and DEPLOYMENT_GUIDE.md. Existing .env files must not be overwritten.',BODY)
 table([['Local service','Verified address'],['Frontend','http://localhost:3010'],['Express / Swagger','http://localhost:4010/api/v1 · /api-docs/'],['FastAPI / Swagger','http://localhost:8010 · /docs'],['Dedicated stores','PostgreSQL 5546 · Redis 6386']],widths=[120,CW-120])
 section('Delivery and remaining work')
-paragraph('Docker Compose runs the complete six-service environment. GitHub Actions has real test/build/container evidence. The Render Blueprint is prepared with free-plan limitations documented; no paid service was purchased. Private-repository branch protection was rejected by the account plan, and no peer approval is claimed.',SMALL)
+paragraph('Three free Render web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The API hosts the worker. The temporary provisioner credential was removed. Free services sleep; workspace hours are shared; PostgreSQL expires 25 December 2026. No paid resources were purchased.',SMALL)
 paragraph('The ZIP includes source, migrations, seed, tests, evidence, screenshots, diagrams, API collection, this 12-page PDF, the Loom script, technical review answers and known limitations. It excludes actual environment files, credentials, dependency folders, database data and build caches.',SMALL)
-paragraph('MediCore is demonstrable locally with explicit evidence and transparent limits. Live deployment, external delivery adapters, cloud operations and peer review require the documented follow-up.',SMALL)
+paragraph('Docker/Compose and GitHub CI are verified. Remaining work: off-host cloud backups, retention archival, separate migration/runtime privileges, protected releases, external delivery adapters and peer review. Private branch protection was rejected by the account plan. This is a synthetic demonstration with explicit evidence and limits.',SMALL)
 
 if page_number!=12:raise RuntimeError(f'Unexpected page count {page_number}')
 c.save()

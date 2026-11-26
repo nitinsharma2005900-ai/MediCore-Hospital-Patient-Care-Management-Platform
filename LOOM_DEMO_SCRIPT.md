@@ -18,7 +18,7 @@
 
 **5:45–6:15 — GitHub.** Show https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform, real commits, feature branch/pull request and actual Actions results. Branch protection was unavailable for the private repository on this account; no peer approval is claimed.
 
-**6:15–6:50 — Deployment.** If Render is still blocked, say: “Local and CI Docker execution are verified, but Render access is not connected. I am showing the deployment configuration, not claiming a live deployment.” If a deployment is later verified, show the actual HTTPS URL and the same workflow in a fresh session.
+**6:15–6:50 — Deployment.** Open https://medicore-nitinsharma.onrender.com in a fresh session, show API readiness and analytics health, and explain the three free services, private datastore addresses and embedded worker. State the database's 25 December 2026 expiry, idle cold starts and missing managed backups. Show actual deployment evidence without revealing environment values.
 
 **6:50–7:30 — Conclusion.** Show the real test counts and five controlled incident reports. Mention the local FHIR/mock delivery scope, scaling limits and remaining cloud/review work. Offer to trace a browser action through Express to PostgreSQL or make a small change during review.
 

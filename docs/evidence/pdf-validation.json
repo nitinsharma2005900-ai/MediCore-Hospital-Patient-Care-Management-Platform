@@ -3,7 +3,22 @@
   "size": "A4",
   "all_pages_nonblank": true,
   "preview_pages": 12,
-  "visual_inspection": "passed: all 12 rasterized pages reviewed",
+  "visual_inspection": "passed",
   "path": "C:\\Users\\amits\\Downloads\\MediCore_Complete_Project\\MediCore_Project_Documentation.pdf",
-  "sha256": "be878d34552d175bbcb9bc17f0a0cc61130c17ab5f8612690eba3eeb90e30d5e"
+  "inspected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "inspection": "Each final page viewed individually; readable tables/diagrams, genuine live screenshots, no overlap or clipping observed",
+  "sha256": "0d9ba58e9382b82742fb09714a57e111ab42097596bcf398fe31cab4c67bc709"
 }

@@ -1,0 +1,298 @@
+{
+  "recordedAt": "2026-11-26T06:10:26.066Z",
+  "frontend": "https://medicore-nitinsharma.onrender.com",
+  "backend": "https://medicore-api-nitinsharma.onrender.com",
+  "analytics": "https://medicore-analytics-nitinsharma.onrender.com",
+  "scope": "Live synthetic cloud checks; no dependency outages or destructive SQL",
+  "results": [
+    {
+      "name": "Public frontend and both service health endpoints use HTTPS",
+      "status": "passed",
+      "ms": 1382
+    },
+    {
+      "name": "Both public API documentation pages are available",
+      "status": "passed",
+      "ms": 331
+    },
+    {
+      "name": "Production CORS allows the website and rejects unrelated origins",
+      "status": "passed",
+      "ms": 646
+    },
+    {
+      "name": "Unauthenticated clinical request and invalid login are rejected",
+      "status": "passed",
+      "ms": 1880
+    },
+    {
+      "name": "Public registration persists a patient and ignores requested administrator role",
+      "status": "passed",
+      "ms": 2195
+    },
+    {
+      "name": "Authenticate persisted patient through the website proxy",
+      "status": "passed",
+      "ms": 2499
+    },
+    {
+      "name": "Authenticate persisted doctor through the website proxy",
+      "status": "passed",
+      "ms": 950
+    },
+    {
+      "name": "Authenticate persisted receptionist through the website proxy",
+      "status": "passed",
+      "ms": 2256
+    },
+    {
+      "name": "Authenticate persisted nurse through the website proxy",
+      "status": "passed",
+      "ms": 2201
+    },
+    {
+      "name": "Authenticate persisted labtech through the website proxy",
+      "status": "passed",
+      "ms": 1140
+    },
+    {
+      "name": "Authenticate persisted billing through the website proxy",
+      "status": "passed",
+      "ms": 2568
+    },
+    {
+      "name": "Authenticate persisted admin through the website proxy",
+      "status": "passed",
+      "ms": 2392
+    },
+    {
+      "name": "patient permitted role operation succeeds",
+      "status": "passed",
+      "ms": 501
+    },
+    {
+      "name": "doctor permitted role operation succeeds",
+      "status": "passed",
+      "ms": 990
+    },
+    {
+      "name": "nurse permitted role operation succeeds",
+      "status": "passed",
+      "ms": 1302
+    },
+    {
+      "name": "receptionist permitted role operation succeeds",
+      "status": "passed",
+      "ms": 432
+    },
+    {
+      "name": "labtech permitted role operation succeeds",
+      "status": "passed",
+      "ms": 1566
+    },
+    {
+      "name": "billing permitted role operation succeeds",
+      "status": "passed",
+      "ms": 504
+    },
+    {
+      "name": "admin permitted role operation succeeds",
+      "status": "passed",
+      "ms": 2081
+    },
+    {
+      "name": "patient cannot access administrator staff management",
+      "status": "passed",
+      "ms": 1138
+    },
+    {
+      "name": "doctor cannot access administrator staff management",
+      "status": "passed",
+      "ms": 2250
+    },
+    {
+      "name": "nurse cannot access administrator staff management",
+      "status": "passed",
+      "ms": 827
+    },
+    {
+      "name": "receptionist cannot access administrator staff management",
+      "status": "passed",
+      "ms": 2097
+    },
+    {
+      "name": "labtech cannot access administrator staff management",
+      "status": "passed",
+      "ms": 493
+    },
+    {
+      "name": "billing cannot access administrator staff management",
+      "status": "passed",
+      "ms": 2004
+    },
+    {
+      "name": "admin cannot read full clinical charts",
+      "status": "passed",
+      "ms": 371
+    },
+    {
+      "name": "receptionist cannot read full clinical charts",
+      "status": "passed",
+      "ms": 2334
+    },
+    {
+      "name": "billing cannot read full clinical charts",
+      "status": "passed",
+      "ms": 2090
+    },
+    {
+      "name": "labtech cannot read full clinical charts",
+      "status": "passed",
+      "ms": 414
+    },
+    {
+      "name": "Patient cross-patient record access is rejected",
+      "status": "passed",
+      "ms": 406
+    },
+    {
+      "name": "Provider availability returns real future slots",
+      "status": "passed",
+      "ms": 704
+    },
+    {
+      "name": "Simultaneous public booking requests produce one success and one conflict",
+      "status": "passed",
+      "ms": 2199
+    },
+    {
+      "name": "Patient reschedules and cancels a separate appointment",
+      "status": "passed",
+      "ms": 6314
+    },
+    {
+      "name": "Receptionist checks in the booked appointment",
+      "status": "passed",
+      "ms": 496
+    },
+    {
+      "name": "Assigned doctor creates the patient encounter",
+      "status": "passed",
+      "ms": 786
+    },
+    {
+      "name": "Assigned nurse records synthetic vitals",
+      "status": "passed",
+      "ms": 2531
+    },
+    {
+      "name": "Doctor records a clinician-entered synthetic diagnosis",
+      "status": "passed",
+      "ms": 2077
+    },
+    {
+      "name": "Invalid prescriptions are rejected",
+      "status": "passed",
+      "ms": 1697
+    },
+    {
+      "name": "Valid clinician-entered prescription persists",
+      "status": "passed",
+      "ms": 703
+    },
+    {
+      "name": "Doctor orders an assigned laboratory test",
+      "status": "passed",
+      "ms": 501
+    },
+    {
+      "name": "Incorrect patient/result association is rejected",
+      "status": "passed",
+      "ms": 463
+    },
+    {
+      "name": "Missing laboratory result fields are rejected",
+      "status": "passed",
+      "ms": 651
+    },
+    {
+      "name": "Assigned technician enters a preliminary result",
+      "status": "passed",
+      "ms": 481
+    },
+    {
+      "name": "Patient cannot see preliminary laboratory data",
+      "status": "passed",
+      "ms": 464
+    },
+    {
+      "name": "Ordering doctor validates the result before patient release",
+      "status": "passed",
+      "ms": 1246
+    },
+    {
+      "name": "Consent revocation blocks the doctor immediately and can be restored",
+      "status": "passed",
+      "ms": 1896
+    },
+    {
+      "name": "Doctor completes the encounter",
+      "status": "passed",
+      "ms": 642
+    },
+    {
+      "name": "Billing creates an itemized invoice",
+      "status": "passed",
+      "ms": 1019
+    },
+    {
+      "name": "Simulated payment settles the invoice",
+      "status": "passed",
+      "ms": 489
+    },
+    {
+      "name": "Redis worker delivers queued EMAIL and SMS simulators",
+      "status": "passed",
+      "ms": 341
+    },
+    {
+      "name": "Authenticated scoped FHIR mock Patient export succeeds",
+      "status": "passed",
+      "ms": 764
+    },
+    {
+      "name": "Authenticated scoped FHIR mock Appointment export succeeds",
+      "status": "passed",
+      "ms": 539
+    },
+    {
+      "name": "Authenticated scoped FHIR mock Encounter export succeeds",
+      "status": "passed",
+      "ms": 439
+    },
+    {
+      "name": "Authenticated scoped FHIR mock Observation export succeeds",
+      "status": "passed",
+      "ms": 678
+    },
+    {
+      "name": "FastAPI public analytics matches authoritative PostgreSQL-backed API counts",
+      "status": "passed",
+      "ms": 3479
+    },
+    {
+      "name": "Administrator audit history includes denied access and workflow changes",
+      "status": "passed",
+      "ms": 505
+    },
+    {
+      "name": "Logout revokes access and a fresh login sees the paid invoice",
+      "status": "passed",
+      "ms": 6206
+    }
+  ],
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "skipped": 0
+}

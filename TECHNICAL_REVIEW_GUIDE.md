@@ -138,9 +138,9 @@ The release is manually dispatched and expects configured environments, reviewer
 
 Verify its checksum and restore to a separate disposable target first. Compare counts and constraints, take a pre-cutover backup, and approve the production cutover explicitly.
 
-## 35. What remains blocked?
+## 35. What remains incomplete?
 
-Render account access, live HTTPS deployment/production verification, cloud backup/retention and actual peer review. Private branch protection was rejected by the account plan.
+The synthetic Render demo is live and verified. Off-host cloud backups/retention, separate migration credentials, protected staging releases and actual peer review remain incomplete. Private branch protection was rejected by the account plan; free hosting has expiry and sleep limits.
 
 ## 36. How can you make a safe small change during review?
 
