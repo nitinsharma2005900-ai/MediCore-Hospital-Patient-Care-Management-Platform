@@ -1,0 +1,25 @@
+{
+  "verified_at": "2026-11-26T05:37:43.212Z",
+  "checks": [
+    {
+      "url": "http://localhost:3010",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:4010/ready",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:4010/api-docs/",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8010/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8010/docs",
+      "status": 200
+    }
+  ]
+}

@@ -80,6 +80,7 @@
       "pct": 100
     }
   },
-  "ci_url": "https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45760840824",
-  "ci_status": "success"
+  "ci_url": "https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45762497877",
+  "ci_status": "success",
+  "ci_verified_commit": "edf0539d024033d960cde86b7ddc1dac63123a67"
 }

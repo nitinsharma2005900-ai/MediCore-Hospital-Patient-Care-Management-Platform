@@ -4,7 +4,7 @@
   "required_files": 25,
   "contains_actual_env": false,
   "contains_dependencies": false,
-  "files": 264,
+  "files": 268,
   "crc_check": "passed",
   "real_extraction": "passed",
   "expected_files_present": true,

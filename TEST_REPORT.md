@@ -18,7 +18,7 @@ Backend Jest statement coverage: **53.41%**; branch coverage: **36.21%**; functi
 
 The Next.js production build, shared/backend TypeScript builds, frontend type check and ESLint pass. Actual outputs are in `docs/evidence/`. npm audit reports zero known vulnerabilities in both the complete installed tree and production dependencies at the captured run. No future security guarantee is implied.
 
-GitHub CI: **success**. [Captured run](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45760840824). Three application Docker images and the six-service Compose environment were built and exercised in GitHub Actions. This computer has no Docker executable; local Docker execution was not performed.
+GitHub CI: **success**. [Captured run](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45762497877). Three application Docker images and the six-service Compose environment were built and exercised in GitHub Actions. This computer has no Docker executable; local Docker execution was not performed.
 
 ## Verified boundaries
 

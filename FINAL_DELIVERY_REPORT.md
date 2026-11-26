@@ -42,7 +42,7 @@ No evaluation score is assigned. Partial/blocked assessments are not presented a
 | Controlled outage / queue checks | 4 | 4 | 0 | 0 |
 | **Total final recorded checks** | **162** | **162** | **0** | **0** |
 
-Backend Jest line coverage: 56.97%; statement coverage: 53.41%. Frontend/Python coverage percentages were not measured. Shared/backend and frontend production builds, frontend type checking and ESLint passed. Docker images and the full Compose environment passed real GitHub CI. Latest captured CI state: success; [evidence](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45760840824). See TEST_REPORT.md for the exact boundaries, failure corrections and raw reports.
+Backend Jest line coverage: 56.97%; statement coverage: 53.41%. Frontend/Python coverage percentages were not measured. Shared/backend and frontend production builds, frontend type checking and ESLint passed. Docker images and the full Compose environment passed real GitHub CI. Latest captured CI state: success; [evidence](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/actions/runs/45762497877). See TEST_REPORT.md for the exact boundaries, failure corrections and raw reports.
 
 The actual PostgreSQL workflow, database-level overlap, consent/IDOR boundaries, five incident scenarios, Redis/database restart recovery and isolated backup restore were exercised. No real patient data or payments were used.
 
@@ -103,3 +103,5 @@ Do not overwrite the existing ignored `.env`. For Docker, another machine or Ren
 The original Git commit was preserved and the audited implementation was developed on `feature/verified-audit`. [Pull request 2](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/pull/2) contains the source and evidence. [Issue 1](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform/issues/1) tracks account-dependent deployment/review follow-up. No peer approval is claimed.
 
 The final package's `GIT_DELIVERY_STATUS.json` records the exact delivered branch, full commit hash and verified remote push status after the GitHub handoff. The ZIP checksum is in `MediCore_Final_Verified_Project.zip.sha256` next to the archive.
+
+Pull request 2 was merged into main. The merged application source passed both GitHub quality and complete Compose jobs at commit edf0539d024033d960cde86b7ddc1dac63123a67. Subsequent delivery commits update evidence metadata only.
