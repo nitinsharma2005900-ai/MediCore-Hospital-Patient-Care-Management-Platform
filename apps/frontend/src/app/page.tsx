@@ -134,7 +134,7 @@ export default function LandingPage() {
               <div className="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Synthetic Patients</div>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col items-center text-center">
-              <div className="text-3xl font-extrabold text-[#16A34A]">100%</div>
+              <div className="text-3xl font-extrabold text-[#16A34A]">Protected</div>
               <div className="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Concurrency Protected</div>
             </div>
           </div>

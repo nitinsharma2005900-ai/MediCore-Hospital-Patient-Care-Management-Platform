@@ -50,8 +50,8 @@ export default function AdminDashboard() {
 
         // Fetch Audit Logs and Departments from Backend
         const [auditRes, deptRes] = await Promise.all([
-          fetch(`${apiUrl}/audit?limit=100`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-          fetch(`${apiUrl}/departments`).then(r => r.json())
+          fetch(`${apiUrl}/audit?limit=100`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); }),
+          fetch(`${apiUrl}/departments`).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); })
         ]);
 
         if (auditRes.success) setAuditLogs(auditRes.data || []);
@@ -60,11 +60,11 @@ export default function AdminDashboard() {
         // Fetch real calculated analytics from FastAPI microservice
         try {
           const [utilRes, waitRes, tatRes, popRes, deptStatRes] = await Promise.all([
-            fetch(`${ANALYTICS_URL}/analytics/appointment-utilization`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/waiting-times`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/lab-turnaround`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/population-metrics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-            fetch(`${ANALYTICS_URL}/analytics/department-statistics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json())
+            fetch(`${ANALYTICS_URL}/analytics/appointment-utilization`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); }),
+            fetch(`${ANALYTICS_URL}/analytics/waiting-times`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); }),
+            fetch(`${ANALYTICS_URL}/analytics/lab-turnaround`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); }),
+            fetch(`${ANALYTICS_URL}/analytics/population-metrics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); }),
+            fetch(`${ANALYTICS_URL}/analytics/department-statistics`, { headers: { Authorization: `Bearer ${token}` } }).then(r => { if (!r.ok) throw new Error("Operational data unavailable"); return r.json(); })
           ]);
 
           setAnalytics({
@@ -112,8 +112,8 @@ export default function AdminDashboard() {
         <div className="bg-white/10 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/10 flex items-center space-x-3 text-xs">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
           <div>
-            <div className="font-bold">All 3 Microservices Live</div>
-            <div className="text-[10px] text-teal-200">Express :4000 • FastAPI :8000 • Next :3000</div>
+            <div className="font-bold">{loading ? 'Connecting to operational data…' : analytics ? 'Analytics connected' : 'Analytics unavailable'}</div>
+            <div className="text-[10px] text-teal-200">Based on authorized hospital records</div>
           </div>
         </div>
       </div>
@@ -185,13 +185,7 @@ export default function AdminDashboard() {
               <h3 className="text-sm font-bold text-slate-900 mb-4">Department Caseload & Occupancy</h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics?.deptStats || [
-                    { department: 'Cardiology', scheduledAppointments: 42, completedEncounters: 35 },
-                    { department: 'Neurology', scheduledAppointments: 24, completedEncounters: 20 },
-                    { department: 'Internal Med', scheduledAppointments: 38, completedEncounters: 32 },
-                    { department: 'Pediatrics', scheduledAppointments: 22, completedEncounters: 19 },
-                    { department: 'Emergency', scheduledAppointments: 28, completedEncounters: 25 }
-                  ]}>
+                  <BarChart data={analytics?.deptStats || []}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                     <XAxis dataKey="department" stroke="#94a3b8" fontSize={10} />
                     <YAxis stroke="#94a3b8" fontSize={10} />
@@ -210,12 +204,7 @@ export default function AdminDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={[
-                        { name: '18-35', value: 28 },
-                        { name: '36-50', value: 34 },
-                        { name: '51-65', value: 26 },
-                        { name: '65+', value: 12 }
-                      ]}
+                      data={Object.entries(analytics?.population?.age_distribution || {}).map(([name,value])=>({name,value:Number(value)}))}
                       cx="50%"
                       cy="50%"
                       innerRadius={50}
@@ -249,7 +238,7 @@ export default function AdminDashboard() {
                 </div>
                 <h4 className="font-bold text-slate-900 mt-1">{d.name}</h4>
                 <p className="text-xs text-slate-500 mt-1">{d.description}</p>
-                <div className="mt-3 text-[10px] text-slate-400">Location: {d.building || 'Building A'}, Floor {d.floor || 1}</div>
+                <div className="mt-3 text-[10px] text-slate-400">Location: {d.building || 'Not recorded'}, Floor {d.floor ?? 'Not recorded'}</div>
               </div>
             ))}
           </div>
@@ -307,3 +296,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
