@@ -4,6 +4,7 @@
 const { Client } = require('pg');
 const identifier = value => '"' + value.replace(/"/g, '""') + '"';
 const literal = value => "'" + value.replace(/'/g, "''") + "'";
+let stage = 'configuration';
 
 async function provision() {
   if (!process.env.DATABASE_BOOTSTRAP_URL) throw new Error('BOOTSTRAP_NOT_ENABLED');
@@ -20,23 +21,35 @@ async function provision() {
   const admin = new Client({ connectionString: adminUrl.href, connectionTimeoutMillis: 10000 });
   await admin.connect();
   try {
+    stage = 'inspect';
+    const capabilities = await admin.query('SELECT rolcreatedb, rolcreaterole, rolsuper FROM pg_roles WHERE rolname=current_user');
+    console.log(JSON.stringify({ event: 'provisioning_capabilities', ...capabilities.rows[0] }));
     const existing = await admin.query('SELECT pg_get_userbyid(datdba) AS owner FROM pg_database WHERE datname=$1', [database]);
     const roles = await admin.query('SELECT rolcreatedb, rolcreaterole, rolsuper, rolbypassrls FROM pg_roles WHERE rolname=$1', [role]);
     if (existing.rowCount && existing.rows[0].owner !== role) throw new Error('EXISTING_DATABASE_OWNER_MISMATCH');
     if (roles.rowCount && Object.values(roles.rows[0]).some(Boolean)) throw new Error('EXISTING_ROLE_TOO_PRIVILEGED');
     if (!roles.rowCount) {
+      stage = 'create_role';
       await admin.query(`CREATE ROLE ${identifier(role)} LOGIN PASSWORD ${literal(password)} NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS`);
     }
     if (!existing.rowCount) {
+      // PostgreSQL 16+ does not automatically allow a CREATEROLE user to SET ROLE
+      // to its new role. Creating a database owned by that role requires it.
+      stage = 'grant_provisioner_membership';
+      await admin.query(`GRANT ${identifier(role)} TO CURRENT_USER WITH SET TRUE`);
+      stage = 'create_database';
       await admin.query(`CREATE DATABASE ${identifier(database)} OWNER ${identifier(role)}`);
     }
   } finally { await admin.end(); }
   // Revoke public access only on the newly created MediCore database.
   const app = new Client({ connectionString: appUrl.href, connectionTimeoutMillis: 10000 });
+  stage = 'app_connection';
   await app.connect();
   try {
+    stage = 'restrict_database';
     await app.query(`REVOKE ALL ON DATABASE ${identifier(database)} FROM PUBLIC`);
     await app.query('REVOKE CREATE ON SCHEMA public FROM PUBLIC');
+    stage = 'extension';
     await app.query('CREATE EXTENSION IF NOT EXISTS btree_gist');
     const result = await app.query('SELECT current_database() AS database, current_user AS role');
     console.log(JSON.stringify({ event: 'medicore_database_provisioned', ...result.rows[0], isolated: true }));
@@ -44,7 +57,7 @@ async function provision() {
 }
 
 if (require.main === module) provision().catch(error => {
-  console.error(JSON.stringify({ event: 'database_provisioning_failed', code: error.code || (/^[A-Z_]+$/.test(error.message) ? error.message : error.name) }));
+  console.error(JSON.stringify({ event: 'database_provisioning_failed', stage, code: error.code || (/^[A-Z_]+$/.test(error.message) ? error.message : error.name) }));
   process.exitCode = 1;
 });
 module.exports = { provision };
