@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import { config } from './config';
 import routes from './routes';
@@ -9,6 +8,8 @@ import { requestIdMiddleware } from './middlewares/request-id.middleware';
 import { errorHandler } from './middlewares/error.middleware';
 import { getHealth, getReadiness } from './controllers/health.controller';
 import openapiSpec from './swagger/openapi.json';
+import { databaseRequest } from './database/postgres';
+import { validateQuery } from './middlewares/query.middleware';
 
 export const createApp = () => {
   const app = express();
@@ -23,12 +24,12 @@ export const createApp = () => {
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
-      if (config.cors.origin.includes(origin) || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      if (config.cors.origin.includes(origin)) {
         return callback(null, true);
       }
-      return callback(null, true); // Dev-friendly permissive
+      return callback(null, false);
     },
-    credentials: true,
+    credentials: false,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id']
   }));
@@ -38,7 +39,13 @@ export const createApp = () => {
   app.use(requestIdMiddleware);
 
   if (process.env.NODE_ENV !== 'test') {
-    app.use(morgan('[:date[iso]] :method :url :status :response-time ms - [req-id: :res[x-request-id]]'));
+    app.use((req,res,next)=>{
+      const started=Date.now();
+      res.once('finish',()=>console.log(JSON.stringify({event:'http_request',method:req.method,
+        route:req.route?.path || req.path.replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi,':id'),status:res.statusCode,
+        requestId:req.correlationId,durationMs:Date.now()-started})));
+      next();
+    });
   }
 
   // 4. Health & Diagnostics
@@ -52,7 +59,7 @@ export const createApp = () => {
   }));
 
   // 6. Primary Business REST API
-  app.use('/api/v1', routes);
+  app.use('/api/v1', validateQuery, databaseRequest, routes);
 
   // 7. 404 Route Not Found
   app.use('*', (req, res) => {

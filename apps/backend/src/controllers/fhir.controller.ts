@@ -1,3 +1,4 @@
+import { canAccessClinical } from '../middlewares/scope.middleware';
 import { Request, Response, NextFunction } from 'express';
 import { store } from '../database/store';
 import { AppError } from '../middlewares/error.middleware';
@@ -117,14 +118,14 @@ function toFhirEncounter(e: any): FhirEncounter {
 // 1. FHIR Patients
 export const getFhirPatients = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const fhirPatients = store.patients.slice(0, 50).map(toFhirPatient);
+    const fhirPatients = store.patients.filter(p => canAccessClinical(req, p.id)).slice(0, 50).map(toFhirPatient);
     recordAuditLog(req, 'FHIR_SEARCH_PATIENT', 'FhirBundle', null, { count: fhirPatients.length });
 
     res.setHeader('Content-Type', 'application/fhir+json');
     res.json({
       resourceType: 'Bundle',
       type: 'searchset',
-      total: store.patients.length,
+      total: fhirPatients.length,
       entry: fhirPatients.map(resource => ({ resource }))
     });
   } catch (err) {
@@ -136,6 +137,7 @@ export const getFhirPatientById = (req: Request, res: Response, next: NextFuncti
   try {
     const { id } = req.params;
     const p = store.patients.find(pt => pt.id === id);
+    if (p && !canAccessClinical(req, p.id)) throw new AppError('Access denied', 403, 'FORBIDDEN');
     if (!p) {
       throw new AppError('FHIR Patient not found', 404, 'NOT_FOUND');
     }
@@ -151,14 +153,14 @@ export const getFhirPatientById = (req: Request, res: Response, next: NextFuncti
 // 2. FHIR Appointments
 export const getFhirAppointments = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const fhirApts = store.appointments.slice(0, 50).map(toFhirAppointment);
+    const fhirApts = store.appointments.filter(p => canAccessClinical(req, p.patientId)).slice(0, 50).map(toFhirAppointment);
     recordAuditLog(req, 'FHIR_SEARCH_APPOINTMENT', 'FhirBundle', null, { count: fhirApts.length });
 
     res.setHeader('Content-Type', 'application/fhir+json');
     res.json({
       resourceType: 'Bundle',
       type: 'searchset',
-      total: store.appointments.length,
+      total: fhirApts.length,
       entry: fhirApts.map(resource => ({ resource }))
     });
   } catch (err) {
@@ -170,6 +172,7 @@ export const getFhirAppointmentById = (req: Request, res: Response, next: NextFu
   try {
     const { id } = req.params;
     const a = store.appointments.find(apt => apt.id === id);
+    if (a && !canAccessClinical(req, a.patientId)) throw new AppError('Access denied', 403, 'FORBIDDEN');
     if (!a) {
       throw new AppError('FHIR Appointment not found', 404, 'NOT_FOUND');
     }
@@ -185,14 +188,14 @@ export const getFhirAppointmentById = (req: Request, res: Response, next: NextFu
 // 3. FHIR Encounters
 export const getFhirEncounters = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const fhirEncounters = store.encounters.slice(0, 50).map(toFhirEncounter);
+    const fhirEncounters = store.encounters.filter(p => canAccessClinical(req, p.patientId)).slice(0, 50).map(toFhirEncounter);
     recordAuditLog(req, 'FHIR_SEARCH_ENCOUNTER', 'FhirBundle', null, { count: fhirEncounters.length });
 
     res.setHeader('Content-Type', 'application/fhir+json');
     res.json({
       resourceType: 'Bundle',
       type: 'searchset',
-      total: store.encounters.length,
+      total: fhirEncounters.length,
       entry: fhirEncounters.map(resource => ({ resource }))
     });
   } catch (err) {
@@ -204,6 +207,7 @@ export const getFhirEncounterById = (req: Request, res: Response, next: NextFunc
   try {
     const { id } = req.params;
     const e = store.encounters.find(enc => enc.id === id);
+    if (e && !canAccessClinical(req, e.patientId)) throw new AppError('Access denied', 403, 'FORBIDDEN');
     if (!e) {
       throw new AppError('FHIR Encounter not found', 404, 'NOT_FOUND');
     }
@@ -219,7 +223,7 @@ export const getFhirEncounterById = (req: Request, res: Response, next: NextFunc
 // 4. FHIR Observations (Lab Results and Vitals)
 export const getFhirObservations = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const observations: FhirObservation[] = store.labResults.slice(0, 50).map(lr => ({
+    const observations: FhirObservation[] = store.labResults.filter(p => canAccessClinical(req, p.patientId) && p.status === 'FINAL' && p.validatedAt).slice(0, 50).map(lr => ({
       resourceType: 'Observation',
       id: lr.id,
       status: lr.status === 'FINAL' ? 'final' : 'preliminary',
@@ -259,7 +263,7 @@ export const getFhirObservations = (req: Request, res: Response, next: NextFunct
     res.json({
       resourceType: 'Bundle',
       type: 'searchset',
-      total: store.labResults.length,
+      total: observations.length,
       entry: observations.map(resource => ({ resource }))
     });
   } catch (err) {
@@ -271,6 +275,8 @@ export const getFhirObservationById = (req: Request, res: Response, next: NextFu
   try {
     const { id } = req.params;
     const lr = store.labResults.find(r => r.id === id);
+    if (lr && !canAccessClinical(req, lr.patientId)) throw new AppError('Access denied', 403, 'FORBIDDEN');
+    if (lr && (!lr.validatedAt || lr.status !== 'FINAL')) throw new AppError('Observation is not released', 404, 'NOT_FOUND');
     if (!lr) {
       throw new AppError('FHIR Observation not found', 404, 'NOT_FOUND');
     }

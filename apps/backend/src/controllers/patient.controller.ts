@@ -1,3 +1,4 @@
+import { canAccessClinical } from '../middlewares/scope.middleware';
 import { Request, Response, NextFunction } from 'express';
 import { store } from '../database/store';
 import { AppError } from '../middlewares/error.middleware';
@@ -10,10 +11,10 @@ export const listPatients = (req: Request, res: Response, next: NextFunction) =>
     const pageNum = parseInt(page as string, 10);
     const limitNum = parseInt(limit as string, 10);
 
-    let patients = store.patients.map(p => {
+    let patients = store.patients.filter(p => [UserRole.RECEPTIONIST, UserRole.BILLING_OFFICER, UserRole.ADMIN].includes(req.user!.role) || canAccessClinical(req, p.id)).map(p => {
       const user = store.users.find(u => u.id === p.userId);
       return {
-        ...p,
+        id: p.id, mrn: p.mrn, userId: p.userId,
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
         name: user ? `${user.firstName} ${user.lastName}` : 'Unknown Patient',

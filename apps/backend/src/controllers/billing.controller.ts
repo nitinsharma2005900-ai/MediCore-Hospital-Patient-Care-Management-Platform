@@ -115,14 +115,15 @@ export const createInvoice = async (req: Request, res: Response, next: NextFunct
     if (!patient) {
       throw new AppError('Patient not found', 404, 'PATIENT_NOT_FOUND');
     }
+    if (validated.encounterId && !store.encounters.some(e=>e.id===validated.encounterId&&e.patientId===validated.patientId)) throw new AppError('Encounter and patient must match',400,'PATIENT_MISMATCH');
 
     const now = new Date();
     const invId = uuidv4();
     let totalAmount = 0;
 
     const lineItems = validated.items.map(item => {
-      const lineTotal = item.quantity * item.unitPrice;
-      totalAmount += lineTotal;
+      const lineTotal = Math.round(item.quantity * Math.round(item.unitPrice * 100)) / 100;
+      totalAmount = Math.round((totalAmount + lineTotal) * 100) / 100;
       const itemRecord = {
         id: uuidv4(),
         invoiceId: invId,
@@ -186,9 +187,13 @@ export const recordPayment = async (req: Request, res: Response, next: NextFunct
       throw new AppError('Invoice is already settled in full', 400, 'ALREADY_PAID');
     }
 
-    const paymentAmount = validated.amount;
-    const newPaid = invoice.paidAmount + paymentAmount;
-    const newBalance = Math.max(0, invoice.totalAmount - newPaid);
+    if (validated.paymentMethod !== 'SIMULATED') throw new AppError('Only simulated payments are supported', 400, 'SIMULATION_ONLY');
+    if (validated.amount > invoice.balanceAmount) throw new AppError('Amount exceeds outstanding balance', 400, 'OVERPAYMENT');
+    const duplicate = validated.transactionReference && store.payments.find(p => p.transactionReference === validated.transactionReference);
+    if (duplicate) throw new AppError('Payment reference already processed', 409, 'DUPLICATE_PAYMENT');
+    const paymentAmount = Math.round(validated.amount * 100) / 100;
+    const newPaid = Math.round((invoice.paidAmount + paymentAmount) * 100) / 100;
+    const newBalance = Math.max(0, Math.round((invoice.totalAmount - newPaid) * 100) / 100);
 
     const now = new Date();
     const paymentRecord = {

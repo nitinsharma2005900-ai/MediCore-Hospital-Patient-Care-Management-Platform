@@ -148,7 +148,7 @@ export async function seedDatabase() {
     createdDoctors.push(docProfile);
 
     // Doctor availability (Mon-Fri 09:00-17:00, 30 min slots)
-    for (let day = 1; day <= 5; day++) {
+    for (let day = 0; day <= 6; day++) {
       store.availabilities.push({
         id: uuidv4(),
         doctorId: docProfile.id,
@@ -238,6 +238,9 @@ export async function seedDatabase() {
     createdPatients.push(patientProf);
   }
 
+  for (const p of createdPatients.slice(0, 20)) store.careAssignments.push({
+    id: uuidv4(), patientId: p.id, nurseUserId: userMap[UserRole.NURSE], active: true
+  });
   // 5. Patient Consents
   for (const p of createdPatients) {
     store.consents.push({
@@ -613,6 +616,7 @@ export async function seedDatabase() {
     requestCorrelationId: 'init-req-001'
   });
 
+  for (const order of store.labOrders) order.assignedTechnicianUserId = userMap[UserRole.LAB_TECHNICIAN];
   // 12. Notifications for Demo Users
   store.notifications.push({
     id: uuidv4(),
@@ -654,10 +658,11 @@ export async function seedDatabase() {
 
 // Auto-run if executed directly
 if (require.main === module) {
-  seedDatabase().then(() => {
+  const { withDatabase, pool } = require('./postgres');
+  withDatabase(async () => { if (!store.users.length) await seedDatabase(); }).then(() => {
     console.log('Database seed finished successfully.');
-    process.exit(0);
-  }).catch((err) => {
+    pool.end().then(() => process.exit(0));
+  }).catch((err: any) => {
     console.error('Database seed error:', err);
     process.exit(1);
   });

@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "MediCore Clinical Hospital REST API",
-    "description": "Comprehensive RESTful APIs for the MediCore Hospital, Appointment & Patient Care Management Platform. Provides endpoints for Authentication, Multi-Role Dashboards, Doctor Availability, Concurrency-Protected Appointments, Clinical Encounters, Vital Signs, Diagnoses, Prescriptions, Lab Orders, Billing, Patient Consent, Auditing, and FHIR R4 Interoperability.",
+    "description": "Synthetic educational hospital operations API. PostgreSQL is authoritative. All clinical, billing, consent and FHIR endpoints enforce authentication and resource scope. Administrators have operational access and cannot read clinical charts. EMAIL/SMS and payments are local simulators.",
     "version": "1.0.0",
     "contact": {
       "name": "MediCore Engineering Team",
@@ -11,8 +11,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:4000/api/v1",
-      "description": "Local Development Server"
+      "url": "/api/v1",
+      "description": "Current API host"
+    },
+    {
+      "url": "http://localhost:4010/api/v1",
+      "description": "Verified local API"
     }
   ],
   "components": {
@@ -28,69 +32,208 @@
       "ApiResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" },
-          "data": { "type": "object" },
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object"
+          },
           "error": {
             "type": "object",
             "properties": {
-              "code": { "type": "string" },
-              "message": { "type": "string" },
-              "details": { "type": "object" }
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {
+                "type": "object"
+              }
             }
           },
           "meta": {
             "type": "object",
             "properties": {
-              "page": { "type": "integer" },
-              "limit": { "type": "integer" },
-              "total": { "type": "integer" },
-              "requestId": { "type": "string" },
-              "timestamp": { "type": "string" }
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "requestId": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string"
+              }
             }
           }
         }
       },
       "LoginRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
-          "email": { "type": "string", "format": "email", "example": "doctor@medicore.health" },
-          "password": { "type": "string", "format": "password", "example": "Password123!" }
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "doctor@medicore.health"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "Password123!"
+          }
         }
       },
       "RegisterPatientRequest": {
         "type": "object",
-        "required": ["email", "password", "firstName", "lastName", "phone", "dateOfBirth", "gender", "emergencyContactName", "emergencyContactPhone", "address"],
+        "required": [
+          "email",
+          "password",
+          "firstName",
+          "lastName",
+          "phone",
+          "dateOfBirth",
+          "gender",
+          "emergencyContactName",
+          "emergencyContactPhone",
+          "address"
+        ],
         "properties": {
-          "email": { "type": "string", "format": "email", "example": "jane.doe@example.com" },
-          "password": { "type": "string", "minLength": 8, "example": "SecurePass2026!" },
-          "firstName": { "type": "string", "example": "Jane" },
-          "lastName": { "type": "string", "example": "Doe" },
-          "phone": { "type": "string", "example": "+1-555-0199" },
-          "dateOfBirth": { "type": "string", "format": "date", "example": "1992-04-12" },
-          "gender": { "type": "string", "enum": ["MALE", "FEMALE", "OTHER"], "example": "FEMALE" },
-          "bloodGroup": { "type": "string", "example": "A+" },
-          "emergencyContactName": { "type": "string", "example": "John Doe" },
-          "emergencyContactPhone": { "type": "string", "example": "+1-555-0198" },
-          "address": { "type": "string", "example": "123 Health Ave, Springfield, OR" },
-          "insuranceProvider": { "type": "string", "example": "Blue Cross Blue Shield" },
-          "insurancePolicyNumber": { "type": "string", "example": "BCBS-90210" },
-          "allergies": { "type": "string", "example": "None reported" }
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "jane.doe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "SecurePass2026!"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Jane"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1-555-0199"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date",
+            "example": "1992-04-12"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER"
+            ],
+            "example": "FEMALE"
+          },
+          "bloodGroup": {
+            "type": "string",
+            "example": "A+"
+          },
+          "emergencyContactName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "emergencyContactPhone": {
+            "type": "string",
+            "example": "+1-555-0198"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Health Ave, Springfield, OR"
+          },
+          "insuranceProvider": {
+            "type": "string",
+            "example": "Blue Cross Blue Shield"
+          },
+          "insurancePolicyNumber": {
+            "type": "string",
+            "example": "BCBS-90210"
+          },
+          "allergies": {
+            "type": "string",
+            "example": "None reported"
+          }
         }
       },
       "BookAppointmentRequest": {
         "type": "object",
-        "required": ["doctorId", "departmentId", "scheduledStartTime", "scheduledEndTime", "reason"],
+        "required": [
+          "doctorId",
+          "departmentId",
+          "scheduledStartTime",
+          "scheduledEndTime",
+          "reason"
+        ],
         "properties": {
-          "patientId": { "type": "string", "format": "uuid" },
-          "doctorId": { "type": "string", "format": "uuid" },
-          "departmentId": { "type": "string", "format": "uuid" },
-          "scheduledStartTime": { "type": "string", "format": "date-time", "example": "2026-11-28T09:00:00.000Z" },
-          "scheduledEndTime": { "type": "string", "format": "date-time", "example": "2026-11-28T09:30:00.000Z" },
-          "type": { "type": "string", "enum": ["ROUTINE", "FOLLOW_UP", "EMERGENCY", "SPECIALIST"], "default": "ROUTINE" },
-          "reason": { "type": "string", "example": "Persistent chest discomfort and palpitations" },
-          "notes": { "type": "string", "example": "Patient requests morning consultation." },
-          "priority": { "type": "string", "enum": ["LOW", "NORMAL", "HIGH", "URGENT"], "default": "NORMAL" }
+          "patientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "doctorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scheduledStartTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-28T09:00:00.000Z"
+          },
+          "scheduledEndTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-28T09:30:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ROUTINE",
+              "FOLLOW_UP",
+              "EMERGENCY",
+              "SPECIALIST"
+            ],
+            "default": "ROUTINE"
+          },
+          "reason": {
+            "type": "string",
+            "example": "Persistent chest discomfort and palpitations"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Patient requests morning consultation."
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "NORMAL",
+              "HIGH",
+              "URGENT"
+            ],
+            "default": "NORMAL"
+          }
         }
       }
     }
@@ -98,307 +241,3004 @@
   "paths": {
     "/auth/login": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "auth"
+        ],
         "summary": "Authenticate user credentials and receive JWT access & refresh tokens",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": { "description": "Login successful, returns tokens and user summary" },
-          "401": { "description": "Invalid credentials or account locked" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "parameters": [],
+        "security": []
       }
     },
     "/auth/register": {
       "post": {
-        "tags": ["Authentication"],
+        "tags": [
+          "auth"
+        ],
         "summary": "Self-service registration for new patients",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RegisterPatientRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPatientRequest"
+              }
             }
           }
         },
         "responses": {
-          "201": { "description": "Patient account and clinical profile successfully created" },
-          "409": { "description": "Email address already registered" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Patient account and clinical profile successfully created"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "parameters": [],
+        "security": []
       }
     },
     "/auth/me": {
       "get": {
-        "tags": ["Authentication"],
+        "tags": [
+          "auth"
+        ],
         "summary": "Retrieve currently authenticated user session details",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Session authenticated" },
-          "401": { "description": "Missing or invalid token" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ]
       }
     },
     "/departments": {
       "get": {
-        "tags": ["Hospital Organization"],
+        "tags": [
+          "departments"
+        ],
         "summary": "List all active hospital clinical departments",
         "responses": {
-          "200": { "description": "Departments listed" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Public department directory.\nPermission: Public department directory.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": []
       }
     },
     "/doctors": {
       "get": {
-        "tags": ["Medical Staff"],
+        "tags": [
+          "doctors"
+        ],
         "summary": "List doctors with optional department filter and search",
         "parameters": [
-          { "name": "departmentId", "in": "query", "schema": { "type": "string" } },
-          { "name": "search", "in": "query", "schema": { "type": "string" } }
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
-          "200": { "description": "Doctors listed" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "security": []
       }
     },
     "/doctors/{id}/available-slots": {
       "get": {
-        "tags": ["Medical Staff"],
+        "tags": [
+          "doctors"
+        ],
         "summary": "Compute real-time 30-minute booking slots for a doctor on a specific date",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "date", "in": "query", "required": true, "schema": { "type": "string", "example": "2026-11-28" } }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2026-11-28"
+            }
+          }
         ],
         "responses": {
-          "200": { "description": "List of available slots" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "security": []
       }
     },
     "/appointments": {
       "get": {
-        "tags": ["Appointments"],
+        "tags": [
+          "appointments"
+        ],
         "summary": "List appointments (role-scoped)",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "List of appointments" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ]
       },
       "post": {
-        "tags": ["Appointments"],
+        "tags": [
+          "appointments"
+        ],
         "summary": "Book a new clinical appointment with concurrency conflict protection",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/BookAppointmentRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/BookAppointmentRequest"
+              }
             }
           }
         },
         "responses": {
-          "201": { "description": "Appointment successfully booked" },
-          "409": { "description": "Booking conflict: doctor already booked during requested time slot" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Appointment successfully booked"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": []
       }
     },
     "/appointments/{id}/check-in": {
       "patch": {
-        "tags": ["Appointments"],
+        "tags": [
+          "appointments"
+        ],
         "summary": "Receptionist patient check-in workflow",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
-          "200": { "description": "Patient checked in successfully" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action."
       }
     },
     "/appointments/{id}/cancel": {
       "patch": {
-        "tags": ["Appointments"],
+        "tags": [
+          "appointments"
+        ],
         "summary": "Cancel an appointment with audit reason",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
-          "200": { "description": "Appointment cancelled" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action."
       }
     },
     "/encounters": {
       "post": {
-        "tags": ["Clinical Encounters"],
+        "tags": [
+          "encounters"
+        ],
         "summary": "Initiate a patient encounter from a checked-in appointment",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Encounter created" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Encounter created"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "parameters": []
       }
     },
     "/encounters/vitals": {
       "post": {
-        "tags": ["Clinical Encounters"],
+        "tags": [
+          "encounters"
+        ],
         "summary": "Record patient vital signs (Blood Pressure, Heart Rate, SpO2, Temperature, BMI)",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Vitals recorded" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Vitals recorded"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "parameters": []
       }
     },
     "/encounters/diagnoses": {
       "post": {
-        "tags": ["Clinical Encounters"],
+        "tags": [
+          "encounters"
+        ],
         "summary": "Record ICD-10 clinical diagnosis",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Diagnosis added" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Diagnosis added"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "parameters": []
       }
     },
     "/prescriptions": {
       "get": {
-        "tags": ["Pharmacy & Prescriptions"],
+        "tags": [
+          "prescriptions"
+        ],
         "summary": "List prescriptions",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Prescriptions listed" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ]
       },
       "post": {
-        "tags": ["Pharmacy & Prescriptions"],
+        "tags": [
+          "prescriptions"
+        ],
         "summary": "Issue digital clinical prescription with items",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Prescription issued" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Prescription issued"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "parameters": []
       }
     },
     "/lab/orders": {
       "get": {
-        "tags": ["Laboratory"],
+        "tags": [
+          "lab"
+        ],
         "summary": "List laboratory requisitions",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Lab orders listed" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ]
       },
       "post": {
-        "tags": ["Laboratory"],
+        "tags": [
+          "lab"
+        ],
         "summary": "Order laboratory test panel",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Lab order created" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Lab order created"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "parameters": []
       }
     },
     "/lab/results": {
       "post": {
-        "tags": ["Laboratory"],
+        "tags": [
+          "lab"
+        ],
         "summary": "Enter measured laboratory result",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Lab result recorded" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Lab result recorded"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "parameters": []
       }
     },
     "/billing/invoices": {
       "get": {
-        "tags": ["Billing & Revenue"],
+        "tags": [
+          "billing"
+        ],
         "summary": "List invoices and itemized balances",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Invoices listed" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ]
       },
       "post": {
-        "tags": ["Billing & Revenue"],
+        "tags": [
+          "billing"
+        ],
         "summary": "Generate hospital invoice",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "201": { "description": "Invoice created" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "201": {
+            "description": "Invoice created"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "parameters": []
       }
     },
     "/billing/payments": {
       "post": {
-        "tags": ["Billing & Revenue"],
+        "tags": [
+          "billing"
+        ],
         "summary": "Process simulated fee payment",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Payment recorded" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "parameters": []
       }
     },
     "/consent/patient/{patientId}": {
       "get": {
-        "tags": ["Patient Consent"],
+        "tags": [
+          "consent"
+        ],
         "summary": "View patient consent records",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Consents listed" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self only.\nPermission: Patient self only.",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ]
       },
       "post": {
-        "tags": ["Patient Consent"],
+        "tags": [
+          "consent"
+        ],
         "summary": "Grant or revoke patient consent",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Consent updated" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Patient self only.\nPermission: Patient self only.",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ]
       }
     },
     "/audit": {
       "get": {
-        "tags": ["Auditing & Compliance"],
+        "tags": [
+          "audit"
+        ],
         "summary": "Retrieve immutable system audit logs (Admin only)",
-        "security": [{ "BearerAuth": [] }],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "Audit logs listed" },
-          "403": { "description": "Forbidden" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Administrator only. Append-only audit history.\nPermission: Administrator only. Append-only audit history.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ]
       }
     },
     "/fhir/Patient": {
       "get": {
-        "tags": ["FHIR R4 Interoperability"],
+        "tags": [
+          "fhir"
+        ],
         "summary": "Export synthetic patients as FHIR R4 Bundle",
         "responses": {
-          "200": { "description": "FHIR searchset Bundle" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/fhir/Appointment": {
       "get": {
-        "tags": ["FHIR R4 Interoperability"],
+        "tags": [
+          "fhir"
+        ],
         "summary": "Export synthetic appointments as FHIR R4 Bundle",
         "responses": {
-          "200": { "description": "FHIR searchset Bundle" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/fhir/Encounter": {
       "get": {
-        "tags": ["FHIR R4 Interoperability"],
+        "tags": [
+          "fhir"
+        ],
         "summary": "Export synthetic encounters as FHIR R4 Bundle",
         "responses": {
-          "200": { "description": "FHIR searchset Bundle" }
-        }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/fhir/Observation": {
       "get": {
-        "tags": ["FHIR R4 Interoperability"],
+        "tags": [
+          "fhir"
+        ],
         "summary": "Export synthetic laboratory observations as FHIR R4 Bundle",
         "responses": {
-          "200": { "description": "FHIR searchset Bundle" }
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        },
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/appointments/waiting-list": {
+      "get": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "GET /appointments/waiting-list",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "POST /appointments/waiting-list",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/appointments/waiting-list/{id}": {
+      "patch": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "PATCH /appointments/waiting-list/{id}",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/appointments/{id}": {
+      "get": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "GET /appointments/{id}",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/appointments/{id}/reschedule": {
+      "patch": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "PATCH /appointments/{id}/reschedule",
+        "description": "\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.\nPermission: Patient self, receptionist, assigned doctor or assigned nurse, according to action.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "POST /auth/refresh",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "parameters": [],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "POST /auth/logout",
+        "description": "\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.\nPermission: Login/register/refresh are public. Me/logout require an active bearer session.",
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/billing/invoices/{id}": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "GET /billing/invoices/{id}",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/billing/analytics": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "GET /billing/analytics",
+        "description": "\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.\nPermission: Patient self or billing officer/administrator for operational billing. Simulated payments only.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/departments/{id}": {
+      "get": {
+        "tags": [
+          "departments"
+        ],
+        "summary": "GET /departments/{id}",
+        "description": "\nPermission: Public department directory.\nPermission: Public department directory.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/doctors/{id}": {
+      "get": {
+        "tags": [
+          "doctors"
+        ],
+        "summary": "GET /doctors/{id}",
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/doctors/{id}/availability": {
+      "put": {
+        "tags": [
+          "doctors"
+        ],
+        "summary": "PUT /doctors/{id}/availability",
+        "description": "\nPermission: Public directory and slots. Availability changes require the owning doctor.\nPermission: Public directory and slots. Availability changes require the owning doctor.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/encounters/{id}": {
+      "get": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "GET /encounters/{id}",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/encounters/{id}/complete": {
+      "patch": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "PATCH /encounters/{id}/complete",
+        "description": "\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.\nPermission: Assigned doctor or assigned nurse with scoped consent; patient may read own encounters.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/fhir/Patient/{id}": {
+      "get": {
+        "tags": [
+          "fhir"
+        ],
+        "summary": "GET /fhir/Patient/{id}",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/fhir/Appointment/{id}": {
+      "get": {
+        "tags": [
+          "fhir"
+        ],
+        "summary": "GET /fhir/Appointment/{id}",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/fhir/Encounter/{id}": {
+      "get": {
+        "tags": [
+          "fhir"
+        ],
+        "summary": "GET /fhir/Encounter/{id}",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/fhir/Observation/{id}": {
+      "get": {
+        "tags": [
+          "fhir"
+        ],
+        "summary": "GET /fhir/Observation/{id}",
+        "description": "\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.\nPermission: Authenticated patient self or assigned clinician with consent. Local R4-shaped mock.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/lab/orders/{id}": {
+      "get": {
+        "tags": [
+          "lab"
+        ],
+        "summary": "GET /lab/orders/{id}",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/lab/results/{id}/validate": {
+      "patch": {
+        "tags": [
+          "lab"
+        ],
+        "summary": "PATCH /lab/results/{id}/validate",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "GET /notifications",
+        "description": "\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "PATCH /notifications/{id}/read",
+        "description": "\nPermission: Authenticated user owns the notification.\nPermission: Authenticated user owns the notification.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/operations/analytics-source": {
+      "get": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "GET /operations/analytics-source",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/operations/staff": {
+      "get": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "GET /operations/staff",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "POST /operations/staff",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/operations/staff/{id}": {
+      "patch": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "PATCH /operations/staff/{id}",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/operations/departments": {
+      "post": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "POST /operations/departments",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/operations/care-assignments": {
+      "post": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "POST /operations/care-assignments",
+        "description": "\nPermission: Administrator only; operational projections exclude clinical identifiers.\nPermission: Administrator only; operational projections exclude clinical identifiers.",
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/patients": {
+      "get": {
+        "tags": [
+          "patients"
+        ],
+        "summary": "GET /patients",
+        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/patients/{id}": {
+      "get": {
+        "tags": [
+          "patients"
+        ],
+        "summary": "GET /patients/{id}",
+        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "patients"
+        ],
+        "summary": "PATCH /patients/{id}",
+        "description": "\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.\nPermission: Self or assigned clinician with active consent for charts; operational staff get demographic listings only.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/prescriptions/{id}": {
+      "get": {
+        "tags": [
+          "prescriptions"
+        ],
+        "summary": "GET /prescriptions/{id}",
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/lab/orders/{id}/status": {
+      "patch": {
+        "tags": [
+          "lab"
+        ],
+        "summary": "PATCH /lab/orders/{id}/status",
+        "description": "\nPermission: Assigned technician enters results; ordering doctor validates; patients see only released final values.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
+        }
+      }
+    },
+    "/prescriptions/{id}/status": {
+      "patch": {
+        "tags": [
+          "prescriptions"
+        ],
+        "summary": "PATCH /prescriptions/{id}/status",
+        "description": "\nPermission: Assigned doctor writes; patient self and assigned clinician read.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque record identifier"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success (creation endpoints may return 201)"
+          },
+          "400": {
+            "description": "Schema validation or association error"
+          },
+          "401": {
+            "description": "Missing, expired, revoked, or invalid session"
+          },
+          "403": {
+            "description": "Role, relationship or consent denied"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Conflict, duplicate, or invalid workflow transition"
+          },
+          "503": {
+            "description": "Dependency unavailable; no partial clinical write committed"
+          }
         }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
 }

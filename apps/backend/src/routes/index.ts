@@ -12,6 +12,7 @@ import consentRoutes from './consent.routes';
 import auditRoutes from './audit.routes';
 import notificationRoutes from './notification.routes';
 import fhirRoutes from './fhir.routes';
+import operationsRoutes from './operations.routes';
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use('/consent', consentRoutes);
 router.use('/audit', auditRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/fhir', fhirRoutes);
+router.use('/operations', operationsRoutes);
 
 export default router;
