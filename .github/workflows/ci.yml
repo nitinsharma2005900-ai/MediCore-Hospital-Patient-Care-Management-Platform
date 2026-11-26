@@ -1,7 +1,9 @@
 name: MediCore verified quality
 on:
   push:
+    paths-ignore: ['docs/**', '*.md', '*.pdf', 'scripts/generate_submission_docs.py', 'scripts/build_documentation_pdf.py', 'scripts/package_project.py']
   pull_request:
+    paths-ignore: ['docs/**', '*.md', '*.pdf', 'scripts/generate_submission_docs.py', 'scripts/build_documentation_pdf.py', 'scripts/package_project.py']
 permissions:
   contents: read
 concurrency:
