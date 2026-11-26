@@ -19,6 +19,6 @@
     11,
     12
   ],
-  "inspection": "Each final page viewed individually; readable tables/diagrams, genuine live screenshots, no overlap or clipping observed",
-  "sha256": "0d9ba58e9382b82742fb09714a57e111ab42097596bcf398fe31cab4c67bc709"
+  "inspection": "Every page viewed individually. Pages 1-11 remained pixel-identical after the final timezone correction; revised page 12 re-inspected. No overlap or clipping observed.",
+  "sha256": "a5bdc4aa3cb12da31e1b49bf02d264c1cc9933d9d28f7c699ae5094bbcc1085c"
 }

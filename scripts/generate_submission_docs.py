@@ -104,7 +104,7 @@ write('KNOWN_LIMITATIONS.md','''# Known limitations
 - The Render role has no superuser, CREATEROLE, CREATEDB or BYPASSRLS privilege and owns only the MediCore database. It still runs migrations and business requests under one login; production should separate those roles. The temporary provisioner URL was removed after setup. Audit update/delete is blocked by a trigger, but infrastructure administrators can alter database policy.
 - The final test report is evidence of the stated cases, not proof of exhaustive correctness or legal/medical/regulatory compliance. Screen readers, browsers other than Chromium, cloud disaster recovery, retention archival and production load are not verified.
 - Windows setup defaults reference existing PostgreSQL/Redis tools on this computer. Other computers should use Docker or supply tool paths. Database and Redis ports are isolated from the other projects already running here.
-- The existing free Render PostgreSQL instance expires on 25 December 2026 at 19:00 UTC. Only one free PostgreSQL instance and one free Key Value instance can be active per workspace. Free Key Value data can disappear on restart, free web services sleep after 15 idle minutes, and 750 monthly instance hours are shared by the workspace. The PostgreSQL outbox supports queue recovery; the worker pauses when its hosting web service sleeps. Cold starts and redeploys can briefly interrupt requests; retry after startup.
+- The existing free Render PostgreSQL instance expires on 26 December 2026 at 00:30 IST. Only one free PostgreSQL instance and one free Key Value instance can be active per workspace. Free Key Value data can disappear on restart, free web services sleep after 15 idle minutes, and 750 monthly instance hours are shared by the workspace. The PostgreSQL outbox supports queue recovery; the worker pauses when its hosting web service sleeps. Cold starts and redeploys can briefly interrupt requests; retry after startup.
 - Free Render does not provide a dedicated background worker or managed PostgreSQL backups. The free demo configuration runs the BullMQ consumer inside the API process. A paid worker/backup solution requires the user's approval; no purchase was made.
 ''')
 write('SECURITY_REPORT.md','''# Security review
@@ -216,7 +216,7 @@ MediCore preserves the existing Next.js/Express/FastAPI application and now pers
 
 ## Verified result
 
-{total} final recorded checks: {passed} passed, {failed} failed, {skipped} skipped. See [TEST_REPORT.md](TEST_REPORT.md) for suite counts and coverage. [Live MediCore](https://medicore-nitinsharma.onrender.com) · [Express Swagger](https://medicore-api-nitinsharma.onrender.com/api-docs/) · [FastAPI Swagger](https://medicore-analytics-nitinsharma.onrender.com/docs) · [GitHub source]({repo}). The complete free Render demo uses private PostgreSQL/Redis and the embedded BullMQ worker. Cold starts can take about a minute; refresh after startup. The database expires 25 December 2026.
+{total} final recorded checks: {passed} passed, {failed} failed, {skipped} skipped. See [TEST_REPORT.md](TEST_REPORT.md) for suite counts and coverage. [Live MediCore](https://medicore-nitinsharma.onrender.com) · [Express Swagger](https://medicore-api-nitinsharma.onrender.com/api-docs/) · [FastAPI Swagger](https://medicore-analytics-nitinsharma.onrender.com/docs) · [GitHub source]({repo}). The complete free Render demo uses private PostgreSQL/Redis and the embedded BullMQ worker. Cold starts can take about a minute; refresh after startup. The database expires 26 December 2026 (00:30 IST).
 
 {table}
 
@@ -294,7 +294,7 @@ write('LOOM_DEMO_SCRIPT.md',f'''# MediCore demonstration script — 7 minutes 30
 
 **5:45–6:15 — GitHub.** Show {repo}, real commits, feature branch/pull request and actual Actions results. Branch protection was unavailable for the private repository on this account; no peer approval is claimed.
 
-**6:15–6:50 — Deployment.** Open https://medicore-nitinsharma.onrender.com in a fresh session, show API readiness and analytics health, and explain the three free services, private datastore addresses and embedded worker. State the database's 25 December 2026 expiry, idle cold starts and missing managed backups. Show actual deployment evidence without revealing environment values.
+**6:15–6:50 — Deployment.** Open https://medicore-nitinsharma.onrender.com in a fresh session, show API readiness and analytics health, and explain the three free services, private datastore addresses and embedded worker. State the database's 26 December 2026 (00:30 IST) expiry, idle cold starts and missing managed backups. Show actual deployment evidence without revealing environment values.
 
 **6:50–7:30 — Conclusion.** Show the real test counts and five controlled incident reports. Mention the local FHIR/mock delivery scope, scaling limits and remaining cloud/review work. Offer to trace a browser action through Express to PostgreSQL or make a small change during review.
 
@@ -389,7 +389,7 @@ All files are in `C:\\Users\\amits\\Downloads\\MediCore_Complete_Project`:
 
 ## Remaining blockers
 
-Render is deployed and live synthetic workflows are verified. Three free web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The temporary provisioner credential was removed. Remaining limits include the database's 25 December 2026 expiry, shared monthly hours, idle sleeps, embedded worker, missing off-host cloud backups/retention and a combined migration/runtime database owner. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. Protected staging release hooks remain unconfigured. FHIR and outbound messages remain explicit local mocks/simulators; no external API key is required. Default onrender.com DNS and HTTPS are verified; no custom domain was requested or provisioned.
+Render is deployed and live synthetic workflows are verified. Three free web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The temporary provisioner credential was removed. Remaining limits include the database's 26 December 2026 (00:30 IST) expiry, shared monthly hours, idle sleeps, embedded worker, missing off-host cloud backups/retention and a combined migration/runtime database owner. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. Protected staging release hooks remain unconfigured. FHIR and outbound messages remain explicit local mocks/simulators; no external API key is required. Default onrender.com DNS and HTTPS are verified; no custom domain was requested or provisioned.
 
 ## Run again
 

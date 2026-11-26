@@ -85,7 +85,7 @@ All files are in `C:\Users\amits\Downloads\MediCore_Complete_Project`:
 
 ## Remaining blockers
 
-Render is deployed and live synthetic workflows are verified. Three free web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The temporary provisioner credential was removed. Remaining limits include the database's 25 December 2026 expiry, shared monthly hours, idle sleeps, embedded worker, missing off-host cloud backups/retention and a combined migration/runtime database owner. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. Protected staging release hooks remain unconfigured. FHIR and outbound messages remain explicit local mocks/simulators; no external API key is required. Default onrender.com DNS and HTTPS are verified; no custom domain was requested or provisioned.
+Render is deployed and live synthetic workflows are verified. Three free web services reuse private datastore compute with a separate MediCore database/login and Redis database 2. The temporary provisioner credential was removed. Remaining limits include the database's 26 December 2026 (00:30 IST) expiry, shared monthly hours, idle sleeps, embedded worker, missing off-host cloud backups/retention and a combined migration/runtime database owner. No paid resource was purchased. GitHub rejected private branch protection with HTTP 403, and no peer approval is claimed. Protected staging release hooks remain unconfigured. FHIR and outbound messages remain explicit local mocks/simulators; no external API key is required. Default onrender.com DNS and HTTPS are verified; no custom domain was requested or provisioned.
 
 ## Run again
 

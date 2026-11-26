@@ -6,7 +6,7 @@ MediCore preserves the existing Next.js/Express/FastAPI application and now pers
 
 ## Verified result
 
-267 final recorded checks: 267 passed, 0 failed, 0 skipped. See [TEST_REPORT.md](TEST_REPORT.md) for suite counts and coverage. [Live MediCore](https://medicore-nitinsharma.onrender.com) · [Express Swagger](https://medicore-api-nitinsharma.onrender.com/api-docs/) · [FastAPI Swagger](https://medicore-analytics-nitinsharma.onrender.com/docs) · [GitHub source](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform). The complete free Render demo uses private PostgreSQL/Redis and the embedded BullMQ worker. Cold starts can take about a minute; refresh after startup. The database expires 25 December 2026.
+267 final recorded checks: 267 passed, 0 failed, 0 skipped. See [TEST_REPORT.md](TEST_REPORT.md) for suite counts and coverage. [Live MediCore](https://medicore-nitinsharma.onrender.com) · [Express Swagger](https://medicore-api-nitinsharma.onrender.com/api-docs/) · [FastAPI Swagger](https://medicore-analytics-nitinsharma.onrender.com/docs) · [GitHub source](https://github.com/nitinsharma2005900-ai/MediCore-Hospital-Patient-Care-Management-Platform). The complete free Render demo uses private PostgreSQL/Redis and the embedded BullMQ worker. Cold starts can take about a minute; refresh after startup. The database expires 26 December 2026 (00:30 IST).
 
 | # | Assessment | Status |
 |---|---|---|
