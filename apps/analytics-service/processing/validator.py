@@ -43,6 +43,10 @@ def validate_lab_dataset(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[Dict[str,
         test_code = str(row.get('test_code', '')).strip()
         measured_val = row.get('measured_value')
         unit = str(row.get('unit', '')).strip()
+        patient_id = row.get('patient_id')
+        if pd.isna(patient_id) or not str(patient_id).strip() or not unit or unit == 'nan':
+            errors.append({'row': int(idx), 'id': row_id, 'field': 'patient_id/unit', 'issue': 'Required patient identifier or unit is missing', 'severity': 'ERROR'})
+            continue
 
         # 1. Missing test code
         if not test_code or pd.isna(test_code) or test_code == 'nan':
@@ -79,6 +83,8 @@ def validate_lab_dataset(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[Dict[str,
 
         try:
             num_val = float(measured_val)
+            if not np.isfinite(num_val):
+                raise ValueError('Non-finite value')
         except (ValueError, TypeError):
             errors.append({
                 'row': int(idx),
@@ -107,8 +113,17 @@ def validate_lab_dataset(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[Dict[str,
                 'id': row_id,
                 'field': 'unit',
                 'issue': f"Unit discrepancy: expected '{meta['unit']}', found '{unit}'",
-                'severity': 'WARNING'
+                'severity': 'ERROR'
             })
+            continue
+        if 'reference_low' in row and 'reference_high' in row:
+            try:
+                low, high = float(row['reference_low']), float(row['reference_high'])
+                if not np.isfinite(low) or not np.isfinite(high) or low > high:
+                    raise ValueError('Invalid reference range')
+            except (ValueError, TypeError):
+                errors.append({'row':int(idx), 'id':row_id, 'field':'reference_range', 'issue':'Invalid reference metadata', 'severity':'ERROR'})
+                continue
 
         valid_rows.append(row)
 

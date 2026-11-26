@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   CreditCard, 
   DollarSign, 
@@ -14,6 +14,8 @@ import {
   Receipt
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
+import { InvoiceComposer } from '@/components/CareActions';
+import Link from 'next/link';
 
 export default function BillingDashboard() {
   const { token, apiUrl } = useAuth();
@@ -30,7 +32,7 @@ export default function BillingDashboard() {
   const [itemCat, setItemCat] = useState('CONSULTATION');
   const [itemPrice, setItemPrice] = useState(150);
 
-  const fetchBillingData = async () => {
+  const fetchBillingData = useCallback(async () => {
     if (!token) return;
     try {
       setLoading(true);
@@ -46,11 +48,11 @@ export default function BillingDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, apiUrl]);
 
   useEffect(() => {
     fetchBillingData();
-  }, [token, apiUrl]);
+  }, [fetchBillingData]);
 
   const handleSettlePayment = async (invId: string, balance: number) => {
     try {
@@ -75,6 +77,7 @@ export default function BillingDashboard() {
 
   return (
     <div className="space-y-6">
+      <InvoiceComposer onCreated={fetchBillingData}/>
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-amber-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-md flex items-center justify-between">
         <div>
@@ -92,7 +95,7 @@ export default function BillingDashboard() {
             <CheckCircle className="w-4 h-4 text-emerald-600" />
             <span>{statusMsg}</span>
           </div>
-          <button onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
+          <button aria-label="Dismiss message" onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
         </div>
       )}
 
@@ -157,7 +160,7 @@ export default function BillingDashboard() {
             <tbody className="divide-y divide-slate-100">
               {invoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="py-3.5 px-4 font-mono font-bold text-slate-900">{inv.invoiceNumber}</td>
+                  <td className="py-3.5 px-4 font-mono font-bold text-slate-900"><Link className="underline" href={`/invoices/${inv.id}`}>{inv.invoiceNumber}</Link></td>
                   <td className="py-3.5 px-4">
                     <div className="font-semibold text-slate-900">{inv.patientName}</div>
                     <div className="text-[10px] font-mono text-slate-400">{inv.patientMrn}</div>

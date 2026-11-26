@@ -11,7 +11,7 @@ export function recordAuditLog(
   details?: Record<string, any>
 ) {
   try {
-    const performedByUserId = req.user?.id || 'ANONYMOUS';
+    const performedByUserId = req.user?.id || (entityName === 'User' && store.users.some(u => u.id === entityId) ? entityId! : null);
     const userRole = req.user?.role || (UserRole.PATIENT as any);
     const ipAddress = req.ip || req.socket.remoteAddress || '127.0.0.1';
     const userAgent = req.headers['user-agent'] || 'Unknown';
@@ -26,7 +26,8 @@ export function recordAuditLog(
       userRole,
       ipAddress,
       userAgent,
-      details: details ? JSON.stringify(details) : null,
+      details: details ? JSON.stringify(Object.fromEntries(Object.entries(details).filter(([key]) =>
+        !/password|token|secret|measuredValue|clinicalNotes|reason|chiefComplaint|email|phone|instructions|testPanelName/i.test(key)))) : null,
       timestamp: new Date(),
       requestCorrelationId: correlationId
     });

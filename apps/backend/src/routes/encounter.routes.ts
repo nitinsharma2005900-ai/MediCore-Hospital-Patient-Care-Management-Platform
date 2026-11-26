@@ -1,3 +1,4 @@
+import { clinicalScope } from '../middlewares/scope.middleware';
 import { Router } from 'express';
 import { 
   startEncounter, 
@@ -14,10 +15,10 @@ const router = Router();
 
 router.use(authenticate);
 
-router.post('/', requireRole([UserRole.DOCTOR, UserRole.ADMIN]), startEncounter);
-router.get('/:id', getEncounterById);
-router.patch('/:id/complete', requireRole([UserRole.DOCTOR, UserRole.ADMIN]), completeEncounter);
-router.post('/vitals', requireRole([UserRole.NURSE, UserRole.DOCTOR, UserRole.ADMIN]), recordVitals);
-router.post('/diagnoses', requireRole([UserRole.DOCTOR, UserRole.ADMIN]), addDiagnosis);
+router.post('/', clinicalScope, requireRole([UserRole.DOCTOR]), startEncounter);
+router.get('/:id', clinicalScope, getEncounterById);
+router.patch('/:id/complete', clinicalScope, requireRole([UserRole.DOCTOR]), completeEncounter);
+router.post('/vitals', clinicalScope, requireRole([UserRole.NURSE, UserRole.DOCTOR]), recordVitals);
+router.post('/diagnoses', clinicalScope, requireRole([UserRole.DOCTOR]), addDiagnosis);
 
 export default router;

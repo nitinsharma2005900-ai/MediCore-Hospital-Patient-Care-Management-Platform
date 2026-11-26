@@ -1,4 +1,7 @@
 import { Router } from 'express';
+import { authenticate } from '../middlewares/auth.middleware';
+import { requireRole } from '../middlewares/rbac.middleware';
+import { UserRole } from '@medicore/shared';
 import { 
   getFhirPatients, 
   getFhirPatientById, 
@@ -11,6 +14,7 @@ import {
 } from '../controllers/fhir.controller';
 
 const router = Router();
+router.use(authenticate, requireRole([UserRole.PATIENT, UserRole.DOCTOR, UserRole.NURSE]));
 
 // FHIR R4 Patient Resources
 router.get('/Patient', getFhirPatients);

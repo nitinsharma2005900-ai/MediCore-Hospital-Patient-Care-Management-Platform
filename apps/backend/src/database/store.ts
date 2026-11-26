@@ -34,6 +34,7 @@ export interface UserRecord {
 }
 
 export interface RefreshTokenRecord {
+  accessTokenId?: string | null;
   id: string;
   tokenHash: string;
   userId: string;
@@ -210,6 +211,7 @@ export interface PrescriptionItemRecord {
 }
 
 export interface LabOrderRecord {
+  assignedTechnicianUserId?: string | null;
   id: string;
   orderNumber: string;
   encounterId: string;
@@ -301,7 +303,7 @@ export interface AuditLogRecord {
   action: string;
   entityName: string;
   entityId?: string | null;
-  performedByUserId: string;
+  performedByUserId: string | null;
   userRole: UserRole;
   ipAddress?: string | null;
   userAgent?: string | null;
@@ -324,7 +326,8 @@ export interface NotificationRecord {
 }
 
 // In-Memory Database Store with Transaction Mutex
-class MediCoreStore {
+export class MediCoreStore {
+  public careAssignments: { id: string; patientId: string; nurseUserId: string; active: boolean }[] = [];
   public users: UserRecord[] = [];
   public refreshTokens: RefreshTokenRecord[] = [];
   public departments: DepartmentRecord[] = [];
@@ -369,6 +372,7 @@ class MediCoreStore {
 
   // Clear all data (useful for test resets)
   public clearAll() {
+    this.careAssignments = [];
     this.users = [];
     this.refreshTokens = [];
     this.departments = [];
@@ -393,4 +397,17 @@ class MediCoreStore {
   }
 }
 
-export const store = new MediCoreStore();
+// Tests can explicitly use memory. Runtime requests bind a fresh PostgreSQL unit of work.
+import { AsyncLocalStorage } from 'node:async_hooks';
+export const storeContext = new AsyncLocalStorage<MediCoreStore>();
+const memoryStore = new MediCoreStore();
+export const store = new Proxy(memoryStore, {
+  get(target, property) {
+    const current = storeContext.getStore() || target;
+    const value = Reflect.get(current, property);
+    return typeof value === 'function' ? value.bind(current) : value;
+  },
+  set(target, property, value) {
+    return Reflect.set(storeContext.getStore() || target, property, value);
+  }
+});

@@ -63,9 +63,9 @@ def calculate_waiting_times(encounters_data: List[Dict[str, Any]]) -> Dict[str, 
     """
     if not encounters_data:
         return {
-            'average_wait_minutes': 14.5,
-            'median_wait_minutes': 12.0,
-            'p90_wait_minutes': 24.0,
+            'average_wait_minutes': None,
+            'median_wait_minutes': None,
+            'p90_wait_minutes': None,
             'sample_size': 0
         }
 
@@ -84,7 +84,7 @@ def calculate_waiting_times(encounters_data: List[Dict[str, Any]]) -> Dict[str, 
                 continue
 
     if not wait_times:
-        wait_times = [8.5, 12.0, 14.0, 11.5, 18.0, 9.0, 15.5, 22.0, 13.0, 10.5]
+        return calculate_waiting_times([])
 
     s = pd.Series(wait_times)
     return {
@@ -103,10 +103,10 @@ def calculate_lab_turnaround_times(lab_orders_data: List[Dict[str, Any]]) -> Dic
     """
     if not lab_orders_data:
         return {
-            'average_tat_hours': 2.4,
-            'median_tat_hours': 1.8,
-            'stat_urgent_average_minutes': 42.0,
-            'routine_average_hours': 3.1,
+            'average_tat_hours': None,
+            'median_tat_hours': None,
+            'stat_urgent_average_minutes': None,
+            'routine_average_hours': None,
             'completed_orders_analyzed': 0
         }
 
@@ -119,19 +119,19 @@ def calculate_lab_turnaround_times(lab_orders_data: List[Dict[str, Any]]) -> Dic
             try:
                 c_dt = pd.to_datetime(created)
                 u_dt = pd.to_datetime(updated)
-                diff_hrs = max(0.1, (u_dt - c_dt).total_seconds() / 3600.0)
+                diff_hrs = max(0.0, (u_dt - c_dt).total_seconds() / 3600.0)
                 tat_hours.append(diff_hrs)
             except Exception:
                 continue
 
     if not tat_hours:
-        tat_hours = [1.5, 2.2, 1.8, 3.4, 1.2, 2.8, 2.0, 1.9, 2.5]
+        return calculate_lab_turnaround_times([])
 
     s = pd.Series(tat_hours)
     return {
         'average_tat_hours': round(float(s.mean()), 2),
         'median_tat_hours': round(float(s.median()), 2),
-        'stat_urgent_average_minutes': 38.5,
+        'stat_urgent_average_minutes': None,
         'routine_average_hours': round(float(s.mean()), 2),
         'completed_orders_analyzed': len(tat_hours)
     }
@@ -142,16 +142,16 @@ def generate_population_report(patients_data: List[Dict[str, Any]]) -> Dict[str,
     Computes synthetic population metrics: age demographics, gender split, blood groups.
     """
     if not patients_data:
-        return {'total_population': 0}
+        return {'total_population': 0, 'total_synthetic_patients': 0, 'mean_patient_age': None, 'median_patient_age': None, 'age_distribution': {}, 'gender_distribution': {}, 'blood_group_distribution': {}}
 
     df = pd.DataFrame(patients_data)
     total = len(df)
 
     # Calculate age from dateOfBirth
-    now = pd.Timestamp.now()
+    now = pd.Timestamp.now(tz="UTC")
     ages = []
     if 'dateOfBirth' in df.columns:
-        dob_series = pd.to_datetime(df['dateOfBirth'], errors='coerce')
+        dob_series = pd.to_datetime(df['dateOfBirth'], errors='coerce', utc=True)
         ages = ((now - dob_series).dt.days / 365.25).dropna().tolist()
 
     age_brackets = {'0-17': 0, '18-35': 0, '36-50': 0, '51-65': 0, '65+': 0}
@@ -172,8 +172,8 @@ def generate_population_report(patients_data: List[Dict[str, Any]]) -> Dict[str,
 
     return {
         'total_synthetic_patients': total,
-        'mean_patient_age': round(float(np.mean(ages)), 1) if ages else 45.2,
-        'median_patient_age': round(float(np.median(ages)), 1) if ages else 44.0,
+        'mean_patient_age': round(float(np.mean(ages)), 1) if ages else None,
+        'median_patient_age': round(float(np.median(ages)), 1) if ages else None,
         'age_distribution': age_brackets,
         'gender_distribution': gender_counts,
         'blood_group_distribution': blood_group_counts

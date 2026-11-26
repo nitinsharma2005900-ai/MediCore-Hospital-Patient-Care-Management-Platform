@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "method": "pg_dump custom archive / pg_restore into a new disposable database",
+  "sha256": "253fdb28350f953cec92d851cb86516df76724acb4c1dda3534cca70e29c7520",
+  "bytes": 211154,
+  "verified_counts": {
+    "User": 121,
+    "PatientProfile": 101,
+    "Appointment": 162,
+    "Encounter": 46,
+    "LabResult": 150,
+    "Invoice": 56,
+    "AuditLog": 473
+  },
+  "constraints_verified": 2,
+  "application_database_overwritten": false
+}

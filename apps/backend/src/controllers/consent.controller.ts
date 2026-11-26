@@ -12,6 +12,7 @@ import {
 export const getPatientConsents = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { patientId } = req.params;
+    if (req.user?.role !== UserRole.PATIENT || req.user.patientProfileId !== patientId) throw new AppError('Only the patient may read or change consent', 403, 'FORBIDDEN');
 
     if (req.user?.role === UserRole.PATIENT && req.user.patientProfileId !== patientId) {
       throw new AppError('Access denied: Unauthorized consent access', 403, 'FORBIDDEN');
@@ -37,6 +38,7 @@ export const getPatientConsents = (req: Request, res: Response, next: NextFuncti
 export const updateConsent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { patientId } = req.params;
+    if (req.user?.role !== UserRole.PATIENT || req.user.patientProfileId !== patientId) throw new AppError('Only the patient may read or change consent', 403, 'FORBIDDEN');
     const validated = UpdateConsentSchema.parse(req.body);
 
     if (req.user?.role === UserRole.PATIENT && req.user.patientProfileId !== patientId) {

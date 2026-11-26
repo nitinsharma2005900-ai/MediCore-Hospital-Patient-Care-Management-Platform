@@ -43,9 +43,9 @@ export default function NurseDashboard() {
         const data = await res.json();
         if (data.success && data.data) {
           const list = data.data.filter((a: any) => a.status === 'CHECKED_IN' || a.status === 'IN_PROGRESS');
-          setAppointments(list.length > 0 ? list : data.data.slice(0, 10));
+          setAppointments(list);
           if (list.length > 0) setSelectedPatient(list[0]);
-          else if (data.data.length > 0) setSelectedPatient(data.data[0]);
+
         }
       } catch (err) {
         console.error(err);
@@ -59,19 +59,6 @@ export default function NurseDashboard() {
     try {
       // First ensure encounter exists or create/use encounter
       let encId = selectedPatient.encounterId;
-      if (!encId) {
-        const encRes = await fetch(`${apiUrl}/encounters`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({
-            appointmentId: selectedPatient.id,
-            patientId: selectedPatient.patientId,
-            chiefComplaint: selectedPatient.reason || 'Nurse Triage Vitals Capture'
-          })
-        }).then(r => r.json());
-        if (encRes.success) encId = encRes.data.id;
-      }
-
       if (!encId) {
         setStatusMsg('Patient encounter not ready yet.');
         return;
@@ -127,7 +114,7 @@ export default function NurseDashboard() {
             <CheckCircle className="w-4 h-4 text-emerald-600" />
             <span>{statusMsg}</span>
           </div>
-          <button onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
+          <button aria-label="Dismiss message" onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
         </div>
       )}
 
@@ -168,7 +155,7 @@ export default function NurseDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Systolic BP (mmHg)</label>
-              <input
+              <input aria-label="Systolic BP (mmHg)"
                 type="number"
                 value={systolic}
                 onChange={(e) => setSystolic(Number(e.target.value))}
@@ -177,7 +164,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Diastolic BP (mmHg)</label>
-              <input
+              <input aria-label="Diastolic BP (mmHg)"
                 type="number"
                 value={diastolic}
                 onChange={(e) => setDiastolic(Number(e.target.value))}
@@ -186,7 +173,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Heart Rate (bpm)</label>
-              <input
+              <input aria-label="Heart Rate (bpm)"
                 type="number"
                 value={heartRate}
                 onChange={(e) => setHeartRate(Number(e.target.value))}
@@ -195,7 +182,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Oxygen Saturation (SpO2 %)</label>
-              <input
+              <input aria-label="Oxygen Saturation (SpO2 %)"
                 type="number"
                 value={spo2}
                 onChange={(e) => setSpo2(Number(e.target.value))}
@@ -204,7 +191,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Temperature (°C)</label>
-              <input
+              <input aria-label="Temperature (°C)"
                 type="number"
                 step="0.1"
                 value={temperature}
@@ -214,7 +201,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Respiratory Rate (/min)</label>
-              <input
+              <input aria-label="Respiratory Rate (/min)"
                 type="number"
                 value={respiratoryRate}
                 onChange={(e) => setRespiratoryRate(Number(e.target.value))}
@@ -223,7 +210,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Height (cm)</label>
-              <input
+              <input aria-label="Height (cm)"
                 type="number"
                 value={heightCm}
                 onChange={(e) => setHeightCm(Number(e.target.value))}
@@ -232,7 +219,7 @@ export default function NurseDashboard() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Weight (kg)</label>
-              <input
+              <input aria-label="Weight (kg)"
                 type="number"
                 value={weightKg}
                 onChange={(e) => setWeightKg(Number(e.target.value))}
@@ -243,7 +230,7 @@ export default function NurseDashboard() {
 
           <div className="mt-4">
             <label className="block text-xs font-semibold text-slate-700 mb-1">Triage Observation Notes</label>
-            <input
+            <input aria-label="Triage Observation Notes"
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}

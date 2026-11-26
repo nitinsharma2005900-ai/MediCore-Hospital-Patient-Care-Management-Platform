@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
+import { createHash } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config';
@@ -17,8 +18,9 @@ import {
 } from '@medicore/shared';
 
 function generateTokens(user: { id: string; role: UserRole; email: string }): AuthTokens {
+  const accessTokenId = uuidv4();
   const accessToken = jwt.sign(
-    { userId: user.id, role: user.role, email: user.email },
+    { userId: user.id, role: user.role, email: user.email, jti: accessTokenId },
     config.jwt.accessSecret,
     { expiresIn: '15m' as any }
   );
@@ -29,6 +31,11 @@ function generateTokens(user: { id: string; role: UserRole; email: string }): Au
     { expiresIn: '7d' as any }
   );
 
+  store.refreshTokens.push({
+    id: uuidv4(), userId: user.id, accessTokenId,
+    tokenHash: createHash('sha256').update(refreshToken).digest('hex'),
+    expiresAt: new Date(Date.now() + 7 * 86400000), revoked: false, createdAt: new Date()
+  });
   return {
     accessToken,
     refreshToken,
@@ -68,20 +75,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     user.failedLoginAttempts = 0;
     user.lockedUntil = null;
 
+    req.user = { id: user.id, email: user.email, role: user.role, firstName: user.firstName, lastName: user.lastName };
     const tokens = generateTokens(user);
-
-    // Save refresh token
-    const tokenHash = await bcrypt.hash(tokens.refreshToken.substring(0, 32), 8);
-    store.refreshTokens.push({
-      id: uuidv4(),
-      tokenHash,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 7 * 86400000),
-      revoked: false,
-      ipAddress: req.ip || null,
-      userAgent: req.headers['user-agent'] || null,
-      createdAt: new Date()
-    });
 
     const patientProfile = store.patients.find(p => p.userId === user.id);
     const doctorProfile = store.doctors.find(d => d.userId === user.id);
@@ -233,8 +228,17 @@ export const refreshTokens = async (req: Request, res: Response, next: NextFunct
       throw new AppError('User not found or account deactivated', 401, 'UNAUTHORIZED');
     }
 
-    // Token Rotation: Issue new pair
+    const session = store.refreshTokens.find(s => s.userId === user.id &&
+      s.tokenHash === createHash('sha256').update(refreshToken).digest('hex'));
+    if (!session || session.revoked || session.expiresAt <= new Date()) {
+      // Replay invalidates the token family, including tokens issued after the stolen token.
+      for (const s of store.refreshTokens.filter(s => s.userId === user.id)) { s.revoked = true; s.revokedAt = new Date(); }
+      recordAuditLog(req, 'REFRESH_REPLAY_DENIED', 'User', user.id);
+      throw new AppError('Refresh session revoked or expired', 401, 'INVALID_REFRESH_TOKEN');
+    }
+    session.revoked = true; session.revokedAt = new Date();
     const tokens = generateTokens(user);
+    session.replacedByToken = store.refreshTokens[store.refreshTokens.length - 1].id;
 
     const response: ApiResponse<AuthTokens> = {
       success: true,
@@ -254,6 +258,9 @@ export const refreshTokens = async (req: Request, res: Response, next: NextFunct
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.user) {
+      const decoded = jwt.decode(req.headers.authorization!.slice(7)) as { jti: string };
+      const session = store.refreshTokens.find(s => s.accessTokenId === decoded.jti);
+      if (session) { session.revoked = true; session.revokedAt = new Date(); }
       recordAuditLog(req, 'LOGOUT', 'User', req.user.id);
     }
     const response: ApiResponse<{ message: string }> = {

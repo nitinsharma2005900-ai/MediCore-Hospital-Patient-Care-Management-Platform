@@ -1,3 +1,4 @@
+import { billingScope } from '../middlewares/scope.middleware';
 import { Router } from 'express';
 import { 
   listInvoices, 
@@ -14,10 +15,10 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/invoices', listInvoices);
-router.get('/invoices/:id', getInvoiceById);
-router.get('/analytics', requireRole([UserRole.BILLING_OFFICER, UserRole.ADMIN]), getBillingAnalytics);
-router.post('/invoices', requireRole([UserRole.BILLING_OFFICER, UserRole.ADMIN]), createInvoice);
-router.post('/payments', recordPayment);
+router.get('/invoices', billingScope, listInvoices);
+router.get('/invoices/:id', billingScope, getInvoiceById);
+router.get('/analytics', billingScope, requireRole([UserRole.BILLING_OFFICER, UserRole.ADMIN]), getBillingAnalytics);
+router.post('/invoices', billingScope, requireRole([UserRole.BILLING_OFFICER, UserRole.ADMIN]), createInvoice);
+router.post('/payments', billingScope, recordPayment);
 
 export default router;

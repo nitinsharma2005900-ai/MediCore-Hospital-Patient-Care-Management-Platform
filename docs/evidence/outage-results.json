@@ -1,0 +1,25 @@
+{
+  "simulated": true,
+  "timestamp": "2026-11-26T04:48:15.873Z",
+  "results": [
+    {
+      "name": "Failed notification jobs retry three times and record failure",
+      "status": "passed"
+    },
+    {
+      "name": "Controlled notification recovery delivers exactly once",
+      "status": "passed"
+    },
+    {
+      "name": "Redis outage preserves the PostgreSQL outbox and recovers delivery",
+      "status": "passed"
+    },
+    {
+      "name": "Database outage returns 503 and recovery preserves stored records",
+      "status": "passed"
+    }
+  ],
+  "total": 4,
+  "passed": 4,
+  "failed": 0
+}

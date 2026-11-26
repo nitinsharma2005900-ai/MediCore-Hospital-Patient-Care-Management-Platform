@@ -1,0 +1,12 @@
+import React from 'react';
+import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
+import {afterEach,beforeEach,describe,it,expect,vi} from 'vitest';
+import {AuthProvider,useAuth} from '../components/AuthContext';
+function Probe(){const {user,login,logout}=useAuth();return <><p>{user?.firstName||'Signed out'}</p><button onClick={()=>void login('patient@medicore.health','Password123!')}>Sign in</button><button onClick={logout}>Sign out</button></>;}
+beforeEach(()=>{sessionStorage.clear();localStorage.clear();});
+afterEach(()=>{cleanup();vi.restoreAllMocks();});
+describe('Session state and revocation',()=>{
+ it('keeps invalid credentials signed out',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue({json:async()=>({success:false})}));render(<AuthProvider><Probe/></AuthProvider>);fireEvent.click(screen.getByText('Sign in'));await waitFor(()=>expect(fetch).toHaveBeenCalled());expect(screen.getByText('Signed out')).toBeTruthy();expect(sessionStorage.getItem('medicore_token')).toBeNull();});
+ it('stores a successful synthetic session in tab storage',async()=>{const token='e30.'+btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+900}))+'.fixture';vi.stubGlobal('fetch',vi.fn().mockResolvedValue({json:async()=>({success:true,data:{user:{id:'synthetic',firstName:'Eleanor',role:'PATIENT'},tokens:{accessToken:token,refreshToken:'opaque-fixture'}}})}));render(<AuthProvider><Probe/></AuthProvider>);fireEvent.click(screen.getByText('Sign in'));await screen.findByText('Eleanor');expect(sessionStorage.getItem('medicore_refresh')).toBe('opaque-fixture');expect(localStorage.length).toBe(0);});
+ it('calls server-side logout and clears credentials',async()=>{const token='e30.'+btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+900}))+'.fixture';const fetchMock=vi.fn().mockResolvedValue({json:async()=>({success:true,data:{user:{id:'synthetic',firstName:'Eleanor',role:'PATIENT'},tokens:{accessToken:token,refreshToken:'opaque-fixture'}}})});vi.stubGlobal('fetch',fetchMock);render(<AuthProvider><Probe/></AuthProvider>);fireEvent.click(screen.getByText('Sign in'));await screen.findByText('Eleanor');fireEvent.click(screen.getByText('Sign out'));await screen.findByText('Signed out');expect(fetchMock).toHaveBeenCalledWith('/api/v1/auth/logout',expect.objectContaining({method:'POST'}));expect(sessionStorage.getItem('medicore_token')).toBeNull();expect(sessionStorage.getItem('medicore_refresh')).toBeNull();});
+});

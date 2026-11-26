@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { store } from '../database/store';
 import { AppError } from '../middlewares/error.middleware';
 import { recordAuditLog } from '../middlewares/audit.middleware';
+import { z } from 'zod';
 import { 
   CreateEncounterSchema, 
   RecordVitalsSchema, 
@@ -121,13 +122,14 @@ export const getEncounterById = (req: Request, res: Response, next: NextFunction
 export const completeEncounter = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { clinicalNotes } = req.body;
+    const { clinicalNotes } = z.object({clinicalNotes:z.string().max(20000).optional()}).strict().parse(req.body);
 
     const enc = store.encounters.find(e => e.id === id);
     if (!enc) {
       throw new AppError('Encounter not found', 404, 'NOT_FOUND');
     }
 
+    if (enc.status !== EncounterStatus.IN_PROGRESS) throw new AppError('Encounter is not active', 409, 'INVALID_STATUS');
     const now = new Date();
     enc.status = EncounterStatus.COMPLETED;
     enc.endTime = now;

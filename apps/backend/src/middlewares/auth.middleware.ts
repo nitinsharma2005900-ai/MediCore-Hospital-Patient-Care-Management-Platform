@@ -7,6 +7,7 @@ import { UserRole } from '@medicore/shared';
 
 interface JwtPayload {
   userId: string;
+  jti: string;
   role: UserRole;
   email: string;
 }
@@ -20,6 +21,10 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, config.jwt.accessSecret) as JwtPayload;
+    const session = store.refreshTokens.find(s => s.accessTokenId === decoded.jti);
+    if (!session || session.revoked || session.expiresAt <= new Date()) {
+      throw new AppError('Session has been revoked', 401, 'SESSION_REVOKED');
+    }
     const user = store.users.find(u => u.id === decoded.userId);
 
     if (!user) {
@@ -50,6 +55,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
     next();
   } catch (err: any) {
+    if (err instanceof AppError) return next(err);
     if (err.name === 'TokenExpiredError') {
       throw new AppError('Authentication token has expired. Please refresh your session.', 401, 'TOKEN_EXPIRED');
     }

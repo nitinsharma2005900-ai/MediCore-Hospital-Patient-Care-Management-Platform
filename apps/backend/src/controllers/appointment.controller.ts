@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { store } from '../database/store';
+import { validateSlot } from '../services/availability';
+import { z } from 'zod';
 import { AppError } from '../middlewares/error.middleware';
 import { recordAuditLog } from '../middlewares/audit.middleware';
 import { 
@@ -25,9 +27,10 @@ export const listAppointments = (req: Request, res: Response, next: NextFunction
     // Role-based visibility
     if (req.user?.role === UserRole.PATIENT) {
       apts = apts.filter(a => a.patientId === req.user!.patientProfileId);
-    } else if (req.user?.role === UserRole.DOCTOR && !patientId) {
+    } else if (req.user?.role === UserRole.DOCTOR) {
       apts = apts.filter(a => a.doctorId === req.user!.doctorProfileId);
     }
+    if (req.user?.role === UserRole.NURSE) apts = apts.filter(a => store.careAssignments.some(c => c.patientId === a.patientId && c.nurseUserId === req.user!.id && c.active));
 
     if (status && typeof status === 'string') {
       apts = apts.filter(a => a.status === status);
@@ -59,6 +62,9 @@ export const listAppointments = (req: Request, res: Response, next: NextFunction
 
       return {
         ...apt,
+        encounterId: store.encounters.find(e => e.appointmentId === apt.id)?.id,
+        reason: req.user?.role === UserRole.ADMIN ? 'Operational appointment' : apt.reason,
+        notes: req.user?.role === UserRole.ADMIN ? null : apt.notes,
         patientName: patientUser ? `${patientUser.firstName} ${patientUser.lastName}` : 'Unknown Patient',
         patientMrn: patient?.mrn || 'N/A',
         doctorName: doctorUser ? `Dr. ${doctorUser.firstName} ${doctorUser.lastName}` : 'Dr. Specialist',
@@ -183,6 +189,8 @@ export const bookAppointment = async (req: Request, res: Response, next: NextFun
         );
       }
 
+      validateSlot(validated.doctorId, startTime, endTime, validated.departmentId);
+      if (!store.patients.some(p => p.id === patientId)) throw new AppError('Patient not found', 404, 'NOT_FOUND');
       // 2. Insert Appointment
       const now = new Date();
       const newApt = {
@@ -214,6 +222,11 @@ export const bookAppointment = async (req: Request, res: Response, next: NextFun
     // Send notifications to Patient
     const patient = store.patients.find(p => p.id === patientId);
     if (patient) {
+      for (const channel of [NotificationChannel.EMAIL, NotificationChannel.SMS]) store.notifications.push({
+        id: uuidv4(), userId: patient.userId, title: 'Appointment reserved',
+        message: 'Your appointment is reserved. Sign in to review the details.', channel,
+        status: NotificationStatus.PENDING, createdAt: new Date(), metadata: JSON.stringify({ appointmentId: createdAppointment.id, provider: 'LOCAL_SIMULATOR' })
+      });
       store.notifications.push({
         id: uuidv4(),
         userId: patient.userId,
@@ -257,8 +270,8 @@ export const checkInAppointment = async (req: Request, res: Response, next: Next
       throw new AppError('Appointment not found', 404, 'NOT_FOUND');
     }
 
-    if (apt.status === AppointmentStatus.CANCELLED) {
-      throw new AppError('Cannot check in a cancelled appointment', 400, 'APPOINTMENT_CANCELLED');
+    if (![AppointmentStatus.REQUESTED, AppointmentStatus.CONFIRMED].includes(apt.status)) {
+      throw new AppError('Only a requested or confirmed appointment can be checked in', 400, 'INVALID_STATUS');
     }
 
     apt.status = AppointmentStatus.CHECKED_IN;
@@ -294,7 +307,7 @@ export const rescheduleAppointment = async (req: Request, res: Response, next: N
       throw new AppError('Appointment not found', 404, 'NOT_FOUND');
     }
 
-    if (apt.status === AppointmentStatus.COMPLETED || apt.status === AppointmentStatus.CANCELLED) {
+    if (![AppointmentStatus.REQUESTED,AppointmentStatus.CONFIRMED,AppointmentStatus.CHECKED_IN].includes(apt.status)) {
       throw new AppError(`Cannot reschedule an appointment in status ${apt.status}`, 400, 'INVALID_STATUS');
     }
 
@@ -318,9 +331,10 @@ export const rescheduleAppointment = async (req: Request, res: Response, next: N
         throw new AppError('Reschedule conflict: Target time slot is already booked for this doctor.', 409, 'APPOINTMENT_CONFLICT');
       }
 
+      validateSlot(apt.doctorId, newStart, newEnd, apt.departmentId);
       apt.scheduledStartTime = newStart;
       apt.scheduledEndTime = newEnd;
-      apt.status = AppointmentStatus.RESCHEDULED;
+      apt.status = AppointmentStatus.CONFIRMED;
       apt.notes = `${apt.notes || ''} [Rescheduled: ${validated.reason}]`.trim();
       apt.version += 1;
       apt.updatedAt = new Date();
@@ -355,7 +369,7 @@ export const cancelAppointment = async (req: Request, res: Response, next: NextF
       throw new AppError('Appointment not found', 404, 'NOT_FOUND');
     }
 
-    if (apt.status === AppointmentStatus.COMPLETED) {
+    if (![AppointmentStatus.REQUESTED, AppointmentStatus.CONFIRMED, AppointmentStatus.CHECKED_IN].includes(apt.status)) {
       throw new AppError('Cannot cancel a completed appointment', 400, 'ALREADY_COMPLETED');
     }
 
@@ -385,7 +399,7 @@ export const cancelAppointment = async (req: Request, res: Response, next: NextF
 
 export const listWaitingList = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const waitingList = store.waitingList;
+    const waitingList = req.user?.role === UserRole.PATIENT ? store.waitingList.filter(w => w.patientId === req.user?.patientProfileId) : store.waitingList;
     const response: ApiResponse<typeof waitingList> = {
       success: true,
       data: waitingList,
@@ -403,10 +417,15 @@ export const listWaitingList = (req: Request, res: Response, next: NextFunction)
 
 export const addToWaitingList = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { patientId, doctorId, departmentId, preferredDate, urgencyLevel, notes } = req.body;
+    const { patientId, doctorId, departmentId, preferredDate, urgencyLevel, notes } = z.object({
+      patientId: z.string().uuid().optional(), doctorId: z.string().uuid().optional(), departmentId: z.string().uuid(),
+      preferredDate: z.string().date(), urgencyLevel: z.enum(['LOW','MEDIUM','HIGH']).default('MEDIUM'), notes: z.string().max(500).optional()
+    }).parse(req.body);
+    const targetPatientId = req.user?.role === UserRole.PATIENT ? req.user.patientProfileId : patientId;
+    if (!targetPatientId || !store.patients.some(p => p.id === targetPatientId)) throw new AppError('Valid patient required', 400, 'PATIENT_REQUIRED');
     const entry = {
       id: uuidv4(),
-      patientId: patientId || req.user?.patientProfileId,
+      patientId: targetPatientId,
       doctorId: doctorId || null,
       departmentId,
       preferredDate: new Date(preferredDate),

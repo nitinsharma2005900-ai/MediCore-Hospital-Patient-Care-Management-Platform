@@ -14,6 +14,8 @@ import {
   Search
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
+import { AvailabilityEditor } from '@/components/CareActions';
+import { LabReview } from '@/components/OperationsTools';
 
 export default function DoctorDashboard() {
   const { user, token, apiUrl } = useAuth();
@@ -24,11 +26,11 @@ export default function DoctorDashboard() {
   // Form states for clinical encounter
   const [chiefComplaint, setChiefComplaint] = useState('');
   const [clinicalNotes, setClinicalNotes] = useState('');
-  const [icdCode, setIcdCode] = useState('I10');
-  const [icdDesc, setIcdDesc] = useState('Essential (primary) hypertension');
-  const [medName, setMedName] = useState('Lisinopril');
-  const [dosage, setDosage] = useState('10mg');
-  const [frequency, setFrequency] = useState('Once daily');
+  const [icdCode, setIcdCode] = useState('');
+  const [icdDesc, setIcdDesc] = useState('');
+  const [medName, setMedName] = useState('');
+  const [dosage, setDosage] = useState('');
+  const [frequency, setFrequency] = useState('');
   const [durationDays, setDurationDays] = useState(30);
   const [labPanel, setLabPanel] = useState('Comprehensive Metabolic Panel (CMP)');
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
@@ -46,7 +48,8 @@ export default function DoctorDashboard() {
         if (data.success) {
           setAppointments(data.data || []);
           if (data.data?.length > 0) {
-            setSelectedApt(data.data[0]);
+            const next = data.data.find((a: any) => a.status === 'CHECKED_IN') || data.data[0];
+            setSelectedApt(next);
             setChiefComplaint(data.data[0].reason || '');
           }
         }
@@ -61,6 +64,7 @@ export default function DoctorDashboard() {
 
   const handleStartEncounter = async () => {
     if (!selectedApt) return;
+    if (selectedApt.status !== 'CHECKED_IN') { setStatusMsg('Reception must check in the patient before the encounter starts.'); return; }
     try {
       const res = await fetch(`${apiUrl}/encounters`, {
         method: 'POST',
@@ -195,6 +199,8 @@ export default function DoctorDashboard() {
 
   return (
     <div className="space-y-6">
+      <AvailabilityEditor />
+      <LabReview />
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-blue-900 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-md flex items-center justify-between">
         <div>
@@ -216,7 +222,7 @@ export default function DoctorDashboard() {
             <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{statusMsg}</span>
           </div>
-          <button onClick={() => setStatusMsg(null)} className="text-emerald-600 hover:text-emerald-900 font-bold text-xs">✕</button>
+          <button aria-label="Dismiss message" onClick={() => setStatusMsg(null)} className="text-emerald-600 hover:text-emerald-900 font-bold text-xs">✕</button>
         </div>
       )}
 
@@ -309,7 +315,7 @@ export default function DoctorDashboard() {
               {/* Chief Complaint & Notes */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Chief Complaint & Subjective Findings</label>
-                <input
+                <input aria-label="Chief Complaint & Subjective Findings"
                   type="text"
                   value={chiefComplaint}
                   onChange={(e) => setChiefComplaint(e.target.value)}
@@ -319,7 +325,7 @@ export default function DoctorDashboard() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Attending Clinical Notes / Objective Assessment</label>
-                <textarea
+                <textarea aria-label="Attending Clinical Notes / Objective Assessment"
                   rows={3}
                   value={clinicalNotes}
                   onChange={(e) => setClinicalNotes(e.target.value)}
@@ -344,6 +350,7 @@ export default function DoctorDashboard() {
                     }}
                     className="w-full mt-1.5 px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800"
                   >
+                    <option value="">Select a clinician-entered code</option>
                     <option value="I10">I10 - Hypertension</option>
                     <option value="E11.9">E11.9 - Type 2 Diabetes</option>
                     <option value="M54.5">M54.5 - Low Back Pain</option>
@@ -371,6 +378,7 @@ export default function DoctorDashboard() {
                     }}
                     className="w-full mt-1.5 px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800"
                   >
+                    <option value="">Select a synthetic medication</option>
                     <option value="Lisinopril">Lisinopril (10mg)</option>
                     <option value="Metformin">Metformin (500mg)</option>
                     <option value="Amoxicillin">Amoxicillin (500mg)</option>
@@ -382,6 +390,9 @@ export default function DoctorDashboard() {
                   >
                     Issue Prescription
                   </button>
+                  <label className="text-sm block mt-2">Dosage<input aria-label="Prescription dosage" className="w-full p-2 border rounded-lg" value={dosage} onChange={e=>setDosage(e.target.value)}/></label>
+                  <label className="text-sm block mt-2">Frequency<input aria-label="Prescription frequency" className="w-full p-2 border rounded-lg" value={frequency} onChange={e=>setFrequency(e.target.value)}/></label>
+                  <label className="text-sm block mt-2">Duration (days)<input aria-label="Prescription duration" type="number" min="1" max="365" className="w-full p-2 border rounded-lg" value={durationDays} onChange={e=>setDurationDays(Number(e.target.value))}/></label>
                 </div>
 
                 {/* 3. Requisition Lab */}

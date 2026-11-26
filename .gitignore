@@ -61,3 +61,12 @@ Thumbs.db
 
 # Project ZIP archives (ignore generated artifacts during dev)
 *.zip
+.runtime/
+.tools/
+.env.*
+!.env.example
+*.tsbuildinfo
+
+# Curated synthetic test evidence is part of the submission.
+!docs/evidence/*.log
+!docs/evidence/*/*.log

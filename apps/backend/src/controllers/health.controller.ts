@@ -1,17 +1,21 @@
 import { Request, Response } from 'express';
 import { store } from '../database/store';
+import { pool } from '../database/postgres';
+import { config } from '../config';
 
 export const getHealth = (req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
+    revision: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || 'local',
     service: 'MediCore Backend API',
     uptime: process.uptime(),
     timestamp: new Date().toISOString()
   });
 };
 
-export const getReadiness = (req: Request, res: Response) => {
-  const isReady = store.users.length > 0;
+export const getReadiness = async (req: Request, res: Response) => {
+  let isReady = config.database.mode === 'memory';
+  try { if (!isReady) { await pool.query('SELECT 1'); isReady = true; } } catch { isReady = false; }
   if (!isReady) {
     res.status(503).json({
       status: 'not_ready',
@@ -22,15 +26,11 @@ export const getReadiness = (req: Request, res: Response) => {
 
   res.status(200).json({
     status: 'ready',
+    revision: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || 'local',
     service: 'MediCore Backend API',
     checks: {
       database: 'connected',
-      entities: {
-        users: store.users.length,
-        patients: store.patients.length,
-        doctors: store.doctors.length,
-        appointments: store.appointments.length
-      }
+      mode: config.database.mode
     },
     timestamp: new Date().toISOString()
   });

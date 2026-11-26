@@ -28,7 +28,7 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
       error: {
         code: 'VALIDATION_ERROR',
         message: 'Invalid input parameters provided',
-        details: err.errors.map(e => ({ path: e.path.join('.'), message: e.message }))
+        details: err.issues.map(e => ({ path: e.path.join('.'), message: e.message }))
       },
       meta: {
         requestId: correlationId,
@@ -58,14 +58,14 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
   }
 
   // Default server error - safe, no internal stack traces leaked
-  console.error(`[Unhandled Server Error] [Request: ${correlationId}]`, err);
+  console.error(JSON.stringify({ event: 'request_error', requestId: correlationId, type: err?.name || 'Error' }));
 
   const response: ApiResponse = {
     success: false,
     error: {
       code: 'INTERNAL_SERVER_ERROR',
       message: 'An unexpected internal error occurred. Please contact hospital support.',
-      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+      details: undefined
     },
     meta: {
       requestId: correlationId,

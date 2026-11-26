@@ -1,0 +1,145 @@
+﻿quality	Run npx playwright test	﻿2026-11-26T05:12:51.2394494Z ##[group]Run npx playwright test
+quality	Run npx playwright test	2026-11-26T05:12:51.2395113Z ^[[36;1mnpx playwright test^[[0m
+quality	Run npx playwright test	2026-11-26T05:12:51.2444598Z shell: /usr/bin/bash -e {0}
+quality	Run npx playwright test	2026-11-26T05:12:51.2445074Z env:
+quality	Run npx playwright test	2026-11-26T05:12:51.2445888Z   DATABASE_URL: ***127.0.0.1:5432/medicore
+quality	Run npx playwright test	2026-11-26T05:12:51.2446476Z   REDIS_URL: redis://127.0.0.1:6379
+quality	Run npx playwright test	2026-11-26T05:12:51.2447231Z   JWT_ACCESS_SECRET: disposable-ci-access-key-with-at-least-48-characters
+quality	Run npx playwright test	2026-11-26T05:12:51.2448278Z   JWT_REFRESH_SECRET: disposable-ci-refresh-key-with-at-least-48-characters
+quality	Run npx playwright test	2026-11-26T05:12:51.2449127Z   BACKEND_BASE_URL: http://127.0.0.1:4010
+quality	Run npx playwright test	2026-11-26T05:12:51.2449746Z   ANALYTICS_SERVICE_URL: http://127.0.0.1:8010
+quality	Run npx playwright test	2026-11-26T05:12:51.2450356Z   CORS_ORIGIN: http://localhost:3010
+quality	Run npx playwright test	2026-11-26T05:12:51.2450887Z   PORT: 4010
+quality	Run npx playwright test	2026-11-26T05:12:51.2451245Z   SEED_DEMO: true
+quality	Run npx playwright test	2026-11-26T05:12:51.2451635Z   RUN_WORKER: true
+quality	Run npx playwright test	2026-11-26T05:12:51.2452408Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.18/x64
+quality	Run npx playwright test	2026-11-26T05:12:51.2453775Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib/pkgconfig
+quality	Run npx playwright test	2026-11-26T05:12:51.2454686Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+quality	Run npx playwright test	2026-11-26T05:12:51.2455444Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+quality	Run npx playwright test	2026-11-26T05:12:51.2456182Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+quality	Run npx playwright test	2026-11-26T05:12:51.2456928Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib
+quality	Run npx playwright test	2026-11-26T05:12:51.2457565Z ##[endgroup]
+quality	Run npx playwright test	2026-11-26T05:12:52.3951848Z 
+quality	Run npx playwright test	2026-11-26T05:12:52.3963383Z Running 48 tests using 1 worker
+quality	Run npx playwright test	2026-11-26T05:12:52.3964059Z 
+quality	Run npx playwright test	2026-11-26T05:12:55.6493169Z   ✓   1 tests/e2e/responsive.spec.ts:5:2 › patient dashboard at 360px (2.4s)
+quality	Run npx playwright test	2026-11-26T05:12:57.5016767Z   ✓   2 tests/e2e/responsive.spec.ts:5:2 › patient dashboard at 390px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:12:59.4434216Z   ✓   3 tests/e2e/responsive.spec.ts:5:2 › patient dashboard at 768px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:13:01.2537537Z   ✓   4 tests/e2e/responsive.spec.ts:5:2 › patient dashboard at 1024px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:03.2301302Z   ✓   5 tests/e2e/responsive.spec.ts:5:2 › patient dashboard at 1440px (2.0s)
+quality	Run npx playwright test	2026-11-26T05:13:05.0123629Z   ✓   6 tests/e2e/responsive.spec.ts:5:2 › patient dashboard at 1920px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:07.1967627Z   ✓   7 tests/e2e/responsive.spec.ts:5:2 › doctor dashboard at 360px (2.2s)
+quality	Run npx playwright test	2026-11-26T05:13:09.1115300Z   ✓   8 tests/e2e/responsive.spec.ts:5:2 › doctor dashboard at 390px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:10.9209594Z   ✓   9 tests/e2e/responsive.spec.ts:5:2 › doctor dashboard at 768px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:12.7150681Z   ✓  10 tests/e2e/responsive.spec.ts:5:2 › doctor dashboard at 1024px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:14.6645927Z   ✓  11 tests/e2e/responsive.spec.ts:5:2 › doctor dashboard at 1440px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:13:16.5015171Z   ✓  12 tests/e2e/responsive.spec.ts:5:2 › doctor dashboard at 1920px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:18.7573669Z   ✓  13 tests/e2e/responsive.spec.ts:5:2 › receptionist dashboard at 360px (2.2s)
+quality	Run npx playwright test	2026-11-26T05:13:20.6910162Z   ✓  14 tests/e2e/responsive.spec.ts:5:2 › receptionist dashboard at 390px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:13:22.6297508Z   ✓  15 tests/e2e/responsive.spec.ts:5:2 › receptionist dashboard at 768px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:13:24.5717328Z   ✓  16 tests/e2e/responsive.spec.ts:5:2 › receptionist dashboard at 1024px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:13:26.6065326Z   ✓  17 tests/e2e/responsive.spec.ts:5:2 › receptionist dashboard at 1440px (2.0s)
+quality	Run npx playwright test	2026-11-26T05:13:28.4104690Z   ✓  18 tests/e2e/responsive.spec.ts:5:2 › receptionist dashboard at 1920px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:30.4935103Z   ✓  19 tests/e2e/responsive.spec.ts:5:2 › nurse dashboard at 360px (2.0s)
+quality	Run npx playwright test	2026-11-26T05:13:32.2527038Z   ✓  20 tests/e2e/responsive.spec.ts:5:2 › nurse dashboard at 390px (1.7s)
+quality	Run npx playwright test	2026-11-26T05:13:33.9804152Z   ✓  21 tests/e2e/responsive.spec.ts:5:2 › nurse dashboard at 768px (1.7s)
+quality	Run npx playwright test	2026-11-26T05:13:35.6930581Z   ✓  22 tests/e2e/responsive.spec.ts:5:2 › nurse dashboard at 1024px (1.7s)
+quality	Run npx playwright test	2026-11-26T05:13:37.6393826Z   ✓  23 tests/e2e/responsive.spec.ts:5:2 › nurse dashboard at 1440px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:13:39.4098951Z   ✓  24 tests/e2e/responsive.spec.ts:5:2 › nurse dashboard at 1920px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:41.5257056Z   ✓  25 tests/e2e/responsive.spec.ts:5:2 › labtech dashboard at 360px (2.1s)
+quality	Run npx playwright test	2026-11-26T05:13:43.3193770Z   ✓  26 tests/e2e/responsive.spec.ts:5:2 › labtech dashboard at 390px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:45.1375075Z   ✓  27 tests/e2e/responsive.spec.ts:5:2 › labtech dashboard at 768px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:46.8777942Z   ✓  28 tests/e2e/responsive.spec.ts:5:2 › labtech dashboard at 1024px (1.7s)
+quality	Run npx playwright test	2026-11-26T05:13:48.8519626Z   ✓  29 tests/e2e/responsive.spec.ts:5:2 › labtech dashboard at 1440px (2.0s)
+quality	Run npx playwright test	2026-11-26T05:13:50.5294921Z   ✓  30 tests/e2e/responsive.spec.ts:5:2 › labtech dashboard at 1920px (1.6s)
+quality	Run npx playwright test	2026-11-26T05:13:52.6020164Z   ✓  31 tests/e2e/responsive.spec.ts:5:2 › billing dashboard at 360px (2.0s)
+quality	Run npx playwright test	2026-11-26T05:13:54.4409969Z   ✓  32 tests/e2e/responsive.spec.ts:5:2 › billing dashboard at 390px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:13:56.1957544Z   ✓  33 tests/e2e/responsive.spec.ts:5:2 › billing dashboard at 768px (1.7s)
+quality	Run npx playwright test	2026-11-26T05:13:57.9406443Z   ✓  34 tests/e2e/responsive.spec.ts:5:2 › billing dashboard at 1024px (1.7s)
+quality	Run npx playwright test	2026-11-26T05:14:00.3914506Z   ✓  35 tests/e2e/responsive.spec.ts:5:2 › billing dashboard at 1440px (2.4s)
+quality	Run npx playwright test	2026-11-26T05:14:02.2468886Z   ✓  36 tests/e2e/responsive.spec.ts:5:2 › billing dashboard at 1920px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:14:04.4440783Z   ✓  37 tests/e2e/responsive.spec.ts:5:2 › admin dashboard at 360px (2.2s)
+quality	Run npx playwright test	2026-11-26T05:14:06.3638932Z   ✓  38 tests/e2e/responsive.spec.ts:5:2 › admin dashboard at 390px (1.9s)
+quality	Run npx playwright test	2026-11-26T05:14:08.1907009Z   ✓  39 tests/e2e/responsive.spec.ts:5:2 › admin dashboard at 768px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:14:10.0628538Z   ✓  40 tests/e2e/responsive.spec.ts:5:2 › admin dashboard at 1024px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:14:12.2303766Z   ✓  41 tests/e2e/responsive.spec.ts:5:2 › admin dashboard at 1440px (2.2s)
+quality	Run npx playwright test	2026-11-26T05:14:14.0426027Z   ✓  42 tests/e2e/responsive.spec.ts:5:2 › admin dashboard at 1920px (1.8s)
+quality	Run npx playwright test	2026-11-26T05:14:14.5671224Z   ✓  43 tests/e2e/responsive.spec.ts:26:1 › unauthenticated nested role route redirects to login (500ms)
+quality	Run npx playwright test	2026-11-26T05:14:16.2066567Z   ✓  44 tests/e2e/responsive.spec.ts:27:1 › patient cannot open administrator dashboard (1.6s)
+quality	Run npx playwright test	2026-11-26T05:14:19.2405309Z   ✓  45 tests/e2e/responsive.spec.ts:30:1 › patient books a real available appointment in the browser (3.0s)
+quality	Run npx playwright test	2026-11-26T05:14:24.9047422Z   ✘  46 tests/e2e/submission.spec.ts:2:31 › landing page at 390px (5.5s)
+quality	Run npx playwright test	2026-11-26T05:14:31.8570611Z   ✘  47 tests/e2e/submission.spec.ts:2:31 › landing page at 1440px (6.0s)
+quality	Run npx playwright test	2026-11-26T05:14:35.0213660Z   ✓  48 tests/e2e/submission.spec.ts:7:1 › authorized invoice produces a printable PDF (2.5s)
+quality	Run npx playwright test	2026-11-26T05:14:35.0688556Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0694553Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0706091Z   1) tests/e2e/submission.spec.ts:2:31 › landing page at 390px ─────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0707298Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0708344Z     Error: expect(locator).toBeVisible() failed
+quality	Run npx playwright test	2026-11-26T05:14:35.0709298Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0710368Z     Locator: getByRole('link', { name: 'MediCore' })
+quality	Run npx playwright test	2026-11-26T05:14:35.0711457Z     Expected: visible
+quality	Run npx playwright test	2026-11-26T05:14:35.0713010Z     Timeout: 5000ms
+quality	Run npx playwright test	2026-11-26T05:14:35.0714025Z     Error: element(s) not found
+quality	Run npx playwright test	2026-11-26T05:14:35.0715101Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0715640Z     Call log:
+quality	Run npx playwright test	2026-11-26T05:14:35.0717189Z       - Expect "toBeVisible" getByRole('link', { name: 'MediCore' }) with timeout 5000ms
+quality	Run npx playwright test	2026-11-26T05:14:35.0718684Z       - waiting for getByRole('link', { name: 'MediCore' })
+quality	Run npx playwright test	2026-11-26T05:14:35.0719756Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0720065Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0720989Z       1 | import{test,expect}from'@playwright/test';
+quality	Run npx playwright test	2026-11-26T05:14:35.0722570Z       2 | for(const width of [390,1440])test(`landing page at ${width}px`,async({page})=>{
+quality	Run npx playwright test	2026-11-26T05:14:35.0724918Z     > 3 |  await page.setViewportSize({width,height:1000});await page.goto('/');await expect(page.getByRole('link',{name:'MediCore'})).toBeVisible();
+quality	Run npx playwright test	2026-11-26T05:14:35.0728867Z         |                                                                                                                              ^
+quality	Run npx playwright test	2026-11-26T05:14:35.0730486Z       4 |  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+2);
+quality	Run npx playwright test	2026-11-26T05:14:35.0732412Z       5 |  await page.screenshot({path:`docs/screenshots/landing-${width}.png`,fullPage:true});
+quality	Run npx playwright test	2026-11-26T05:14:35.0733247Z       6 | });
+quality	Run npx playwright test	2026-11-26T05:14:35.0734750Z         at /home/runner/work/MediCore-Hospital-Patient-Care-Management-Platform/MediCore-Hospital-Patient-Care-Management-Platform/tests/e2e/submission.spec.ts:3:126
+quality	Run npx playwright test	2026-11-26T05:14:35.0736068Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0736609Z     Error Context: test-results/submission-landing-page-at-390px/error-context.md
+quality	Run npx playwright test	2026-11-26T05:14:35.0737255Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0738089Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0739133Z     test-results/submission-landing-page-at-390px/trace.zip
+quality	Run npx playwright test	2026-11-26T05:14:35.0740066Z     Usage:
+quality	Run npx playwright test	2026-11-26T05:14:35.0740266Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0740821Z         npx playwright show-trace test-results/submission-landing-page-at-390px/trace.zip
+quality	Run npx playwright test	2026-11-26T05:14:35.0741445Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0742328Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0742911Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0743699Z   2) tests/e2e/submission.spec.ts:2:31 › landing page at 1440px ────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0744382Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0744684Z     Error: expect(locator).toBeVisible() failed
+quality	Run npx playwright test	2026-11-26T05:14:35.0745088Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0745392Z     Locator: getByRole('link', { name: 'MediCore' })
+quality	Run npx playwright test	2026-11-26T05:14:35.0745987Z     Expected: visible
+quality	Run npx playwright test	2026-11-26T05:14:35.0746422Z     Timeout: 5000ms
+quality	Run npx playwright test	2026-11-26T05:14:35.0746885Z     Error: element(s) not found
+quality	Run npx playwright test	2026-11-26T05:14:35.0747200Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0747358Z     Call log:
+quality	Run npx playwright test	2026-11-26T05:14:35.0748109Z       - Expect "toBeVisible" getByRole('link', { name: 'MediCore' }) with timeout 5000ms
+quality	Run npx playwright test	2026-11-26T05:14:35.0749115Z       - waiting for getByRole('link', { name: 'MediCore' })
+quality	Run npx playwright test	2026-11-26T05:14:35.0749576Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0749589Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0749903Z       1 | import{test,expect}from'@playwright/test';
+quality	Run npx playwright test	2026-11-26T05:14:35.0750836Z       2 | for(const width of [390,1440])test(`landing page at ${width}px`,async({page})=>{
+quality	Run npx playwright test	2026-11-26T05:14:35.0752716Z     > 3 |  await page.setViewportSize({width,height:1000});await page.goto('/');await expect(page.getByRole('link',{name:'MediCore'})).toBeVisible();
+quality	Run npx playwright test	2026-11-26T05:14:35.0754240Z         |                                                                                                                              ^
+quality	Run npx playwright test	2026-11-26T05:14:35.0755515Z       4 |  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+2);
+quality	Run npx playwright test	2026-11-26T05:14:35.0756907Z       5 |  await page.screenshot({path:`docs/screenshots/landing-${width}.png`,fullPage:true});
+quality	Run npx playwright test	2026-11-26T05:14:35.0757751Z       6 | });
+quality	Run npx playwright test	2026-11-26T05:14:35.0759273Z         at /home/runner/work/MediCore-Hospital-Patient-Care-Management-Platform/MediCore-Hospital-Patient-Care-Management-Platform/tests/e2e/submission.spec.ts:3:126
+quality	Run npx playwright test	2026-11-26T05:14:35.0760583Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0761129Z     Error Context: test-results/submission-landing-page-at-1440px/error-context.md
+quality	Run npx playwright test	2026-11-26T05:14:35.0761973Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0762814Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0763901Z     test-results/submission-landing-page-at-1440px/trace.zip
+quality	Run npx playwright test	2026-11-26T05:14:35.0764675Z     Usage:
+quality	Run npx playwright test	2026-11-26T05:14:35.0764910Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0765515Z         npx playwright show-trace test-results/submission-landing-page-at-1440px/trace.zip
+quality	Run npx playwright test	2026-11-26T05:14:35.0766243Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0767013Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0767614Z 
+quality	Run npx playwright test	2026-11-26T05:14:35.0768085Z   2 failed
+quality	Run npx playwright test	2026-11-26T05:14:35.0769177Z     tests/e2e/submission.spec.ts:2:31 › landing page at 390px ──────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0770996Z     tests/e2e/submission.spec.ts:2:31 › landing page at 1440px ─────────────────────────────────────
+quality	Run npx playwright test	2026-11-26T05:14:35.0772158Z   46 passed (1.7m)
+quality	Run npx playwright test	2026-11-26T05:14:35.1075043Z ##[error]Process completed with exit code 1.

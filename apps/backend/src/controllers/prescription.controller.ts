@@ -1,3 +1,4 @@
+import { canAccessClinical, activeConsent } from '../middlewares/scope.middleware';
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { store } from '../database/store';
@@ -14,7 +15,7 @@ export const listPrescriptions = (req: Request, res: Response, next: NextFunctio
   try {
     const { patientId, status } = req.query;
 
-    let prescriptions = [...store.prescriptions];
+    let prescriptions = store.prescriptions.filter(p => canAccessClinical(req, p.patientId));
 
     if (req.user?.role === UserRole.PATIENT) {
       prescriptions = prescriptions.filter(p => p.patientId === req.user!.patientProfileId);

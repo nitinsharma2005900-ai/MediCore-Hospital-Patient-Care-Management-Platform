@@ -1,75 +1,56 @@
-# Render.com Blueprint Infrastructure-as-Code Configuration
-# MediCore - Hospital, Appointment & Patient Care Management Platform
+# Demo-only free deployment. Review reuse and plan availability before Blueprint approval.
+# Free web services cannot receive private-network requests, so supply their public HTTPS URLs.
+# No dedicated free worker: RUN_WORKER starts the BullMQ consumer inside the API process.
 services:
-  # 1. Next.js Frontend Web Service
-  - type: web
-    name: medicore-frontend
-    env: node
-    plan: free
-    buildCommand: npm install && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend
-    startCommand: npm --workspace=apps/frontend run start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: medicore-backend
-          property: host
-          value: https://${host}/api/v1
-      - key: NEXT_PUBLIC_ANALYTICS_URL
-        fromService:
-          type: web
-          name: medicore-analytics
-          property: host
-          value: https://${host}
-
-  # 2. Node.js Express Primary Business API
   - type: web
     name: medicore-backend
-    env: node
+    runtime: node
     plan: free
-    buildCommand: npm install && npm run build --workspace=packages/shared && npm run build --workspace=apps/backend
-    startCommand: npm --workspace=apps/backend run start
-    healthCheckPath: /health
+    buildCommand: npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/backend
+    startCommand: node apps/backend/dist/server.js
+    healthCheckPath: /ready
     envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 10000
+      - {key: NODE_ENV, value: production}
       - key: DATABASE_URL
-        fromDatabase:
-          name: medicore-db
-          property: connectionString
-      - key: JWT_ACCESS_SECRET
-        generateValue: true
-      - key: JWT_REFRESH_SECRET
-        generateValue: true
-      - key: CORS_ORIGIN
-        value: "*"
-
-  # 3. Python FastAPI Clinical Analytics Microservice
+        fromDatabase: {name: medicore-db, property: connectionString}
+      - key: REDIS_URL
+        fromService: {name: medicore-redis, type: keyvalue, property: connectionString}
+      - {key: JWT_ACCESS_SECRET, generateValue: true}
+      - {key: JWT_REFRESH_SECRET, generateValue: true}
+      - {key: SEED_DEMO, value: 'true'}
+      - {key: RUN_WORKER, value: 'true'}
+      - {key: CORS_ORIGIN, sync: false}
   - type: web
     name: medicore-analytics
-    env: python
+    runtime: python
     plan: free
     buildCommand: pip install -r apps/analytics-service/requirements.txt
-    startCommand: python -m uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port 10000
+    startCommand: uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.13.0
-      - key: BACKEND_BASE_URL
-        fromService:
-          type: web
-          name: medicore-backend
-          property: host
-          value: https://${host}
-
+      - {key: PYTHON_VERSION, value: '3.13.9'}
+      - {key: BACKEND_BASE_URL, sync: false}
+      - {key: CORS_ORIGIN, sync: false}
+  - type: web
+    name: medicore-frontend
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend
+    startCommand: npm run start --workspace=apps/frontend
+    healthCheckPath: /
+    envVars:
+      - {key: NODE_ENV, value: production}
+      - {key: BACKEND_BASE_URL, sync: false}
+      - {key: ANALYTICS_SERVICE_URL, sync: false}
+  - type: keyvalue
+    name: medicore-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: noeviction
 databases:
-  # 4. Managed PostgreSQL Database
   - name: medicore-db
     plan: free
-    postgresMajorVersion: 16
-    databaseName: medicore_db
-    user: medicore_user
+    postgresMajorVersion: '16'
+    databaseName: medicore
+    user: medicore
+    ipAllowList: []

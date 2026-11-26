@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   ClipboardList, 
@@ -15,6 +15,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
+import { WaitingList } from '@/components/OperationsTools';
 
 export default function ReceptionistDashboard() {
   const { token, apiUrl } = useAuth();
@@ -23,7 +24,7 @@ export default function ReceptionistDashboard() {
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
     if (!token) return;
     try {
       setLoading(true);
@@ -39,11 +40,11 @@ export default function ReceptionistDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, apiUrl]);
 
   useEffect(() => {
     fetchAppointments();
-  }, [token, apiUrl]);
+  }, [fetchAppointments]);
 
   const handleCheckIn = async (aptId: string) => {
     try {
@@ -98,6 +99,7 @@ export default function ReceptionistDashboard() {
 
   return (
     <div className="space-y-6">
+      <WaitingList />
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -120,7 +122,7 @@ export default function ReceptionistDashboard() {
       {statusMsg && (
         <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center justify-between">
           <span>{statusMsg}</span>
-          <button onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
+          <button aria-label="Dismiss message" onClick={() => setStatusMsg(null)} className="font-bold">✕</button>
         </div>
       )}
 

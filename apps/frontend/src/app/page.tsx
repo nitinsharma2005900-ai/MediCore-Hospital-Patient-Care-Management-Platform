@@ -36,21 +36,21 @@ export default function LandingPage() {
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#2563EB] flex items-center justify-center text-white shadow-md shadow-teal-900/10">
+          <Link href="/" aria-label="MediCore" className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#2563EB] flex items-center justify-center text-white shadow-md shadow-teal-900/10">
               <Activity className="w-6 h-6 animate-pulse" />
             </div>
             <div>
-              <span className="text-2xl font-bold tracking-tight text-slate-900">Medi<span className="text-[#0F766E]">Core</span></span>
-              <span className="block text-[10px] font-semibold tracking-wider text-slate-500 uppercase">Hospital & Patient Care Platform</span>
+              <span className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">Medi<span className="text-[#0F766E]">Core</span></span>
+              <span className="hidden sm:block text-[10px] font-semibold tracking-wider text-slate-500 uppercase">Hospital & Patient Care Platform</span>
             </div>
-          </div>
+          </Link>
 
           <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
             <a href="#roles" className="hover:text-[#0F766E] transition-colors">User Roles</a>
             <a href="#workflows" className="hover:text-[#0F766E] transition-colors">Clinical Workflow</a>
             <a href="#architecture" className="hover:text-[#0F766E] transition-colors">Architecture</a>
-            <a href="http://localhost:4000/api-docs" target="_blank" rel="noreferrer" className="hover:text-[#0F766E] transition-colors flex items-center gap-1">
+            <a href="/api-docs/" target="_blank" rel="noreferrer" className="hover:text-[#0F766E] transition-colors flex items-center gap-1">
               API Docs <span className="text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-mono">Swagger</span>
             </a>
           </nav>
@@ -68,15 +68,15 @@ export default function LandingPage() {
               <>
                 <Link 
                   href="/login" 
-                  className="text-slate-700 hover:text-[#0F766E] font-medium text-sm px-4 py-2 transition-colors"
+                  className="text-slate-700 hover:text-[#0F766E] font-medium text-sm px-2 sm:px-4 py-2 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link 
                   href="/register" 
-                  className="bg-[#0F766E] hover:bg-[#0D655E] text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all"
+                  className="bg-[#0F766E] hover:bg-[#0D655E] text-white px-3 sm:px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all"
                 >
-                  Patient Register
+                  <span className="sm:hidden">Register</span><span className="hidden sm:inline">Patient Register</span>
                 </Link>
               </>
             )}
@@ -134,7 +134,7 @@ export default function LandingPage() {
               <div className="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Synthetic Patients</div>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col items-center text-center">
-              <div className="text-3xl font-extrabold text-[#16A34A]">100%</div>
+              <div className="text-3xl font-extrabold text-[#16A34A]">Protected</div>
               <div className="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Concurrency Protected</div>
             </div>
           </div>

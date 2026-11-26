@@ -86,7 +86,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">First Name *</label>
-                <input
+                <input aria-label="First Name *"
                   type="text"
                   name="firstName"
                   value={formData.firstName}
@@ -97,7 +97,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Last Name *</label>
-                <input
+                <input aria-label="Last Name *"
                   type="text"
                   name="lastName"
                   value={formData.lastName}
@@ -108,7 +108,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address *</label>
-                <input
+                <input aria-label="Email Address *"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -119,7 +119,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Password *</label>
-                <input
+                <input aria-label="Password *"
                   type="password"
                   name="password"
                   value={formData.password}
@@ -130,7 +130,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number *</label>
-                <input
+                <input aria-label="Phone Number *"
                   type="tel"
                   name="phone"
                   value={formData.phone}
@@ -141,7 +141,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Date of Birth *</label>
-                <input
+                <input aria-label="Date of Birth *"
                   type="date"
                   name="dateOfBirth"
                   value={formData.dateOfBirth}
@@ -152,7 +152,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Gender *</label>
-                <select
+                <select aria-label="Gender *"
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
@@ -165,7 +165,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Blood Group</label>
-                <select
+                <select aria-label="Blood Group"
                   name="bloodGroup"
                   value={formData.bloodGroup}
                   onChange={handleChange}
@@ -189,7 +189,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Emergency Contact Name *</label>
-                <input
+                <input aria-label="Emergency Contact Name *"
                   type="text"
                   name="emergencyContactName"
                   value={formData.emergencyContactName}
@@ -200,7 +200,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Emergency Contact Phone *</label>
-                <input
+                <input aria-label="Emergency Contact Phone *"
                   type="tel"
                   name="emergencyContactPhone"
                   value={formData.emergencyContactPhone}
@@ -211,7 +211,7 @@ export default function RegisterPage() {
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Residential Address *</label>
-                <input
+                <input aria-label="Residential Address *"
                   type="text"
                   name="address"
                   value={formData.address}
@@ -228,7 +228,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Insurance Provider</label>
-                <input
+                <input aria-label="Insurance Provider"
                   type="text"
                   name="insuranceProvider"
                   value={formData.insuranceProvider}
@@ -238,7 +238,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Policy Number</label>
-                <input
+                <input aria-label="Policy Number"
                   type="text"
                   name="insurancePolicyNumber"
                   value={formData.insurancePolicyNumber}
@@ -248,7 +248,7 @@ export default function RegisterPage() {
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Known Allergies / Pre-existing Conditions</label>
-                <input
+                <input aria-label="Known Allergies / Pre-existing Conditions"
                   type="text"
                   name="allergies"
                   value={formData.allergies}

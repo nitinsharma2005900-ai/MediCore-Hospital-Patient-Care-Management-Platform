@@ -1,0 +1,2281 @@
+{
+  "tables": [
+    "Appointment",
+    "AuditLog",
+    "CareAssignment",
+    "ConsentRecord",
+    "Department",
+    "Diagnosis",
+    "DoctorAvailability",
+    "DoctorProfile",
+    "Encounter",
+    "Invoice",
+    "InvoiceItem",
+    "LabOrder",
+    "LabResult",
+    "Notification",
+    "NotificationDelivery",
+    "PatientProfile",
+    "Payment",
+    "Prescription",
+    "PrescriptionItem",
+    "RefreshToken",
+    "User",
+    "VitalSigns",
+    "WaitingList",
+    "schema_migrations"
+  ],
+  "columns": [
+    {
+      "table_name": "Appointment",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "appointmentNumber",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "doctorId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "departmentId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "scheduledStartTime",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "scheduledEndTime",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "status",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "type",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "reason",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "notes",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "cancellationReason",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "cancelledAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "cancelledBy",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "checkedInAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "priority",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "version",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Appointment",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "action",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "entityName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "entityId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "performedByUserId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "userRole",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "ipAddress",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "userAgent",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "details",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "timestamp",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "AuditLog",
+      "column_name": "requestCorrelationId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "CareAssignment",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "CareAssignment",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "CareAssignment",
+      "column_name": "nurseUserId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "CareAssignment",
+      "column_name": "active",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "consentType",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "granted",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "grantedToRole",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "grantedToUserId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "grantedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "revokedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "revocationReason",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "expiresAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "ConsentRecord",
+      "column_name": "ipAddress",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "code",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "name",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "description",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "building",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "floor",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "isActive",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Department",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "encounterId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "doctorId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "icdCode",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "icdDescription",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "type",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "confidence",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "notes",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Diagnosis",
+      "column_name": "diagnosedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "doctorId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "dayOfWeek",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "startTime",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "endTime",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "slotDurationMinutes",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "timeZone",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorAvailability",
+      "column_name": "isActive",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "userId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "departmentId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "licenseNumber",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "specialization",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "consultationFee",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "roomNumber",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "bio",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "isActive",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "DoctorProfile",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "encounterNumber",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "appointmentId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "doctorId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "startTime",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "endTime",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "status",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "type",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "chiefComplaint",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "clinicalNotes",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Encounter",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "invoiceNumber",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "encounterId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "status",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "totalAmount",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "paidAmount",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "balanceAmount",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "currency",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "issuedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "dueDate",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "paidAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Invoice",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "invoiceId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "description",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "category",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "quantity",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "unitPrice",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "InvoiceItem",
+      "column_name": "totalPrice",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "orderNumber",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "encounterId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "orderingDoctorId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "status",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "priority",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "orderDate",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "testPanelName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "clinicalIndication",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabOrder",
+      "column_name": "assignedTechnicianUserId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "labOrderId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "technicianUserId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "validatedByUserId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "testName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "testCode",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "measuredValue",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "unit",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "referenceRangeLow",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "referenceRangeHigh",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "interpretation",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "status",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "specimenType",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "remarks",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "completedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "LabResult",
+      "column_name": "validatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "userId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "title",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "message",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "channel",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "status",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "sentAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "readAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "metadata",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Notification",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "notificationId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "attempts",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "status",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "lastError",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "deliveredAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "NotificationDelivery",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "userId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "mrn",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "dateOfBirth",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "gender",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "bloodGroup",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "emergencyContactName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "emergencyContactPhone",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "address",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "insuranceProvider",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "insurancePolicyNumber",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "allergies",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PatientProfile",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "invoiceId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "paymentMethod",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "amount",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "transactionReference",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "status",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Payment",
+      "column_name": "paymentDate",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "prescriptionNumber",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "encounterId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "doctorId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "status",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "instructions",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "startDate",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "endDate",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Prescription",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "prescriptionId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "medicationName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "dosage",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "route",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "frequency",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "durationDays",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "quantity",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "refillsAllowed",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "PrescriptionItem",
+      "column_name": "precautions",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "tokenHash",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "userId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "expiresAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "revoked",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "revokedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "replacedByToken",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "ipAddress",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "userAgent",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "RefreshToken",
+      "column_name": "accessTokenId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "User",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "email",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "passwordHash",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "role",
+      "data_type": "USER-DEFINED",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "firstName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "lastName",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "phone",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "User",
+      "column_name": "isActive",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "failedLoginAttempts",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "lockedUntil",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "User",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "User",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "encounterId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "recordedByUserId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "recordedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "systolicBp",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "diastolicBp",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "heartRate",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "respiratoryRate",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "temperature",
+      "data_type": "numeric",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "oxygenSaturation",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "heightCm",
+      "data_type": "numeric",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "weightKg",
+      "data_type": "numeric",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "bmi",
+      "data_type": "numeric",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "VitalSigns",
+      "column_name": "notes",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "patientId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "doctorId",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "departmentId",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "preferredDate",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "urgencyLevel",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "status",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "notes",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "createdAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "WaitingList",
+      "column_name": "updatedAt",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "schema_migrations",
+      "column_name": "name",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "schema_migrations",
+      "column_name": "applied_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    }
+  ],
+  "constraints": [
+    {
+      "conname": "Appointment_appointmentNumber_key",
+      "contype": "u",
+      "source": "Appointment",
+      "target": null,
+      "definition": "UNIQUE (\"appointmentNumber\")"
+    },
+    {
+      "conname": "Appointment_departmentId_fkey",
+      "contype": "f",
+      "source": "Appointment",
+      "target": "Department",
+      "definition": "FOREIGN KEY (\"departmentId\") REFERENCES \"Department\"(id)"
+    },
+    {
+      "conname": "Appointment_doctorId_fkey",
+      "contype": "f",
+      "source": "Appointment",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\") REFERENCES \"DoctorProfile\"(id)"
+    },
+    {
+      "conname": "Appointment_patientId_fkey",
+      "contype": "f",
+      "source": "Appointment",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "Appointment_pkey",
+      "contype": "p",
+      "source": "Appointment",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "appointment_association",
+      "contype": "u",
+      "source": "Appointment",
+      "target": null,
+      "definition": "UNIQUE (id, \"patientId\", \"doctorId\")"
+    },
+    {
+      "conname": "appointment_no_overlap",
+      "contype": "x",
+      "source": "Appointment",
+      "target": null,
+      "definition": "EXCLUDE USING gist (\"doctorId\" WITH =, tstzrange(\"scheduledStartTime\", \"scheduledEndTime\", '[)'::text) WITH &&) WHERE ((status <> ALL (ARRAY['CANCELLED'::\"AppointmentStatus\", 'NO_SHOW'::\"AppointmentStatus\", 'RESCHEDULED'::\"AppointmentStatus\"])))"
+    },
+    {
+      "conname": "appointment_positive_duration",
+      "contype": "c",
+      "source": "Appointment",
+      "target": null,
+      "definition": "CHECK ((\"scheduledEndTime\" > \"scheduledStartTime\"))"
+    },
+    {
+      "conname": "appointment_provider_department",
+      "contype": "f",
+      "source": "Appointment",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\", \"departmentId\") REFERENCES \"DoctorProfile\"(id, \"departmentId\")"
+    },
+    {
+      "conname": "AuditLog_performedByUserId_fkey",
+      "contype": "f",
+      "source": "AuditLog",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"performedByUserId\") REFERENCES \"User\"(id)"
+    },
+    {
+      "conname": "AuditLog_pkey",
+      "contype": "p",
+      "source": "AuditLog",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "CareAssignment_nurseUserId_fkey",
+      "contype": "f",
+      "source": "CareAssignment",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"nurseUserId\") REFERENCES \"User\"(id)"
+    },
+    {
+      "conname": "CareAssignment_patientId_fkey",
+      "contype": "f",
+      "source": "CareAssignment",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "CareAssignment_patientId_nurseUserId_key",
+      "contype": "u",
+      "source": "CareAssignment",
+      "target": null,
+      "definition": "UNIQUE (\"patientId\", \"nurseUserId\")"
+    },
+    {
+      "conname": "CareAssignment_pkey",
+      "contype": "p",
+      "source": "CareAssignment",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "ConsentRecord_patientId_fkey",
+      "contype": "f",
+      "source": "ConsentRecord",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "ConsentRecord_pkey",
+      "contype": "p",
+      "source": "ConsentRecord",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "Department_code_key",
+      "contype": "u",
+      "source": "Department",
+      "target": null,
+      "definition": "UNIQUE (code)"
+    },
+    {
+      "conname": "Department_pkey",
+      "contype": "p",
+      "source": "Department",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "Diagnosis_encounterId_fkey",
+      "contype": "f",
+      "source": "Diagnosis",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\") REFERENCES \"Encounter\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "Diagnosis_patientId_fkey",
+      "contype": "f",
+      "source": "Diagnosis",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "Diagnosis_pkey",
+      "contype": "p",
+      "source": "Diagnosis",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "diagnosis_doctor",
+      "contype": "f",
+      "source": "Diagnosis",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\") REFERENCES \"DoctorProfile\"(id)"
+    },
+    {
+      "conname": "diagnosis_encounter_patient",
+      "contype": "f",
+      "source": "Diagnosis",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\", \"patientId\") REFERENCES \"Encounter\"(id, \"patientId\")"
+    },
+    {
+      "conname": "DoctorAvailability_doctorId_fkey",
+      "contype": "f",
+      "source": "DoctorAvailability",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\") REFERENCES \"DoctorProfile\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "DoctorAvailability_pkey",
+      "contype": "p",
+      "source": "DoctorAvailability",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "DoctorProfile_departmentId_fkey",
+      "contype": "f",
+      "source": "DoctorProfile",
+      "target": "Department",
+      "definition": "FOREIGN KEY (\"departmentId\") REFERENCES \"Department\"(id)"
+    },
+    {
+      "conname": "DoctorProfile_licenseNumber_key",
+      "contype": "u",
+      "source": "DoctorProfile",
+      "target": null,
+      "definition": "UNIQUE (\"licenseNumber\")"
+    },
+    {
+      "conname": "DoctorProfile_pkey",
+      "contype": "p",
+      "source": "DoctorProfile",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "DoctorProfile_userId_fkey",
+      "contype": "f",
+      "source": "DoctorProfile",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "DoctorProfile_userId_key",
+      "contype": "u",
+      "source": "DoctorProfile",
+      "target": null,
+      "definition": "UNIQUE (\"userId\")"
+    },
+    {
+      "conname": "doctor_department",
+      "contype": "u",
+      "source": "DoctorProfile",
+      "target": null,
+      "definition": "UNIQUE (id, \"departmentId\")"
+    },
+    {
+      "conname": "Encounter_appointmentId_fkey",
+      "contype": "f",
+      "source": "Encounter",
+      "target": "Appointment",
+      "definition": "FOREIGN KEY (\"appointmentId\") REFERENCES \"Appointment\"(id)"
+    },
+    {
+      "conname": "Encounter_appointmentId_key",
+      "contype": "u",
+      "source": "Encounter",
+      "target": null,
+      "definition": "UNIQUE (\"appointmentId\")"
+    },
+    {
+      "conname": "Encounter_doctorId_fkey",
+      "contype": "f",
+      "source": "Encounter",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\") REFERENCES \"DoctorProfile\"(id)"
+    },
+    {
+      "conname": "Encounter_encounterNumber_key",
+      "contype": "u",
+      "source": "Encounter",
+      "target": null,
+      "definition": "UNIQUE (\"encounterNumber\")"
+    },
+    {
+      "conname": "Encounter_patientId_fkey",
+      "contype": "f",
+      "source": "Encounter",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "Encounter_pkey",
+      "contype": "p",
+      "source": "Encounter",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "encounter_appointment_association",
+      "contype": "f",
+      "source": "Encounter",
+      "target": "Appointment",
+      "definition": "FOREIGN KEY (\"appointmentId\", \"patientId\", \"doctorId\") REFERENCES \"Appointment\"(id, \"patientId\", \"doctorId\")"
+    },
+    {
+      "conname": "encounter_patient",
+      "contype": "u",
+      "source": "Encounter",
+      "target": null,
+      "definition": "UNIQUE (id, \"patientId\")"
+    },
+    {
+      "conname": "Invoice_encounterId_fkey",
+      "contype": "f",
+      "source": "Invoice",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\") REFERENCES \"Encounter\"(id)"
+    },
+    {
+      "conname": "Invoice_invoiceNumber_key",
+      "contype": "u",
+      "source": "Invoice",
+      "target": null,
+      "definition": "UNIQUE (\"invoiceNumber\")"
+    },
+    {
+      "conname": "Invoice_patientId_fkey",
+      "contype": "f",
+      "source": "Invoice",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "Invoice_pkey",
+      "contype": "p",
+      "source": "Invoice",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "invoice_encounter_patient",
+      "contype": "f",
+      "source": "Invoice",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\", \"patientId\") REFERENCES \"Encounter\"(id, \"patientId\")"
+    },
+    {
+      "conname": "invoice_patient",
+      "contype": "u",
+      "source": "Invoice",
+      "target": null,
+      "definition": "UNIQUE (id, \"patientId\")"
+    },
+    {
+      "conname": "InvoiceItem_invoiceId_fkey",
+      "contype": "f",
+      "source": "InvoiceItem",
+      "target": "Invoice",
+      "definition": "FOREIGN KEY (\"invoiceId\") REFERENCES \"Invoice\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "InvoiceItem_pkey",
+      "contype": "p",
+      "source": "InvoiceItem",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "invoice_item_positive",
+      "contype": "c",
+      "source": "InvoiceItem",
+      "target": null,
+      "definition": "CHECK (((quantity > 0) AND (\"unitPrice\" >= (0)::numeric)))"
+    },
+    {
+      "conname": "LabOrder_assignedTechnicianUserId_fkey",
+      "contype": "f",
+      "source": "LabOrder",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"assignedTechnicianUserId\") REFERENCES \"User\"(id)"
+    },
+    {
+      "conname": "LabOrder_encounterId_fkey",
+      "contype": "f",
+      "source": "LabOrder",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\") REFERENCES \"Encounter\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "LabOrder_orderNumber_key",
+      "contype": "u",
+      "source": "LabOrder",
+      "target": null,
+      "definition": "UNIQUE (\"orderNumber\")"
+    },
+    {
+      "conname": "LabOrder_orderingDoctorId_fkey",
+      "contype": "f",
+      "source": "LabOrder",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"orderingDoctorId\") REFERENCES \"DoctorProfile\"(id)"
+    },
+    {
+      "conname": "LabOrder_patientId_fkey",
+      "contype": "f",
+      "source": "LabOrder",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "LabOrder_pkey",
+      "contype": "p",
+      "source": "LabOrder",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "lab_encounter_patient",
+      "contype": "f",
+      "source": "LabOrder",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\", \"patientId\") REFERENCES \"Encounter\"(id, \"patientId\")"
+    },
+    {
+      "conname": "lab_order_patient",
+      "contype": "u",
+      "source": "LabOrder",
+      "target": null,
+      "definition": "UNIQUE (id, \"patientId\")"
+    },
+    {
+      "conname": "LabResult_labOrderId_fkey",
+      "contype": "f",
+      "source": "LabResult",
+      "target": "LabOrder",
+      "definition": "FOREIGN KEY (\"labOrderId\") REFERENCES \"LabOrder\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "LabResult_patientId_fkey",
+      "contype": "f",
+      "source": "LabResult",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "LabResult_pkey",
+      "contype": "p",
+      "source": "LabResult",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "lab_result_patient",
+      "contype": "f",
+      "source": "LabResult",
+      "target": "LabOrder",
+      "definition": "FOREIGN KEY (\"labOrderId\", \"patientId\") REFERENCES \"LabOrder\"(id, \"patientId\")"
+    },
+    {
+      "conname": "result_technician",
+      "contype": "f",
+      "source": "LabResult",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"technicianUserId\") REFERENCES \"User\"(id)"
+    },
+    {
+      "conname": "result_validator",
+      "contype": "f",
+      "source": "LabResult",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"validatedByUserId\") REFERENCES \"User\"(id)"
+    },
+    {
+      "conname": "Notification_pkey",
+      "contype": "p",
+      "source": "Notification",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "Notification_userId_fkey",
+      "contype": "f",
+      "source": "Notification",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "NotificationDelivery_notificationId_fkey",
+      "contype": "f",
+      "source": "NotificationDelivery",
+      "target": "Notification",
+      "definition": "FOREIGN KEY (\"notificationId\") REFERENCES \"Notification\"(id)"
+    },
+    {
+      "conname": "NotificationDelivery_notificationId_key",
+      "contype": "u",
+      "source": "NotificationDelivery",
+      "target": null,
+      "definition": "UNIQUE (\"notificationId\")"
+    },
+    {
+      "conname": "NotificationDelivery_pkey",
+      "contype": "p",
+      "source": "NotificationDelivery",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PatientProfile_mrn_key",
+      "contype": "u",
+      "source": "PatientProfile",
+      "target": null,
+      "definition": "UNIQUE (mrn)"
+    },
+    {
+      "conname": "PatientProfile_pkey",
+      "contype": "p",
+      "source": "PatientProfile",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PatientProfile_userId_fkey",
+      "contype": "f",
+      "source": "PatientProfile",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "PatientProfile_userId_key",
+      "contype": "u",
+      "source": "PatientProfile",
+      "target": null,
+      "definition": "UNIQUE (\"userId\")"
+    },
+    {
+      "conname": "Payment_invoiceId_fkey",
+      "contype": "f",
+      "source": "Payment",
+      "target": "Invoice",
+      "definition": "FOREIGN KEY (\"invoiceId\") REFERENCES \"Invoice\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "Payment_pkey",
+      "contype": "p",
+      "source": "Payment",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "payment_invoice_patient",
+      "contype": "f",
+      "source": "Payment",
+      "target": "Invoice",
+      "definition": "FOREIGN KEY (\"invoiceId\", \"patientId\") REFERENCES \"Invoice\"(id, \"patientId\")"
+    },
+    {
+      "conname": "payment_positive",
+      "contype": "c",
+      "source": "Payment",
+      "target": null,
+      "definition": "CHECK ((amount > (0)::numeric))"
+    },
+    {
+      "conname": "Prescription_doctorId_fkey",
+      "contype": "f",
+      "source": "Prescription",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\") REFERENCES \"DoctorProfile\"(id)"
+    },
+    {
+      "conname": "Prescription_encounterId_fkey",
+      "contype": "f",
+      "source": "Prescription",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\") REFERENCES \"Encounter\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "Prescription_patientId_fkey",
+      "contype": "f",
+      "source": "Prescription",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "Prescription_pkey",
+      "contype": "p",
+      "source": "Prescription",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "Prescription_prescriptionNumber_key",
+      "contype": "u",
+      "source": "Prescription",
+      "target": null,
+      "definition": "UNIQUE (\"prescriptionNumber\")"
+    },
+    {
+      "conname": "prescription_encounter_patient",
+      "contype": "f",
+      "source": "Prescription",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\", \"patientId\") REFERENCES \"Encounter\"(id, \"patientId\")"
+    },
+    {
+      "conname": "PrescriptionItem_pkey",
+      "contype": "p",
+      "source": "PrescriptionItem",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "PrescriptionItem_prescriptionId_fkey",
+      "contype": "f",
+      "source": "PrescriptionItem",
+      "target": "Prescription",
+      "definition": "FOREIGN KEY (\"prescriptionId\") REFERENCES \"Prescription\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "prescription_quantity_positive",
+      "contype": "c",
+      "source": "PrescriptionItem",
+      "target": null,
+      "definition": "CHECK (((quantity > 0) AND (\"durationDays\" > 0) AND (\"refillsAllowed\" >= 0)))"
+    },
+    {
+      "conname": "RefreshToken_accessTokenId_key",
+      "contype": "u",
+      "source": "RefreshToken",
+      "target": null,
+      "definition": "UNIQUE (\"accessTokenId\")"
+    },
+    {
+      "conname": "RefreshToken_pkey",
+      "contype": "p",
+      "source": "RefreshToken",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "RefreshToken_tokenHash_key",
+      "contype": "u",
+      "source": "RefreshToken",
+      "target": null,
+      "definition": "UNIQUE (\"tokenHash\")"
+    },
+    {
+      "conname": "RefreshToken_userId_fkey",
+      "contype": "f",
+      "source": "RefreshToken",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"userId\") REFERENCES \"User\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "User_email_key",
+      "contype": "u",
+      "source": "User",
+      "target": null,
+      "definition": "UNIQUE (email)"
+    },
+    {
+      "conname": "User_pkey",
+      "contype": "p",
+      "source": "User",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "VitalSigns_encounterId_fkey",
+      "contype": "f",
+      "source": "VitalSigns",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\") REFERENCES \"Encounter\"(id) ON DELETE CASCADE"
+    },
+    {
+      "conname": "VitalSigns_patientId_fkey",
+      "contype": "f",
+      "source": "VitalSigns",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "VitalSigns_pkey",
+      "contype": "p",
+      "source": "VitalSigns",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "vital_encounter_patient",
+      "contype": "f",
+      "source": "VitalSigns",
+      "target": "Encounter",
+      "definition": "FOREIGN KEY (\"encounterId\", \"patientId\") REFERENCES \"Encounter\"(id, \"patientId\")"
+    },
+    {
+      "conname": "vital_recorder",
+      "contype": "f",
+      "source": "VitalSigns",
+      "target": "User",
+      "definition": "FOREIGN KEY (\"recordedByUserId\") REFERENCES \"User\"(id)"
+    },
+    {
+      "conname": "WaitingList_departmentId_fkey",
+      "contype": "f",
+      "source": "WaitingList",
+      "target": "Department",
+      "definition": "FOREIGN KEY (\"departmentId\") REFERENCES \"Department\"(id)"
+    },
+    {
+      "conname": "WaitingList_doctorId_fkey",
+      "contype": "f",
+      "source": "WaitingList",
+      "target": "DoctorProfile",
+      "definition": "FOREIGN KEY (\"doctorId\") REFERENCES \"DoctorProfile\"(id)"
+    },
+    {
+      "conname": "WaitingList_patientId_fkey",
+      "contype": "f",
+      "source": "WaitingList",
+      "target": "PatientProfile",
+      "definition": "FOREIGN KEY (\"patientId\") REFERENCES \"PatientProfile\"(id)"
+    },
+    {
+      "conname": "WaitingList_pkey",
+      "contype": "p",
+      "source": "WaitingList",
+      "target": null,
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "schema_migrations_pkey",
+      "contype": "p",
+      "source": "schema_migrations",
+      "target": null,
+      "definition": "PRIMARY KEY (name)"
+    }
+  ]
+}

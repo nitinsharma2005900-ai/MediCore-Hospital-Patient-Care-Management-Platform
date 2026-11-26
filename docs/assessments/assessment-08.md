@@ -1,75 +1,13 @@
-# Assessment 08: Healthcare Interoperability
+## Assessment 08 — Healthcare interoperability
 
-## 1. Assessment Overview & Objectives
-Assessment 08 evaluates the interoperability subsystem of MediCore. The platform implements HL7 FHIR R4 (Fast Healthcare Interoperability Resources) data models for Patient, Appointment, Encounter, and Observation resources. It includes a resilient FHIR client with timeouts, exponential backoff retries, and local mock endpoints, alongside an asynchronous notification dispatch simulator for email and SMS alerts with idempotency protection.
+**Original PDF objective:** Integrate with a public/test FHIR endpoint or local FHIR mock for synthetic Patient, Appointment, Encounter, and Observation resources. Add email/SMS sandbox notifications.
 
-## 2. Acceptance Criteria & Implementation Matrix
-| Requirement | Status | Implementation Details |
-|---|---|---|
-| FHIR R4 Resource Mapping | Verified | Bidirectional transformation between MediCore models and FHIR R4 JSON schemas |
-| FHIR Patient Resource | Verified | Identifier (MRN), Name, Gender, BirthDate, Telecom, Address |
-| FHIR Appointment Resource | Verified | Status, Participant (Patient & Practitioner), Start, End, ServiceCategory |
-| FHIR Encounter Resource | Verified | Class (AMB), Status, Subject, Participant, Period, ReasonCode |
-| FHIR Observation Resource | Verified | Code (LOINC), Subject, EffectiveDateTime, ValueQuantity (unit & system) |
-| Local FHIR Mock Server | Verified | Express endpoints under `/api/v1/fhir/Patient`, `/Appointment`, `/Observation` |
-| Resilient FHIR Client | Verified | `integrations/fhir/fhirClient.ts` with exponential backoff and timeout handling |
-| Sandbox Notifications | Verified | `integrations/notifications/notificationService.ts` simulating email & SMS dispatch |
-| Idempotency Protection | Verified | Outbound notifications require `Idempotency-Key` preventing duplicate SMS/email alerts |
+**Status:** Partially completed
 
-## 3. Sample FHIR R4 Observation Resource
-```json
-{
-  "resourceType": "Observation",
-  "id": "obs-glucose-001",
-  "status": "final",
-  "category": [
-    {
-      "coding": [
-        {
-          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-          "code": "laboratory",
-          "display": "Laboratory"
-        }
-      ]
-    }
-  ],
-  "code": {
-    "coding": [
-      {
-        "system": "http://loinc.org",
-        "code": "2345-7",
-        "display": "Glucose [Mass/volume] in Blood"
-      }
-    ]
-  },
-  "subject": {
-    "reference": "Patient/pat-1001"
-  },
-  "effectiveDateTime": "2026-11-26T08:30:00Z",
-  "valueQuantity": {
-    "value": 94.5,
-    "unit": "mg/dL",
-    "system": "http://unitsofmeasure.org",
-    "code": "mg/dL"
-  },
-  "referenceRange": [
-    {
-      "low": { "value": 70, "unit": "mg/dL" },
-      "high": { "value": 99, "unit": "mg/dL" }
-    }
-  ]
-}
-```
+**Implementation and limitations:** FHIR is an explicit local R4-shaped mock. EMAIL/SMS delivery is a local database-backed simulator; no SMTP provider or external SMS delivery is verified.
 
-## 4. Notification Sandbox Engine
-The notification service (`notificationService.ts`) simulates delivery channels while logging full audit headers:
-- **Email Channel**: Formats HTML discharge summaries, appointment confirmations, and lab release alerts.
-- **SMS Channel**: Dispatches 160-character booking reminder SMS alerts with opt-out compliance.
-- **Idempotency**: Cached hash of `idempotencyKey + recipient` discards duplicate trigger calls within 24 hours.
+**Source files:** `controllers/fhir.controller.ts; jobs/notifications.ts; integrations`.
 
-## 5. Verification & Testing
-FHIR endpoints respond with valid JSON adhering to HL7 FHIR specifications:
-```bash
-curl http://localhost:4001/api/v1/fhir/Observation/obs-glucose-001
-# Returns HTTP 200 with resourceType: "Observation"
-```
+**Endpoints / scope:** /fhir/Patient, Appointment, Encounter, Observation; /notifications.
+
+**Tests and evidence:** Four authenticated FHIR resource checks; durable sandbox worker/outage tests. Actual execution results are in TEST_REPORT.md, with machine-readable records in docs/evidence. Deployment and review limitations are not treated as passed tests.

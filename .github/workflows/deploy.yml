@@ -1,44 +1,37 @@
-name: MediCore Release & Deployment Pipeline
-
+name: Approval-controlled Render release
 on:
-  push:
-    tags:
-      - 'v*.*.*'
   workflow_dispatch:
     inputs:
       target_env:
-        description: 'Target Deployment Environment'
-        required: true
-        default: 'staging'
+        description: Protected deployment environment
         type: choice
-        options:
-          - staging
-          - production
-
+        options: [staging, production]
+        default: staging
+        required: true
+permissions: {contents: read}
 jobs:
   deploy:
-    name: Deploy to Hospital Cloud Environment
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.target_env || 'production' }}
+    environment: ${{ inputs.target_env }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Validate Deployment Secrets
+      - uses: actions/checkout@v4
+      - name: Trigger configured Render deployment
+        env:
+          BACKEND_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+          ANALYTICS_HOOK: ${{ secrets.RENDER_ANALYTICS_DEPLOY_HOOK }}
+          FRONTEND_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
         run: |
-          echo "Verifying production secrets, TLS certificates, and database parameters..."
-          test -n "${{ secrets.DATABASE_URL }}" || echo "Database credentials present"
-
-      - name: Build Container Images
+          test -n "$BACKEND_HOOK" && test -n "$ANALYTICS_HOOK" && test -n "$FRONTEND_HOOK"
+          curl --fail --silent --show-error --output /dev/null --request POST "$BACKEND_HOOK"
+          curl --fail --silent --show-error --output /dev/null --request POST "$ANALYTICS_HOOK"
+          curl --fail --silent --show-error --output /dev/null --request POST "$FRONTEND_HOOK"
+      - name: Verify configured live endpoints
+        env:
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+          ANALYTICS_URL: ${{ vars.ANALYTICS_URL }}
         run: |
-          echo "Building non-root container images for MediCore services..."
-          docker compose build
-
-      - name: Execute Pre-Deployment Database Migrations
-        run: |
-          echo "Applying backward-compatible PostgreSQL clinical migrations..."
-
-      - name: Deploy Services
-        run: |
-          echo "Triggering zero-downtime rolling restart on cluster..."
+          test -n "$FRONTEND_URL" && test -n "$BACKEND_URL" && test -n "$ANALYTICS_URL"
+          curl --fail --silent --show-error --retry 10 --retry-all-errors --retry-delay 15 "$BACKEND_URL/ready"
+          curl --fail --silent --show-error --retry 10 --retry-all-errors --retry-delay 15 "$ANALYTICS_URL/health"
+          curl --fail --silent --show-error --output /dev/null "$FRONTEND_URL/login"

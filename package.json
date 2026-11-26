@@ -14,9 +14,16 @@
     "dev:backend": "npm --workspace=apps/backend run dev",
     "dev:frontend": "npm --workspace=apps/frontend run dev",
     "dev:analytics": "python -m uvicorn main:app --app-dir apps/analytics-service --host 0.0.0.0 --port 8000 --reload",
-    "seed": "npm --workspace=apps/backend run db:seed"
+    "seed": "npm --workspace=apps/backend run db:seed",
+    "test:postgres": "node scripts/verify_postgres.cjs",
+    "test:e2e": "playwright test",
+    "db:migrate": "npm run db:migrate --workspace=apps/backend",
+    "lint": "npm run lint --workspace=apps/frontend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "overrides": {
+    "postcss": "8.5.33"
   }
 }
