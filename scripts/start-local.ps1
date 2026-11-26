@@ -18,7 +18,10 @@ function Start-MediCoreService($serviceName,$port,$executable,$arguments) {
 $node=(Get-Command node.exe).Source
 Start-MediCoreService 'backend' 4010 $node @('apps/backend/dist/server.js')
 Start-MediCoreService 'analytics' 8010 (Get-Command python.exe).Source @('-m','uvicorn','main:app','--app-dir','apps/analytics-service','--host','127.0.0.1','--port','8010')
-$nextCommand=if($Development){'dev'}else{'start'}
-Start-MediCoreService 'frontend' 3010 $node @('node_modules/next/dist/bin/next',$nextCommand,'apps/frontend','-p','3010')
+if($Development){
+ Start-MediCoreService 'frontend' 3010 $node @('node_modules/next/dist/bin/next','dev','apps/frontend','-p','3010')
+}else{
+ Start-MediCoreService 'frontend' 3010 $node @('scripts/start-frontend.cjs','--port','3010')
+}
 $services|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $runtime 'services.json')
 Write-Output 'Frontend http://localhost:3010 | API http://localhost:4010/api/v1 | Analytics http://localhost:8010 | Swagger http://localhost:4010/api-docs/'

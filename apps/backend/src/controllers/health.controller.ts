@@ -6,6 +6,7 @@ import { config } from '../config';
 export const getHealth = (req: Request, res: Response) => {
   res.status(200).json({
     status: 'healthy',
+    revision: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || 'local',
     service: 'MediCore Backend API',
     uptime: process.uptime(),
     timestamp: new Date().toISOString()
@@ -25,6 +26,7 @@ export const getReadiness = async (req: Request, res: Response) => {
 
   res.status(200).json({
     status: 'ready',
+    revision: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || 'local',
     service: 'MediCore Backend API',
     checks: {
       database: 'connected',

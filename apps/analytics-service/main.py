@@ -28,6 +28,7 @@ app.include_router(processing_router)
 def health_check():
     return {
         "status": "healthy",
+        "revision": os.getenv("RENDER_GIT_COMMIT", "local"),
         "service": "MediCore Clinical Analytics Microservice",
         "version": "1.0.0"
     }
